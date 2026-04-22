@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contentive Studio — Daniela · Costos</title>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<style>
+  :root {
+    --bg: #111111;
+    --surface: #1a1a1a;
+    --surface2: #222222;
+    --border: #2e2e2e;
+    --orange: #F5A623;
+    --lime: #B8E04A;
+    --white: #f0f0f0;
+    --muted: #888;
+    --red: #e05252;
+    --green: #52e08a;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--white);
+    font-family: 'Arial', sans-serif;
+    min-height: 100vh;
+    padding: 0;
+  }
+
+  /* AUTH SCREEN */
+  #auth-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    gap: 32px;
+    padding: 24px;
+  }
+
+  .auth-logo {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--orange);
+  }
+
+  .auth-title {
+    font-size: 28px;
+    font-weight: 700;
+    text-align: center;
+    letter-spacing: -0.02em;
+  }
+
+  .auth-sub {
+    color: var(--muted);
+    font-size: 14px;
+    text-align: center;
+  }
+
+  .btn-google {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--white);
+    color: #111;
+    border: none;
+    border-radius: 6px;
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .btn-google:hover { opacity: 0.9; }
+  .btn-google svg { width: 20px; height: 20px; }
+
+  /* APP LAYOUT */
+  #app { display: none; }
+
+  header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header-left { display: flex; align-items: center; gap: 20px; }
+
+  .studio-tag {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    color: var(--orange);
+  }
+
+  .header-title {
+    font-size: 16px;
+    font-weight: 700;
+  }
+
+  .user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+
+  .user-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--orange);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 13px;
+    color: #111;
+  }
+
+  /* SAVE BAR */
+  #save-bar {
+    display: none;
+    background: var(--orange);
+    color: #111;
+    padding: 10px 32px;
+    font-size: 13px;
+    font-weight: 600;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  #save-bar.visible { display: flex; }
+
+  .btn-save {
+    background: #111;
+    color: var(--orange);
+    border: none;
+    border-radius: 4px;
+    padding: 6px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+
+  /* MAIN */
+  main {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 40px 24px 80px;
+  }
+
+  .page-header {
+    margin-bottom: 40px;
+  }
+
+  .page-header h1 {
+    font-size: 26px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+
+  .page-header p {
+    color: var(--muted);
+    font-size: 14px;
+  }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 32px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--orange);
+    flex-shrink: 0;
+  }
+
+  .section-dot.lime { background: var(--lime); }
+
+  .section-title {
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+  }
+
+  .section-body { padding: 0; }
+
+  /* ROW */
+  .row {
+    display: grid;
+    grid-template-columns: 1fr auto auto;
+    align-items: center;
+    padding: 14px 24px;
+    border-bottom: 1px solid var(--border);
+    gap: 16px;
+    transition: background 0.15s;
+  }
+
+  .row:last-child { border-bottom: none; }
+  .row:hover { background: var(--surface2); }
+
+  .row-label { font-size: 14px; }
+  .row-note { font-size: 12px; color: var(--muted); margin-top: 2px; }
+
+  .row-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 8px;
+    border-radius: 4px;
+    background: var(--surface2);
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .row-badge.active {
+    background: rgba(245, 166, 35, 0.15);
+    color: var(--orange);
+  }
+
+  .input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .input-prefix {
+    position: absolute;
+    left: 10px;
+    font-size: 13px;
+    color: var(--muted);
+    pointer-events: none;
+  }
+
+  .row input[type="number"] {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--white);
+    font-size: 14px;
+    font-weight: 600;
+    padding: 8px 10px 8px 24px;
+    width: 150px;
+    text-align: right;
+    transition: border-color 0.2s;
+    -moz-appearance: textfield;
+  }
+
+  .row input[type="number"]:focus {
+    outline: none;
+    border-color: var(--orange);
+  }
+
+  .row input[type="number"]::-webkit-inner-spin-button,
+  .row input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+  /* SELECT */
+  .row select {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--white);
+    font-size: 13px;
+    padding: 8px 10px;
+    cursor: pointer;
+    min-width: 180px;
+    transition: border-color 0.2s;
+  }
+
+  .row select:focus {
+    outline: none;
+    border-color: var(--orange);
+  }
+
+  /* TOTALES */
+  .totales {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 24px;
+    margin-bottom: 32px;
+  }
+
+  .totales-title {
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--muted);
+    margin-bottom: 20px;
+  }
+
+  .totales-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+  }
+
+  .total-card {
+    background: var(--surface2);
+    border-radius: 8px;
+    padding: 16px 20px;
+  }
+
+  .total-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; }
+
+  .total-value {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+    color: var(--orange);
+  }
+
+  .total-value.lime { color: var(--lime); }
+
+  /* STATUS */
+  #status-msg {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-size: 13px;
+    font-weight: 600;
+    display: none;
+    align-items: center;
+    gap: 10px;
+    z-index: 999;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.4);
+  }
+
+  #status-msg.visible { display: flex; }
+  #status-msg.success { border-color: var(--green); color: var(--green); }
+  #status-msg.error { border-color: var(--red); color: var(--red); }
+  #status-msg.loading { border-color: var(--orange); color: var(--orange); }
+
+  /* LAST SAVED */
+  .last-saved {
+    font-size: 12px;
+    color: var(--muted);
+    text-align: right;
+    margin-top: 8px;
+  }
+
+  /* DIVIDER */
+  .divider {
+    height: 1px;
+    background: var(--border);
+    margin: 8px 24px;
+  }
+
+  .row-group-label {
+    padding: 10px 24px 4px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--muted);
+  }
+</style>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <div class="auth-logo">Contentive Studio</div>
+  <div>
+    <div class="auth-title">Panel de Costos<br>Daniela · Diseño Gráfico</div>
+    <div class="auth-sub" style="margin-top:10px">Iniciá sesión con tu cuenta de Google para acceder</div>
+  </div>
+  <button class="btn-google" onclick="handleAuthClick()">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+      <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+      <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+      <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+    </svg>
+    Continuar con Google
+  </button>
+  <div class="auth-sub" style="font-size:11px">Solo pueden acceder los usuarios autorizados por Contentive Studio</div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <header>
+    <div class="header-left">
+      <div class="studio-tag">Contentive Studio</div>
+      <div style="width:1px;height:20px;background:var(--border)"></div>
+      <div class="header-title">Daniela · Diseño Gráfico</div>
+    </div>
+    <div class="user-info">
+      <div id="user-name"></div>
+      <div class="user-avatar" id="user-initial">D</div>
+    </div>
+  </header>
+
+  <div id="save-bar">
+    <span>⚠️ Tenés cambios sin guardar</span>
+    <button class="btn-save" onclick="saveToDrive()">Guardar en Drive</button>
+  </div>
+
+  <main>
+    <div class="page-header">
+      <h1>Carga de costos</h1>
+      <p>Actualizá tus tarifas por paquete y por cuenta. Los cambios se guardan en Drive automáticamente.</p>
+    </div>
+
+    <!-- TOTALES -->
+    <div class="totales">
+      <div class="totales-title">Resumen del mes</div>
+      <div class="totales-grid">
+        <div class="total-card">
+          <div class="total-label">Total cuentas actuales</div>
+          <div class="total-value" id="total-actuales">$ 0</div>
+        </div>
+        <div class="total-card">
+          <div class="total-label">Pack asignado promedio</div>
+          <div class="total-value lime" id="pack-promedio">—</div>
+        </div>
+        <div class="total-card">
+          <div class="total-label">Última actualización</div>
+          <div class="total-value" style="font-size:14px;color:var(--muted)" id="last-update">Sin guardar</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PACKS PROVISORIOS -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-dot"></div>
+        <div class="section-title">Tarifas por paquete (provisorio +25%)</div>
+      </div>
+      <div class="section-body">
+        <div class="row-group-label">Packs sin carrusel</div>
+
+        <div class="row">
+          <div>
+            <div class="row-label">Pack x4 publicaciones</div>
+            <div class="row-note">Igual al x8 — volumen de diseño igual</div>
+          </div>
+          <div class="row-badge">Sin carrusel</div>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="number" id="pack_x4" value="112500" oninput="markDirty();calcTotals()">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <div class="row-label">Pack x8 publicaciones</div>
+            <div class="row-note">Igual al x4 por volumen de diseño</div>
+          </div>
+          <div class="row-badge">Sin carrusel</div>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="number" id="pack_x8" value="112500" oninput="markDirty();calcTotals()">
+          </div>
+        </div>
+
+        <div class="row-group-label" style="margin-top:4px">Packs con carrusel</div>
+
+        <div class="row">
+          <div>
+            <div class="row-label">Pack x12 publicaciones</div>
+            <div class="row-note">Incluye carruseles</div>
+          </div>
+          <div class="row-badge">Con carrusel</div>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="number" id="pack_x12" value="162500" oninput="markDirty();calcTotals()">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <div class="row-label">Pack x16 publicaciones</div>
+            <div class="row-note">Incluye carruseles</div>
+          </div>
+          <div class="row-badge">Con carrusel</div>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="number" id="pack_x16" value="225000" oninput="markDirty();calcTotals()">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <div class="row-label">Pack x20 publicaciones</div>
+            <div class="row-note">Incluye carruseles</div>
+          </div>
+          <div class="row-badge">Con carrusel</div>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="number" id="pack_x20" value="250000" oninput="markDirty();calcTotals()">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CUENTAS ACTUALES -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-dot lime"></div>
+        <div class="section-title">Cuentas actuales · Tarifas reales</div>
+      </div>
+      <div class="section-body">
+
+        <div class="row">
+          <div>
+            <div class="row-label">Seklou</div>
+            <div class="row-note">Pack asignado actual</div>
+          </div>
+          <select id="pack_seklou_tipo" onchange="markDirty();calcTotals()">
+            <option value="real">Tarifa real</option>
+            <option value="pack_x4">Pack x4</option>
+            <option value="pack_x8">Pack x8</option>
+            <option value="pack_x12">Pack x12</option>
+            <option value="pack_x16">Pack x16</option>
+            <option value="pack_x20">Pack x20</option>
+          </select>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="number" id="cuenta_seklou" value="139150" oninput="markDirty();calcTotals()">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <div class="row-label">Panadería Donna</div>
+            <div class="row-note">Pack asignado actual</div>
+          </div>
+          <select id="pack_donna_tipo" onchange="markDirty();calcTotals()">
+            <option value="real">Tarifa real</option>
+            <option value="pack_x4">Pack x4</option>
+            <option value="pack_x8">Pack x8</option>
+            <option value="pack_x12">Pack x12</option>
+            <option value="pack_x16">Pack x16</option>
+            <option value="pack_x20">Pack x20</option>
+          </select>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="number" id="cuenta_donna" value="139150" oninput="markDirty();calcTotals()">
+          </div>
+        </div>
+
+        <div class="row">
+          <div>
+            <div class="row-label">TecnoTips</div>
+            <div class="row-note">Pack asignado actual</div>
+          </div>
+          <select id="pack_tecno_tipo" onchange="markDirty();calcTotals()">
+            <option value="real">Tarifa real</option>
+            <option value="pack_x4">Pack x4</option>
+            <option value="pack_x8">Pack x8</option>
+            <option value="pack_x12">Pack x12</option>
+            <option value="pack_x16">Pack x16</option>
+            <option value="pack_x20">Pack x20</option>
+          </select>
+          <div class="input-wrap">
+            <span class="input-prefix">$</span>
+            <input type="number" id="cuenta_tecno" value="88000" oninput="markDirty();calcTotals()">
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- NOTAS -->
+    <div class="section">
+      <div class="section-header">
+        <div class="section-dot" style="background:var(--muted)"></div>
+        <div class="section-title">Notas internas</div>
+      </div>
+      <div class="section-body" style="padding:16px 24px">
+        <textarea id="notas" placeholder="Escribí cualquier aclaración sobre tus tarifas o acuerdos especiales..."
+          style="width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:6px;color:var(--white);font-size:13px;padding:12px;resize:vertical;min-height:80px;font-family:inherit"
+          oninput="markDirty()"></textarea>
+      </div>
+    </div>
+
+    <div class="last-saved" id="last-saved-text"></div>
+
+  </main>
+</div>
+
+<!-- STATUS MSG -->
+<div id="status-msg"></div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+const CLIENT_ID = '1089154369329-ofb9b8a7au5ds7c0kthg7nmul2n0srj3.apps.googleusercontent.com';
+const FOLDER_ID = '1g0Rnv7297gNZ2h2HK86eh7vTHZRaboP1';
+const FILENAME  = 'costos_daniela.json';
+const SCOPES    = 'https://www.googleapis.com/auth/drive.file';
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let tokenClient, accessToken, fileId = null, isDirty = false;
+
+// ─── AUTH ─────────────────────────────────────────────────────────────────────
+function handleAuthClick() {
+  if (!tokenClient) {
+    tokenClient = google.accounts.oauth2.initTokenClient({
+      client_id: CLIENT_ID,
+      scope: SCOPES,
+      callback: onTokenReceived,
+    });
+  }
+  tokenClient.requestAccessToken();
+}
+
+function onTokenReceived(resp) {
+  if (resp.error) { showStatus('Error al iniciar sesión', 'error'); return; }
+  accessToken = resp.access_token;
+  fetchUserInfo();
+}
+
+async function fetchUserInfo() {
+  try {
+    const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+      headers: { Authorization: `Bearer ${accessToken}` }
+    });
+    const u = await r.json();
+    document.getElementById('user-name').textContent = u.name || u.email;
+    document.getElementById('user-initial').textContent = (u.name || u.email || 'D')[0].toUpperCase();
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    loadFromDrive();
+  } catch(e) {
+    showStatus('Error al obtener info de usuario', 'error');
+  }
+}
+
+// ─── DRIVE ────────────────────────────────────────────────────────────────────
+async function loadFromDrive() {
+  showStatus('Cargando datos…', 'loading');
+  try {
+    const search = await fetch(
+      `https://www.googleapis.com/drive/v3/files?q=name='${FILENAME}' and '${FOLDER_ID}' in parents and trashed=false&fields=files(id,name,modifiedTime)`,
+      { headers: { Authorization: `Bearer ${accessToken}` } }
+    );
+    const data = await search.json();
+    if (data.files && data.files.length > 0) {
+      fileId = data.files[0].id;
+      const content = await fetch(
+        `https://www.googleapis.com/drive/v3/files/${fileId}?alt=media`,
+        { headers: { Authorization: `Bearer ${accessToken}` } }
+      );
+      const json = await content.json();
+      populateForm(json);
+      const mod = new Date(data.files[0].modifiedTime);
+      document.getElementById('last-update').textContent = mod.toLocaleDateString('es-AR', {day:'2-digit',month:'2-digit',year:'numeric'});
+      document.getElementById('last-saved-text').textContent = `Última actualización en Drive: ${mod.toLocaleString('es-AR')}`;
+      showStatus('Datos cargados ✓', 'success');
+    } else {
+      showStatus('Sin datos previos — completá el formulario', 'loading');
+    }
+    calcTotals();
+  } catch(e) {
+    showStatus('Error al cargar datos de Drive', 'error');
+    calcTotals();
+  }
+}
+
+async function saveToDriver() { await saveToD(); }
+
+async function saveToD() {
+  showStatus('Guardando…', 'loading');
+  const payload = collectData();
+  const body = JSON.stringify(payload, null, 2);
+  const blob = new Blob([body], { type: 'application/json' });
+
+  try {
+    if (fileId) {
+      await fetch(`https://www.googleapis.com/upload/drive/v3/files/${fileId}?uploadType=media`, {
+        method: 'PATCH',
+        headers: { Authorization: `Bearer ${accessToken}`, 'Content-Type': 'application/json' },
+        body: blob
+      });
+    } else {
+      const meta = { name: FILENAME, parents: [FOLDER_ID] };
+      const form = new FormData();
+      form.append('metadata', new Blob([JSON.stringify(meta)], { type: 'application/json' }));
+      form.append('file', blob);
+      const r = await fetch('https://www.googleapis.com/upload/drive/v3/files?uploadType=multipart&fields=id', {
+        method: 'POST',
+        headers: { Authorization: `Bearer ${accessToken}` },
+        body: form
+      });
+      const created = await r.json();
+      fileId = created.id;
+    }
+    isDirty = false;
+    document.getElementById('save-bar').classList.remove('visible');
+    const now = new Date();
+    document.getElementById('last-update').textContent = now.toLocaleDateString('es-AR', {day:'2-digit',month:'2-digit',year:'numeric'});
+    document.getElementById('last-saved-text').textContent = `Última actualización en Drive: ${now.toLocaleString('es-AR')}`;
+    showStatus('✓ Guardado en Drive', 'success');
+  } catch(e) {
+    showStatus('Error al guardar. Intentá de nuevo.', 'error');
+  }
+}
+
+async function saveToD2() { await saveToD(); }
+
+// Alias público
+async function saveToD3() { await saveToD(); }
+
+window.saveToD = saveToD;
+
+// Attach to button
+window.saveToD3 = saveToD;
+window.saveToDriver = saveToD;
+
+// Fix: attach to onclick in save-bar
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelector('.btn-save').onclick = saveToD;
+});
+
+// ─── FORM ─────────────────────────────────────────────────────────────────────
+function collectData() {
+  return {
+    colaboradora: 'Daniela',
+    rol: 'Diseño Gráfico',
+    timestamp: new Date().toISOString(),
+    packs: {
+      x4:  +document.getElementById('pack_x4').value,
+      x8:  +document.getElementById('pack_x8').value,
+      x12: +document.getElementById('pack_x12').value,
+      x16: +document.getElementById('pack_x16').value,
+      x20: +document.getElementById('pack_x20').value,
+    },
+    cuentas: {
+      seklou: { tarifa: +document.getElementById('cuenta_seklou').value, pack: document.getElementById('pack_seklou_tipo').value },
+      donna:  { tarifa: +document.getElementById('cuenta_donna').value,  pack: document.getElementById('pack_donna_tipo').value  },
+      tecno:  { tarifa: +document.getElementById('cuenta_tecno').value,  pack: document.getElementById('pack_tecno_tipo').value  },
+    },
+    notas: document.getElementById('notas').value,
+  };
+}
+
+function populateForm(d) {
+  if (!d) return;
+  if (d.packs) {
+    if (d.packs.x4  !== undefined) document.getElementById('pack_x4').value  = d.packs.x4;
+    if (d.packs.x8  !== undefined) document.getElementById('pack_x8').value  = d.packs.x8;
+    if (d.packs.x12 !== undefined) document.getElementById('pack_x12').value = d.packs.x12;
+    if (d.packs.x16 !== undefined) document.getElementById('pack_x16').value = d.packs.x16;
+    if (d.packs.x20 !== undefined) document.getElementById('pack_x20').value = d.packs.x20;
+  }
+  if (d.cuentas) {
+    if (d.cuentas.seklou) { document.getElementById('cuenta_seklou').value = d.cuentas.seklou.tarifa; document.getElementById('pack_seklou_tipo').value = d.cuentas.seklou.pack; }
+    if (d.cuentas.donna)  { document.getElementById('cuenta_donna').value  = d.cuentas.donna.tarifa;  document.getElementById('pack_donna_tipo').value  = d.cuentas.donna.pack;  }
+    if (d.cuentas.tecno)  { document.getElementById('cuenta_tecno').value  = d.cuentas.tecno.tarifa;  document.getElementById('pack_tecno_tipo').value  = d.cuentas.tecno.pack;  }
+  }
+  if (d.notas) document.getElementById('notas').value = d.notas;
+}
+
+// ─── TOTALS ───────────────────────────────────────────────────────────────────
+function calcTotals() {
+  const s = +document.getElementById('cuenta_seklou').value || 0;
+  const d = +document.getElementById('cuenta_donna').value  || 0;
+  const t = +document.getElementById('cuenta_tecno').value  || 0;
+  const total = s + d + t;
+  document.getElementById('total-actuales').textContent = '$ ' + total.toLocaleString('es-AR');
+
+  // Pack promedio de cuentas
+  const packs = [
+    document.getElementById('pack_seklou_tipo').value,
+    document.getElementById('pack_donna_tipo').value,
+    document.getElementById('pack_tecno_tipo').value
+  ];
+  const labels = { real:'Tarifa real', pack_x4:'x4', pack_x8:'x8', pack_x12:'x12', pack_x16:'x16', pack_x20:'x20' };
+  const counts = {};
+  packs.forEach(p => { counts[p] = (counts[p]||0)+1; });
+  const dominant = Object.entries(counts).sort((a,b)=>b[1]-a[1])[0][0];
+  document.getElementById('pack-promedio').textContent = labels[dominant] || '—';
+}
+
+// ─── DIRTY ────────────────────────────────────────────────────────────────────
+function markDirty() {
+  if (!isDirty) {
+    isDirty = true;
+    document.getElementById('save-bar').classList.add('visible');
+  }
+}
+
+// ─── STATUS ───────────────────────────────────────────────────────────────────
+let statusTimer;
+function showStatus(msg, type) {
+  const el = document.getElementById('status-msg');
+  el.textContent = msg;
+  el.className = `visible ${type}`;
+  clearTimeout(statusTimer);
+  if (type !== 'loading') {
+    statusTimer = setTimeout(() => { el.classList.remove('visible'); }, 3000);
+  }
+}
+
+// Init
+calcTotals();
+</script>
+</body>
+</html>
