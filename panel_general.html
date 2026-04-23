@@ -1,0 +1,1008 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contentive Studio — Panel Director</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+  :root {
+    --bg: #0e0e0e;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --orange: #F5A623;
+    --lime: #B8E04A;
+    --text: #f0ede8;
+    --muted: #6b6b6b;
+    --muted2: #3a3a3a;
+    --red: #ff4444;
+    --green: #4ade80;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 0 0 80px 0;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .header-left { display: flex; align-items: center; gap: 14px; }
+
+  .logo-dot {
+    width: 10px; height: 10px;
+    background: var(--orange);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .header-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .header-subtitle { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; margin-top: 2px; }
+
+  .header-right { display: flex; align-items: center; gap: 16px; }
+
+  .user-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 12px 5px 6px;
+    font-size: 12px;
+    color: var(--text);
+  }
+
+  .user-avatar {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: var(--border);
+  }
+
+  .btn-logout {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    padding: 6px 12px;
+    cursor: pointer;
+    transition: border-color .2s, color .2s;
+  }
+  .btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+  /* ── FX BANNER ── */
+  .fx-banner {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 8px 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .fx-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted2); }
+  .fx-dot.live { background: var(--green); }
+  .fx-val { color: var(--text); font-weight: 500; }
+  .fx-error { color: var(--red); }
+
+  /* ── AUTH SCREEN ── */
+  #auth-screen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 80vh;
+    gap: 32px;
+    padding: 40px;
+  }
+
+  .auth-logo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .auth-dot-row { display: flex; gap: 6px; }
+  .auth-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .auth-dot.orange { background: var(--orange); }
+  .auth-dot.lime { background: var(--lime); }
+  .auth-dot.muted { background: var(--muted2); }
+
+  .auth-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  .auth-subtitle {
+    font-size: 13px;
+    color: var(--muted);
+    text-align: center;
+    max-width: 320px;
+    line-height: 1.6;
+  }
+
+  .badge-director {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 4px 14px;
+    font-size: 11px;
+    font-family: 'Syne', sans-serif;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--orange);
+  }
+
+  .btn-google {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    padding: 14px 28px;
+    cursor: pointer;
+    transition: border-color .2s, background .2s;
+  }
+  .btn-google:hover { background: var(--surface2); border-color: var(--orange); }
+  .btn-google svg { flex-shrink: 0; }
+
+  /* ── APP ── */
+  #app { display: none; }
+
+  /* ── STATS ROW ── */
+  .stats-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 12px;
+    padding: 24px 32px 0;
+  }
+
+  .stat-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 16px 20px;
+  }
+
+  .stat-label {
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 8px;
+  }
+
+  .stat-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .stat-value.orange { color: var(--orange); }
+  .stat-value.lime { color: var(--lime); }
+
+  .stat-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* ── TABS ── */
+  .tabs-wrap {
+    padding: 24px 32px 0;
+    display: flex;
+    gap: 8px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 0;
+  }
+
+  .tab-btn {
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    color: var(--muted);
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 10px 16px 12px;
+    cursor: pointer;
+    transition: color .2s, border-color .2s;
+    position: relative;
+    top: 1px;
+  }
+
+  .tab-btn.active { color: var(--text); border-bottom-color: var(--orange); }
+  .tab-btn:hover:not(.active) { color: var(--text); }
+
+  .tab-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--surface2);
+    border-radius: 10px;
+    font-size: 10px;
+    padding: 1px 7px;
+    margin-left: 6px;
+    color: var(--muted);
+  }
+
+  /* ── CONTENT ── */
+  .tab-content { display: none; padding: 24px 32px; }
+  .tab-content.active { display: block; }
+
+  /* ── SECTION BLOCK ── */
+  .section-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    margin-bottom: 12px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    cursor: pointer;
+    user-select: none;
+    transition: background .15s;
+  }
+  .section-header:hover { background: var(--surface2); }
+
+  .section-header-left { display: flex; align-items: center; gap: 10px; }
+
+  .section-indicator {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--muted2);
+    flex-shrink: 0;
+  }
+  .section-indicator.complete { background: var(--lime); }
+  .section-indicator.partial { background: var(--orange); }
+
+  .section-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+  }
+
+  .section-meta { display: flex; align-items: center; gap: 10px; }
+
+  .section-count {
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .chevron {
+    font-size: 10px;
+    color: var(--muted);
+    transition: transform .2s;
+  }
+  .section-header.open .chevron { transform: rotate(0deg); }
+  .section-header:not(.open) .chevron { transform: rotate(180deg); }
+
+  .section-body { display: none; border-top: 1px solid var(--border); }
+  .section-body.open { display: block; }
+
+  /* ── SERVICE ROW ── */
+  .service-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    gap: 12px;
+  }
+  .service-row:last-child { border-bottom: none; }
+
+  .service-name-col {
+    font-size: 13px;
+    color: var(--text);
+    flex: 1;
+    line-height: 1.4;
+  }
+
+  .service-time {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 2px;
+  }
+
+  .price-chips { display: flex; gap: 6px; align-items: center; flex-shrink: 0; }
+
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    border-radius: 6px;
+    padding: 4px 10px;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  .chip-pending {
+    background: var(--surface2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+
+  .chip-usd {
+    background: rgba(245, 166, 35, 0.12);
+    color: var(--orange);
+    border: 1px solid rgba(245, 166, 35, 0.25);
+  }
+
+  .chip-ars {
+    background: rgba(184, 224, 74, 0.1);
+    color: var(--lime);
+    border: 1px solid rgba(184, 224, 74, 0.2);
+  }
+
+  .chip-ars-only {
+    background: rgba(184, 224, 74, 0.1);
+    color: var(--lime);
+    border: 1px solid rgba(184, 224, 74, 0.2);
+  }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 20px 32px 0;
+  }
+
+  .progress-label {
+    font-size: 11px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    width: 90px;
+    flex-shrink: 0;
+  }
+
+  .progress-bar {
+    flex: 1;
+    height: 4px;
+    background: var(--surface2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: var(--orange);
+    border-radius: 2px;
+    transition: width .4s ease;
+    width: 0%;
+  }
+
+  .progress-fill.lime { background: var(--lime); }
+
+  .progress-pct {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--text);
+    width: 36px;
+    text-align: right;
+    flex-shrink: 0;
+  }
+
+  /* ── REFRESH BTN ── */
+  .btn-refresh {
+    background: none;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--muted);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: border-color .2s, color .2s;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .btn-refresh:hover { border-color: var(--orange); color: var(--orange); }
+  .btn-refresh.spinning svg { animation: spin .8s linear infinite; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  /* ── EMPTY STATE ── */
+  .empty-state {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--muted);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+
+  .empty-icon { font-size: 28px; margin-bottom: 12px; }
+
+  /* ── TOAST ── */
+  .toast {
+    position: fixed;
+    bottom: 28px;
+    left: 50%;
+    transform: translateX(-50%) translateY(80px);
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    z-index: 999;
+    opacity: 0;
+    transition: transform .25s, opacity .25s;
+    white-space: nowrap;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  .toast-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); }
+
+  /* ── LOADING ── */
+  .loading-overlay {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 60px;
+    color: var(--muted);
+    font-size: 13px;
+  }
+  .loading-overlay.active { display: flex; }
+
+  .spinner {
+    width: 24px; height: 24px;
+    border: 2px solid var(--border);
+    border-top-color: var(--orange);
+    border-radius: 50%;
+    animation: spin .7s linear infinite;
+  }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .stats-row { grid-template-columns: 1fr 1fr; padding: 16px 16px 0; }
+    .tabs-wrap { padding: 16px 16px 0; }
+    .tab-content { padding: 16px; }
+    .progress-wrap { padding: 16px 16px 0; }
+    .header { padding: 16px; }
+    .fx-banner { padding: 8px 16px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <div class="auth-logo">
+    <div class="auth-dot-row">
+      <div class="auth-dot orange"></div>
+      <div class="auth-dot lime"></div>
+      <div class="auth-dot muted"></div>
+    </div>
+  </div>
+  <div>
+    <div class="auth-title" style="font-family:'Syne',sans-serif">Contentive Studio</div>
+    <div class="auth-subtitle" style="margin-top:8px">Panel de Costos — Director</div>
+  </div>
+  <div class="badge-director">Acceso Director</div>
+  <div class="auth-subtitle">
+    Iniciá sesión con tu cuenta de Google para ver los costos cargados por Daniela y Victoria.
+  </div>
+  <button class="btn-google" onclick="handleLogin()">
+    <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z"/><path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 0 0 7.18l2.67-2.07z"/><path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 4.77 0 0 1 4.48-3.31z"/></svg>
+    Continuar con Google
+  </button>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <div class="header">
+    <div class="header-left">
+      <div class="logo-dot"></div>
+      <div>
+        <div class="header-title">Contentive Studio</div>
+        <div class="header-subtitle">Panel de Costos · Solo lectura</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="btn-refresh" id="refreshBtn" onclick="reloadAll()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
+        Actualizar
+      </button>
+      <div class="user-chip">
+        <img class="user-avatar" id="userAvatar" src="" alt="">
+        <span id="userName">Pedro</span>
+      </div>
+      <button class="btn-logout" onclick="handleLogout()">Salir</button>
+    </div>
+  </div>
+
+  <div class="fx-banner">
+    <div class="fx-dot" id="fxDot"></div>
+    <span>Dólar oficial:</span>
+    <span class="fx-val" id="fxRateDisplay">Cargando...</span>
+    <span id="fxTime"></span>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Daniela — completado</div>
+      <div class="stat-value orange" id="statDanielaPct">—</div>
+      <div class="stat-sub" id="statDanielaCount">servicios cargados</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Victoria — completado</div>
+      <div class="stat-value lime" id="statVictoriaPct">—</div>
+      <div class="stat-sub" id="statVictoriaCount">servicios cargados</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Última actualización</div>
+      <div class="stat-value" id="statLastUpdate" style="font-size:13px;margin-top:2px">—</div>
+      <div class="stat-sub" id="statLastUpdateSub">—</div>
+    </div>
+  </div>
+
+  <!-- PROGRESS BARS -->
+  <div class="progress-wrap">
+    <div class="progress-label">Daniela</div>
+    <div class="progress-bar"><div class="progress-fill" id="fillDaniela"></div></div>
+    <div class="progress-pct" id="pctDaniela">0%</div>
+  </div>
+  <div class="progress-wrap" style="padding-bottom:8px">
+    <div class="progress-label">Victoria</div>
+    <div class="progress-bar"><div class="progress-fill lime" id="fillVictoria"></div></div>
+    <div class="progress-pct" id="pctVictoria">0%</div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-wrap">
+    <button class="tab-btn active" onclick="switchTab('daniela', this)">
+      Daniela · Diseño <span class="tab-badge" id="badgeDaniela">—</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('victoria', this)">
+      Victoria · Estrategia <span class="tab-badge" id="badgeVictoria">—</span>
+    </button>
+  </div>
+
+  <!-- TAB: DANIELA -->
+  <div class="tab-content active" id="tab-daniela">
+    <div class="loading-overlay active" id="loadDaniela">
+      <div class="spinner"></div>
+      <span>Cargando datos de Daniela...</span>
+    </div>
+    <div id="contentDaniela"></div>
+  </div>
+
+  <!-- TAB: VICTORIA -->
+  <div class="tab-content" id="tab-victoria">
+    <div class="loading-overlay active" id="loadVictoria">
+      <div class="spinner"></div>
+      <span>Cargando datos de Victoria...</span>
+    </div>
+    <div id="contentVictoria"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">
+  <div class="toast-dot" id="toastDot"></div>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+const CLIENT_ID = '1089154369329-ofb9b8a7au5ds7c0kthg7nmul2n0srj3.apps.googleusercontent.com';
+const DRIVE_FOLDER_ID = '1g0Rnv7297gNZ2h2HK86eh7vTHZRaboP1';
+const SCOPES = 'https://www.googleapis.com/auth/drive.readonly';
+
+// ── SERVICES CATALOG ─────────────────────────────────────────────────────────
+// Daniela - estructura de secciones (nombres, ids)
+const DANIELA_SECTIONS = [
+  { id: 'branding', name: 'Branding e Identidad Visual', services: ['id_simple','id_premium','id_ultra','logo_simple','logo_premium','logo_ultra','moodboard','naming'] },
+  { id: 'social', name: 'Contenido para Redes Sociales', services: ['pack4','pack8','pack12','pack16','pack20','historia_simple','historia_animada','pack_historias4','destacadas4','tapas_reels4','tapas_reels8','carrusel1','carrusel4','carrusel8'] },
+  { id: 'audiovisual', name: 'Diseño para Audiovisual', services: ['thumbnail1','thumbnail5','thumbnail10','opening','tapa_podcast','intro_reel'] },
+  { id: 'impreso', name: 'Material Impreso y Publicitario', services: ['tarjeta','tarjeta_premium','flyer_1_1f','flyer_3_1f','flyer_5_1f','flyer_1_2f','flyer_3_2f','flyer_5_2f','brochure','banner_1','banner_3','banner_5','news_1','news_2','news_4','news_8'] },
+  { id: 'web', name: 'Diseño Web y Digital', services: ['landing_1','landing_multi','ui_ecommerce','menu_digital'] }
+];
+
+// Victoria - estructura de secciones
+const VICTORIA_SECTIONS = [
+  { id: 'estrategia', name: 'Estrategia de Contenido', services: ['plan_contenidos','community_pack','consultoria','auditoria','calendario_campanas','gestion_integral'] },
+  { id: 'audiovisual', name: 'Guiones y Contenido Audiovisual', services: ['reels_con_ideas'] },
+  { id: 'branding', name: 'Comunicación de Marca', services: ['branding_book_etapa10'] }
+];
+
+// Nombres legibles por id
+const SERVICE_NAMES = {
+  // Daniela
+  id_simple:'Identidad Corporativa Simple', id_premium:'Identidad Corporativa Premium', id_ultra:'Identidad Corporativa Ultra',
+  logo_simple:'Rediseño de Logotipo Simple', logo_premium:'Rediseño de Logotipo Premium', logo_ultra:'Rediseño de Logotipo Ultra',
+  moodboard:'Moodboard / Brief Visual', naming:'Naming',
+  pack4:'Pack Redes x4', pack8:'Pack Redes x8', pack12:'Pack Redes x12', pack16:'Pack Redes x16', pack20:'Pack Redes x20',
+  historia_simple:'Historia Simple (1 unidad)', historia_animada:'Historia Animada (1 unidad)',
+  pack_historias4:'Pack Historias x4', destacadas4:'Destacadas x4', tapas_reels4:'Tapas Reels x4', tapas_reels8:'Tapas Reels x8',
+  carrusel1:'Carrusel (1 unidad)', carrusel4:'Pack Carruseles x4', carrusel8:'Pack Carruseles x8',
+  thumbnail1:'Thumbnail (1 unidad)', thumbnail5:'Pack Thumbnails x5', thumbnail10:'Pack Thumbnails x10',
+  opening:'Opening / Intro animada', tapa_podcast:'Tapa Podcast', intro_reel:'Intro Reel',
+  tarjeta:'Tarjeta Personal Simple', tarjeta_premium:'Tarjeta Personal Premium',
+  flyer_1_1f:'Flyer 1u (1 faz)', flyer_3_1f:'Flyer x3 (1 faz)', flyer_5_1f:'Flyer x5 (1 faz)',
+  flyer_1_2f:'Flyer 1u (doble faz)', flyer_3_2f:'Flyer x3 (doble faz)', flyer_5_2f:'Flyer x5 (doble faz)',
+  brochure:'Brochure / Tríptico', banner_1:'Banner Web 1u', banner_3:'Banner Web x3', banner_5:'Banner Web x5',
+  news_1:'Newsletter 1 plantilla', news_2:'Newsletter x2 plantillas', news_4:'Newsletter x4 plantillas', news_8:'Newsletter x8 plantillas',
+  landing_1:'Landing Page (1 pantalla)', landing_multi:'Landing Page (multipantalla)', ui_ecommerce:'UI E-commerce', menu_digital:'Menú Digital',
+  // Victoria
+  plan_contenidos:'Plan de Contenidos Mensual', community_pack:'Pack Community Management',
+  consultoria:'Consultoría de Contenido', auditoria:'Auditoría de Redes',
+  calendario_campanas:'Calendario de Campañas', gestion_integral:'Gestión Integral de Contenido',
+  reels_con_ideas:'Reels con Ideas + Guion', branding_book_etapa10:'Branding Book — Etapa 10 (Comunicación)'
+};
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+let accessToken = null;
+let userInfo = null;
+let fxRate = null;
+let tokenClient;
+let danielaData = null;
+let victoriaData = null;
+
+// ── AUTH ──────────────────────────────────────────────────────────────────
+window.onload = () => {
+  google.accounts.id.initialize({ client_id: CLIENT_ID, callback: onGoogleSignIn });
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: onTokenReceived,
+  });
+};
+
+function handleLogin() {
+  tokenClient.requestAccessToken({ prompt: 'select_account' });
+}
+
+async function onGoogleSignIn(response) {
+  const payload = parseJwt(response.credential);
+  userInfo = payload;
+  tokenClient.requestAccessToken({ prompt: '' });
+}
+
+async function onTokenReceived(tokenResponse) {
+  if (tokenResponse.error) { showToast('Error de autenticación', 'error'); return; }
+  accessToken = tokenResponse.access_token;
+  if (!userInfo) {
+    try {
+      const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: `Bearer ${accessToken}` } });
+      userInfo = await r.json();
+    } catch(e) {}
+  }
+  showApp();
+}
+
+function parseJwt(token) {
+  try { return JSON.parse(atob(token.split('.')[1])); } catch(e) { return {}; }
+}
+
+function handleLogout() {
+  google.accounts.id.disableAutoSelect();
+  accessToken = null; userInfo = null; danielaData = null; victoriaData = null;
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+// ── APP INIT ──────────────────────────────────────────────────────────────
+async function showApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  if (userInfo) {
+    document.getElementById('userAvatar').src = userInfo.picture || '';
+    document.getElementById('userName').textContent = userInfo.given_name || userInfo.name || 'Pedro';
+  }
+  await fetchFxRate();
+  await loadBothFiles();
+}
+
+async function reloadAll() {
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.add('spinning');
+  await fetchFxRate();
+  await loadBothFiles();
+  btn.classList.remove('spinning');
+  showToast('Datos actualizados', 'ok');
+}
+
+// ── FX ──────────────────────────────────────────────────────────────────
+async function fetchFxRate() {
+  try {
+    const res = await fetch('https://dolarapi.com/v1/dolares/oficial');
+    const data = await res.json();
+    fxRate = data.venta;
+    document.getElementById('fxRateDisplay').textContent = `$ ${fxRate.toLocaleString('es-AR', {minimumFractionDigits:2})}`;
+    document.getElementById('fxTime').textContent = `· Actualizado ${data.fechaActualizacion ? new Date(data.fechaActualizacion).toLocaleTimeString('es-AR', {hour:'2-digit',minute:'2-digit'}) : 'hoy'}`;
+    document.getElementById('fxDot').classList.add('live');
+  } catch(e) {
+    document.getElementById('fxRateDisplay').innerHTML = '<span class="fx-error">No disponible</span>';
+    fxRate = null;
+  }
+}
+
+// ── DRIVE ──────────────────────────────────────────────────────────────────
+async function readFileFromDrive(fileName) {
+  const search = await fetch(
+    `https://www.googleapis.com/drive/v3/files?q=name='${fileName}' and '${DRIVE_FOLDER_ID}' in parents and trashed=false&fields=files(id,name,modifiedTime)`,
+    { headers: { Authorization: `Bearer ${accessToken}` } }
+  );
+  const data = await search.json();
+  if (!data.files || data.files.length === 0) return null;
+  const file = data.files[0];
+  const content = await fetch(
+    `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`,
+    { headers: { Authorization: `Bearer ${accessToken}` } }
+  );
+  const json = await content.json();
+  json._modifiedTime = file.modifiedTime;
+  return json;
+}
+
+async function loadBothFiles() {
+  // Reset loaders
+  document.getElementById('loadDaniela').classList.add('active');
+  document.getElementById('loadVictoria').classList.add('active');
+  document.getElementById('contentDaniela').innerHTML = '';
+  document.getElementById('contentVictoria').innerHTML = '';
+
+  const [dData, vData] = await Promise.allSettled([
+    readFileFromDrive('costos_daniela_v5.json'),
+    readFileFromDrive('costos_victoria_v1.json')
+  ]);
+
+  danielaData = dData.status === 'fulfilled' ? dData.value : null;
+  victoriaData = vData.status === 'fulfilled' ? vData.value : null;
+
+  document.getElementById('loadDaniela').classList.remove('active');
+  document.getElementById('loadVictoria').classList.remove('active');
+
+  renderDaniela();
+  renderVictoria();
+  updateStats();
+}
+
+// ── RENDER DANIELA ──────────────────────────────────────────────────────────
+function renderDaniela() {
+  const container = document.getElementById('contentDaniela');
+  if (!danielaData) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div>No se encontró el archivo de Daniela en Drive.<br>Verificá que ella haya cargado al menos un precio.</div>`;
+    return;
+  }
+  const prices = danielaData.prices || {};
+  const times = danielaData.times || {};
+  container.innerHTML = '';
+
+  DANIELA_SECTIONS.forEach(section => {
+    const filled = section.services.filter(id => prices[id] && prices[id] > 0);
+    const total = section.services.length;
+    const indClass = filled.length === 0 ? '' : filled.length === total ? 'complete' : 'partial';
+
+    const block = document.createElement('div');
+    block.className = 'section-block';
+    block.innerHTML = `
+      <div class="section-header open" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-indicator ${indClass}"></div>
+          <span class="section-name">${section.name}</span>
+        </div>
+        <div class="section-meta">
+          <span class="section-count">${filled.length} / ${total}</span>
+          <span class="chevron">▲</span>
+        </div>
+      </div>
+      <div class="section-body open" id="body-d-${section.id}"></div>
+    `;
+    container.appendChild(block);
+    const body = block.querySelector(`#body-d-${section.id}`);
+
+    section.services.forEach(id => {
+      const val = prices[id] || 0;
+      const time = times[id] || '';
+      const hasVal = val > 0;
+      const usd = hasVal ? `U$S ${val.toLocaleString('es-AR', {minimumFractionDigits:2})}` : null;
+      const usdIntl = hasVal ? `U$S ${(val*1.2).toLocaleString('es-AR', {minimumFractionDigits:2})} (+20%)` : null;
+      const ars = (hasVal && fxRate) ? `$ ${Math.round(val*fxRate).toLocaleString('es-AR')} ARS` : null;
+
+      const row = document.createElement('div');
+      row.className = 'service-row';
+      row.innerHTML = `
+        <div class="service-name-col">
+          ${SERVICE_NAMES[id] || id}
+          ${time ? `<div class="service-time">⏱ ${time}</div>` : ''}
+        </div>
+        <div class="price-chips">
+          ${!hasVal ? `<span class="chip chip-pending">Sin cargar</span>` : `
+            <span class="chip chip-usd">${usd}</span>
+            <span class="chip chip-usd" style="opacity:.7;font-size:11px">${usdIntl}</span>
+            ${ars ? `<span class="chip chip-ars">${ars}</span>` : ''}
+          `}
+        </div>
+      `;
+      body.appendChild(row);
+    });
+  });
+}
+
+// ── RENDER VICTORIA ──────────────────────────────────────────────────────────
+function renderVictoria() {
+  const container = document.getElementById('contentVictoria');
+  if (!victoriaData) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div>No se encontró el archivo de Victoria en Drive.<br>Verificá que ella haya cargado al menos un precio.</div>`;
+    return;
+  }
+  const prices = victoriaData.prices || {};
+  const times = victoriaData.times || {};
+  container.innerHTML = '';
+
+  VICTORIA_SECTIONS.forEach(section => {
+    const filled = section.services.filter(id => prices[id] && prices[id] > 0);
+    const total = section.services.length;
+    const indClass = filled.length === 0 ? '' : filled.length === total ? 'complete' : 'partial';
+
+    const block = document.createElement('div');
+    block.className = 'section-block';
+    block.innerHTML = `
+      <div class="section-header open" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-indicator ${indClass}"></div>
+          <span class="section-name">${section.name}</span>
+        </div>
+        <div class="section-meta">
+          <span class="section-count">${filled.length} / ${total}</span>
+          <span class="chevron">▲</span>
+        </div>
+      </div>
+      <div class="section-body open" id="body-v-${section.id}"></div>
+    `;
+    container.appendChild(block);
+    const body = block.querySelector(`#body-v-${section.id}`);
+
+    section.services.forEach(id => {
+      const val = prices[id] || 0;
+      const time = times[id] || '';
+      const hasVal = val > 0;
+      const arsDisplay = hasVal ? `$ ${Math.round(val).toLocaleString('es-AR')} ARS` : null;
+
+      const row = document.createElement('div');
+      row.className = 'service-row';
+      row.innerHTML = `
+        <div class="service-name-col">
+          ${SERVICE_NAMES[id] || id}
+          ${time ? `<div class="service-time">⏱ ${time}</div>` : ''}
+        </div>
+        <div class="price-chips">
+          ${!hasVal ? `<span class="chip chip-pending">Sin cargar</span>` : `
+            <span class="chip chip-ars-only">${arsDisplay}</span>
+          `}
+        </div>
+      `;
+      body.appendChild(row);
+    });
+  });
+}
+
+// ── STATS ──────────────────────────────────────────────────────────────────
+function updateStats() {
+  // Daniela
+  const dPrices = danielaData ? (danielaData.prices || {}) : {};
+  const dAll = DANIELA_SECTIONS.flatMap(s => s.services);
+  const dFilled = dAll.filter(id => dPrices[id] && dPrices[id] > 0).length;
+  const dPct = dAll.length ? Math.round(dFilled / dAll.length * 100) : 0;
+  document.getElementById('statDanielaPct').textContent = dPct + '%';
+  document.getElementById('statDanielaCount').textContent = `${dFilled} de ${dAll.length} servicios`;
+  document.getElementById('fillDaniela').style.width = dPct + '%';
+  document.getElementById('pctDaniela').textContent = dPct + '%';
+  document.getElementById('badgeDaniela').textContent = dFilled;
+
+  // Victoria
+  const vPrices = victoriaData ? (victoriaData.prices || {}) : {};
+  const vAll = VICTORIA_SECTIONS.flatMap(s => s.services);
+  const vFilled = vAll.filter(id => vPrices[id] && vPrices[id] > 0).length;
+  const vPct = vAll.length ? Math.round(vFilled / vAll.length * 100) : 0;
+  document.getElementById('statVictoriaPct').textContent = vPct + '%';
+  document.getElementById('statVictoriaCount').textContent = `${vFilled} de ${vAll.length} servicios`;
+  document.getElementById('fillVictoria').style.width = vPct + '%';
+  document.getElementById('pctVictoria').textContent = vPct + '%';
+  document.getElementById('badgeVictoria').textContent = vFilled;
+
+  // Última actualización
+  const dates = [];
+  if (danielaData?._modifiedTime) dates.push({ label: 'Daniela', d: new Date(danielaData._modifiedTime) });
+  if (victoriaData?._modifiedTime) dates.push({ label: 'Victoria', d: new Date(victoriaData._modifiedTime) });
+  if (dates.length) {
+    dates.sort((a,b) => b.d - a.d);
+    const latest = dates[0];
+    document.getElementById('statLastUpdate').textContent = latest.d.toLocaleDateString('es-AR', {day:'2-digit',month:'2-digit',year:'numeric'});
+    document.getElementById('statLastUpdateSub').textContent = `${latest.label} · ${latest.d.toLocaleTimeString('es-AR', {hour:'2-digit',minute:'2-digit'})}`;
+  }
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+// ── TOGGLE SECTION ──────────────────────────────────────────────────────────
+function toggleSection(header) {
+  header.classList.toggle('open');
+  const bodyId = header.nextElementSibling.id;
+  const body = document.getElementById(bodyId);
+  body.classList.toggle('open');
+}
+
+// ── TOAST ──────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  const dot = document.getElementById('toastDot');
+  document.getElementById('toastMsg').textContent = msg;
+  dot.style.background = type === 'ok' ? 'var(--lime)' : type === 'error' ? 'var(--red)' : 'var(--orange)';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+</body>
+</html>
