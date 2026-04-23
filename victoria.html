@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contentive Studio — Costos Victoria</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+  :root {
+    --bg: #0e0e0e;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --orange: #F5A623;
+    --lime: #B8E04A;
+    --text: #f0ede8;
+    --muted: #6b6b6b;
+    --muted2: #3a3a3a;
+    --red: #ff4444;
+    --green: #4ade80;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 0 0 80px 0;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo-dot {
+    width: 10px;
+    height: 10px;
+    background: var(--orange);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .header-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .header-subtitle {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  /* FX BANNER */
+  .fx-banner {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .fx-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--muted2);
+    flex-shrink: 0;
+  }
+
+  .fx-dot.live { background: var(--lime); animation: pulse 2s infinite; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .fx-rate {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--lime);
+  }
+
+  .fx-label { color: var(--muted); }
+  .fx-error { color: var(--red); }
+
+  /* SAVE STATUS */
+  .save-status {
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .save-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--muted2);
+  }
+  .save-dot.saved { background: var(--lime); }
+  .save-dot.saving { background: var(--orange); animation: pulse 1s infinite; }
+  .save-dot.error { background: var(--red); }
+
+  /* AUTH */
+  #auth-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 32px;
+    padding: 40px;
+  }
+
+  .auth-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+
+  .auth-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 32px;
+  }
+
+  .auth-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .auth-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 36px;
+    line-height: 1.5;
+  }
+
+  .google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 20px;
+    background: var(--text);
+    color: #1a1a1a;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .google-btn:hover { background: #e0ddd8; transform: translateY(-1px); }
+
+  .google-btn svg { width: 18px; height: 18px; }
+
+  /* MAIN APP */
+  #app { display: none; }
+
+  /* PROGRESS BAR */
+  .progress-global {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .progress-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 3px;
+    background: var(--muted2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--orange), var(--lime));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .progress-pct {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--orange);
+    min-width: 36px;
+    text-align: right;
+  }
+
+  /* CONTENT */
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* SECTION BLOCK */
+  .section-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .section-header.open {
+    border-bottom-color: var(--border);
+  }
+
+  .section-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-indicator {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--muted2);
+    flex-shrink: 0;
+    transition: background 0.3s;
+  }
+
+  .section-indicator.partial { background: var(--orange); }
+  .section-indicator.complete { background: var(--lime); }
+
+  .section-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .section-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-count {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .chevron {
+    color: var(--muted);
+    font-size: 12px;
+    transition: transform 0.25s;
+  }
+
+  .section-header.open .chevron { transform: rotate(180deg); }
+
+  .section-body {
+    display: none;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .section-body.open { display: flex; }
+
+  /* SERVICE CARD */
+  .service-card {
+    border-bottom: 1px solid var(--border);
+    padding: 20px;
+  }
+
+  .service-card:last-child { border-bottom: none; }
+
+  .service-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 14px;
+  }
+
+  .service-info { flex: 1; }
+
+  .service-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .service-badge {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 20px;
+    background: var(--muted2);
+    color: var(--muted);
+  }
+
+  .service-badge.parcial {
+    background: rgba(245, 166, 35, 0.15);
+    color: var(--orange);
+  }
+
+  .service-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    max-width: 500px;
+  }
+
+  /* PRICE BLOCK */
+  .price-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 220px;
+  }
+
+  .price-status {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: right;
+    margin-bottom: 2px;
+  }
+
+  .price-status.filled { color: var(--lime); }
+
+  .price-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .price-currency {
+    position: absolute;
+    left: 12px;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    pointer-events: none;
+  }
+
+  .price-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px 10px 28px;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+    text-align: right;
+  }
+
+  .price-input:focus { border-color: var(--orange); }
+  .price-input.has-value { border-color: var(--lime); color: var(--lime); }
+
+  .price-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-align: right;
+    letter-spacing: 0.04em;
+  }
+
+  /* FX DISPLAY ROW */
+  .fx-display-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .fx-chip {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    text-align: center;
+  }
+
+  .fx-chip-label {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+
+  .fx-chip-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+
+  .fx-chip-value.active { color: var(--text); }
+  .fx-chip.intl .fx-chip-value.active { color: var(--orange); }
+
+  /* DETAIL TOGGLE */
+  .detail-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--muted);
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    transition: color 0.2s;
+    margin-top: 8px;
+  }
+
+  .detail-toggle:hover { color: var(--orange); }
+
+  .detail-body {
+    display: none;
+    margin-top: 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .detail-body.open { display: block; }
+
+  .detail-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 10px;
+  }
+
+  .detail-text {
+    font-size: 12px;
+    color: #999;
+    line-height: 1.7;
+  }
+
+  .detail-text .task-title {
+    display: block;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #f0ede8;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    letter-spacing: 0.01em;
+  }
+
+  .detail-text .task-title:first-child {
+    margin-top: 0;
+  }
+
+  .detail-text .task-line {
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  /* DELIVERY TIME FIELD */
+  .delivery-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .delivery-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .delivery-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .delivery-input:focus { border-color: var(--orange); }
+  .delivery-input::placeholder { color: var(--muted2); }
+  .delivery-input.has-value { border-color: rgba(184, 224, 74, 0.3); color: var(--lime); }
+
+  /* USER CHIP */
+  .user-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 12px 6px 6px;
+  }
+
+  .user-avatar {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .user-name {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .logout-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: color 0.2s;
+  }
+
+  .logout-btn:hover { color: var(--red); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 12px;
+    color: var(--text);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.25s;
+    pointer-events: none;
+    z-index: 999;
+    max-width: 300px;
+  }
+
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">Contentive Studio</div>
+    <div class="auth-title">Hola, Victoria 👋</div>
+    <div class="auth-sub">Iniciá sesión con tu cuenta de Google para acceder al módulo de carga de costos.</div>
+    <button class="google-btn" onclick="handleLogin()">
+      <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/>
+        <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/>
+        <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05"/>
+        <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
+      </svg>
+      Continuar con Google
+    </button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <div class="header">
+    <div class="header-left">
+      <div class="logo-dot"></div>
+      <div>
+        <div class="header-title">Contentive Studio — Costos</div>
+        <div class="header-subtitle">Victoria · Estratega de Contenido</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="save-status">
+        <div class="save-dot" id="saveDot"></div>
+        <span id="saveText">Sin cambios</span>
+      </div>
+      <div class="user-chip">
+        <img id="userAvatar" class="user-avatar" src="" alt="">
+        <span class="user-name" id="userName"></span>
+      </div>
+      <button class="logout-btn" onclick="handleLogout()">Salir</button>
+    </div>
+  </div>
+
+  <div class="fx-banner" id="fxBanner">
+    <div class="fx-dot" id="fxDot"></div>
+    <span class="fx-label">USD Oficial Venta:</span>
+    <span class="fx-rate" id="fxRate">—</span>
+    <span class="fx-label" id="fxTime"></span>
+  </div>
+
+  <div class="progress-global">
+    <span class="progress-label">Completado</span>
+    <div class="progress-track">
+      <div class="progress-fill" id="globalFill"></div>
+    </div>
+    <span class="progress-pct" id="globalPct">0%</span>
+  </div>
+
+  <div class="content" id="servicesContent"></div>
+</div>
+
+<div class="toast" id="toast">
+  <div class="toast-dot" id="toastDot"></div>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+const CLIENT_ID = '1089154369329-ofb9b8a7au5ds7c0kthg7nmul2n0srj3.apps.googleusercontent.com';
+const DRIVE_FOLDER_ID = '1g0Rnv7297gNZ2h2HK86eh7vTHZRaboP1';
+const FILE_NAME = 'costos_victoria_v1.json';
+const SCOPES = 'https://www.googleapis.com/auth/drive.file';
+
+// ─── SERVICES DATA ────────────────────────────────────────────────────────────
+const SECTIONS = [
+  {
+    id: 'estrategia',
+    name: 'Gestión y Estrategia de Redes Sociales',
+    services: [
+      {
+        id: 'plan_contenidos',
+        name: 'Plan de Contenidos Estratégico',
+        badge: null,
+        desc: 'Diagnóstico de comunicación, definición estratégica y planificación del primer mes.',
+        tasks: `Lo que hacés vos en este servicio:
+
+Recibís el brief del cliente y conducís el diagnóstico de comunicación: analizás el estado actual de la marca en redes, identificás brechas, oportunidades y problemas de coherencia. Si la marca no tiene presencia previa, el diagnóstico lo hacés sobre el negocio, el mercado y la competencia.
+
+Con esa base definís los pilares estratégicos:
+• Objetivos de comunicación claros y medibles
+• Tono de voz y personalidad de marca
+• Arquetipos de audiencia (quién es, qué consume, qué lo mueve)
+• Ejes temáticos: las categorías de contenido que la marca va a trabajar de forma sistemática
+
+Construís la estructura de contenidos: tipos de publicación por eje, formatos recomendados por objetivo, frecuencia por plataforma y dinámicas de interacción.
+
+Desarrollás la guía de redacción: cómo escribe la marca, qué evita, qué palabras la definen. Nada visual — eso es territorio de Daniela.
+
+Cerrás con la planificación del mes 1: calendario con ideas concretas para cada publicación — tema, formato, eje temático y recomendaciones de copy y hashtags.
+
+Tus entregables: documento estratégico en PDF, calendario del mes 1 en formato editable, guía de redacción y tono de voz.`
+      },
+      {
+        id: 'community_pack',
+        name: 'Community Pack (diseño + redacción)',
+        badge: null,
+        desc: 'Planificación mensual, conceptos narrativos para Daniela y copys completos de las 12 publicaciones.',
+        tasks: `Lo que hacés vos en este servicio:
+
+Al inicio de cada mes conducís el briefing con el cliente: definís temas, campañas, productos o mensajes clave del período.
+
+Definís los 12 temas o ideas de publicación, organizados en el calendario con eje temático, formato y secuencia. Te asegurás de que haya diversidad de formatos y mensajes para que el feed no se vuelva monótono.
+
+Para cada publicación, conceptualizás el mensaje: qué tiene que decir la pieza, desde qué ángulo, con qué jerarquía de información. Eso es el brief narrativo que le pasás a Daniela. No definís nada visual — Daniela toma las decisiones de diseño.
+
+Redactás los copys completos de las 12 publicaciones: texto principal, llamado a la acción y hashtags estratégicos en el tono de voz de la marca.
+
+Elaborás la guía de publicación: orden recomendado, mejores horarios, recomendaciones de interacción post-publicación y notas estratégicas por pieza.
+
+Tus entregables: planificación mensual, brief narrativo para Daniela, documento de copys y hashtags, guía de publicación.`
+      },
+      {
+        id: 'consultoria',
+        name: 'Consultoría de Estrategia Digital (1 sesión)',
+        badge: null,
+        desc: 'Soporte estratégico antes y después de la sesión que conduce Pedro.',
+        tasks: `Lo que hacés vos en este servicio:
+
+La sesión la conduce Pedro. Tu rol es de soporte estratégico antes y después.
+
+Antes de la sesión (junto a Pedro): analizás el estado digital actual de la marca — redes, comunicación, métricas disponibles y coherencia con los objetivos del negocio. Pedro complementa con su conocimiento del cliente y criterio de negocio. Ese análisis conjunto es la materia prima que Pedro usa durante la reunión.
+
+Después de la sesión: elaborás los entregables post-reunión bajo supervisión de Pedro: resumen ejecutivo en PDF, plan de acción de 30 días con tareas concretas ordenadas por impacto y esfuerzo, y checklist de implementación inmediata.
+
+Tus entregables: contribución al informe de diagnóstico previo, resumen ejecutivo post-sesión, plan de acción de 30 días.`
+      },
+      {
+        id: 'auditoria',
+        name: 'Auditoría de Marca Digital',
+        badge: null,
+        desc: 'Elaboración del informe y tabla de prioridades a partir del insumo que te pasa Pedro.',
+        tasks: `Lo que hacés vos en este servicio:
+
+El flujo es así: Pedro conduce la reunión con el cliente (Google Meet, grabada). Gemini genera la minuta automáticamente. Pedro procesa esa minuta y te pasa el detalle accionable.
+
+Con ese insumo, elaborás el informe de auditoría completo. Para cada área documentás:
+• Estado actual (qué hay)
+• Diagnóstico (qué está bien, qué no y por qué)
+• Recomendación concreta (qué hacer al respecto)
+
+Producís la tabla de prioridades de acción: quick wins vs. cambios estructurales.
+
+El informe no es una lista de críticas — es una hoja de ruta accionable. Pedro diseña la presentación del plan de acción y expone la situación al cliente.
+
+Tus entregables: informe de auditoría completo en PDF, tabla de prioridades de acción.`
+      },
+      {
+        id: 'calendario_campanas',
+        name: 'Calendario de Campañas Promocionales',
+        badge: null,
+        desc: 'Relevamiento del rubro, construcción del calendario anual e ideas de contenido por fecha.',
+        tasks: `Lo que hacés vos en este servicio:
+
+Relevás el rubro y la marca para identificar las fechas con mayor potencial de impacto para ese negocio específico. Descartás las efemérides genéricas que no aplican y seleccionás solo las que tienen sentido para esa audiencia y tipo de marca.
+
+Construís el calendario anual completo:
+• Fechas comerciales clave (Hot Sale, Cyber Monday, Navidad, Día de la Madre, etc.)
+• Efemérides relevantes del rubro
+• Oportunidades estacionales
+• Fechas internas de la marca (aniversario, lanzamientos, hitos)
+
+Para cada fecha relevante desarrollás la idea de contenido: qué comunicar y desde qué ángulo, formato recomendado, tono sugerido. Sin referencias visuales — eso es de Daniela.
+
+Producís la guía de anticipación: con cuántos días de antelación preparar cada campaña.
+
+Tus entregables: calendario anual en PDF y formato editable, documento de ideas por fecha, guía de anticipación.`
+      },
+      {
+        id: 'gestion_integral',
+        name: 'Gestión Integral de Redes Sociales',
+        badge: null,
+        desc: 'Onboarding estratégico, planificación mensual, briefs narrativos para Daniela y copys para Paula.',
+        tasks: `Lo que hacés vos en este servicio:
+
+Conducís el onboarding estratégico al inicio de la relación con el cliente: analizás el rubro, investigás la competencia, estudiás tendencias y definís la estrategia de contenido. Establecés objetivos, pilares de contenido, tono de voz y KPIs. Esta etapa se hace una sola vez y es la base de todo lo que sigue.
+
+Optimizás los perfiles: bio, nombre de usuario, highlights, link en bio y cualquier elemento que impacte en la primera impresión y el posicionamiento algorítmico.
+
+Cada mes elaborás el plan de contenido: temas, formatos, ejes temáticos, secuencia de publicación y campañas especiales. Lo presentás para aprobación antes de que se produzca nada.
+
+Para cada pieza gráfica, conceptualizás el mensaje: qué tiene que decir, desde qué ángulo, con qué jerarquía. Ese brief narrativo se lo pasás a Daniela. No definís nada visual.
+
+Redactás los copys de todas las publicaciones del mes: texto principal, CTA y hashtags. Esos copys los usa Paula para publicar — la redacción no es tarea de Paula.
+
+Tus entregables: documento estratégico de onboarding, plan mensual aprobado, briefs narrativos para Daniela, documento de copys y hashtags para Paula.`
+      },
+    ]
+  },
+  {
+    id: 'audiovisual',
+    name: 'Producción Audiovisual',
+    services: [
+      {
+        id: 'reels_con_ideas',
+        name: 'Producción de Reels / Shorts — con ideas',
+        badge: 'Etapa estratégica',
+        badgeType: 'parcial',
+        desc: 'Investigación, estrategia y guiones. Orianna ejecuta producción, grabación y edición.',
+        tasks: `Lo que hacés vos en este servicio:
+
+Sos responsable de la etapa estratégica y creativa. Orianna ejecuta — producción, rodaje y edición son su territorio.
+
+Investigás tendencias del rubro, referentes de contenido y comportamientos del público objetivo del cliente. A partir de esa investigación definís la estrategia de contenido: qué ideas van a producirse, con qué enfoque y por qué.
+
+Conceptualizás cada video: desarrollás la idea central, el mensaje clave, el tono y la estructura narrativa. Escribís los guiones o escaletas de cada pieza con el nivel de detalle que Orianna necesita para ejecutar:
+• Qué se dice
+• Cómo se dice
+• Qué se muestra
+• En qué orden
+
+No intervenís en la etapa de producción ni edición salvo que haya una decisión creativa que requiera revisión de concepto.
+
+Tus entregables: documento de estrategia de contenido, ideas conceptualizadas por video, guiones o escaletas listos para producción.`
+      }
+    ]
+  },
+  {
+    id: 'branding',
+    name: 'Branding e Identidad Visual',
+    services: [
+      {
+        id: 'branding_book_etapa10',
+        name: 'Branding Book — Etapa 10: Comunicación verbal',
+        badge: 'Participación parcial',
+        badgeType: 'parcial',
+        desc: 'Solo la etapa de comunicación verbal. El resto del servicio es de Daniela.',
+        tasks: `Lo que hacés vos en este servicio:
+
+Participás exclusivamente en la Etapa 10 del Branding Book. Todo lo demás es territorio de Daniela.
+
+Definís la comunicación verbal de la marca:
+• Misión, visión y valores redactados con criterio de marca (no como texto corporativo genérico)
+• Tono de voz y estilo comunicacional — cómo habla la marca, con qué registro, qué evita, qué palabras la definen
+• Mensajes clave y tagline
+• Ejemplos concretos de redacción coherente con la identidad para que el cliente entienda cómo aplicarlo
+
+Tu participación en este servicio se cotiza por etapa, no por el servicio completo. La tarifa que ingresás corresponde exclusivamente a la Etapa 10.`
+      }
+    ]
+  }
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let prices = {};
+let times = {};
+let fxRate = null;
+let tokenClient;
+let accessToken = null;
+let driveFileId = null;
+let saveTimer = null;
+let userInfo = null;
+
+// ─── GOOGLE AUTH ──────────────────────────────────────────────────────────────
+function initGoogleAuth() {
+  google.accounts.id.initialize({
+    client_id: CLIENT_ID,
+    callback: onGoogleSignIn,
+    auto_select: false,
+  });
+
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: onTokenReceived,
+  });
+}
+
+function handleLogin() {
+  google.accounts.id.prompt((notification) => {
+    if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+      tokenClient.requestAccessToken({ prompt: 'consent' });
+    }
+  });
+}
+
+async function onGoogleSignIn(response) {
+  const payload = parseJwt(response.credential);
+  userInfo = payload;
+  tokenClient.requestAccessToken({ prompt: '' });
+}
+
+async function onTokenReceived(tokenResponse) {
+  if (tokenResponse.error) { showToast('Error de autenticación', 'error'); return; }
+  accessToken = tokenResponse.access_token;
+
+  if (!userInfo) {
+    try {
+      const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+        headers: { Authorization: `Bearer ${accessToken}` }
+      });
+      userInfo = await r.json();
+    } catch(e) {}
+  }
+
+  showApp();
+}
+
+function parseJwt(token) {
+  try {
+    return JSON.parse(atob(token.split('.')[1]));
+  } catch(e) { return {}; }
+}
+
+function handleLogout() {
+  google.accounts.id.disableAutoSelect();
+  accessToken = null;
+  driveFileId = null;
+  prices = {};
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+// ─── APP INIT ─────────────────────────────────────────────────────────────────
+async function showApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+
+  if (userInfo) {
+    document.getElementById('userAvatar').src = userInfo.picture || '';
+    document.getElementById('userName').textContent = userInfo.given_name || userInfo.name || 'Victoria';
+  }
+
+  await fetchFxRate();
+  await loadFromDrive();
+  renderServices();
+  updateGlobalProgress();
+}
+
+// ─── FX RATE ──────────────────────────────────────────────────────────────────
+async function fetchFxRate() {
+  try {
+    const res = await fetch('https://dolarapi.com/v1/dolares/oficial');
+    const data = await res.json();
+    fxRate = data.venta;
+    document.getElementById('fxRate').textContent = `$ ${fxRate.toLocaleString('es-AR', {minimumFractionDigits:2})}`;
+    document.getElementById('fxTime').textContent = `· Actualizado ${data.fechaActualizacion ? new Date(data.fechaActualizacion).toLocaleTimeString('es-AR', {hour:'2-digit',minute:'2-digit'}) : 'hoy'}`;
+    document.getElementById('fxDot').classList.add('live');
+  } catch(e) {
+    document.getElementById('fxRate').innerHTML = '<span class="fx-error">No disponible</span>';
+    document.getElementById('fxTime').textContent = '· Revisá tu conexión';
+    fxRate = null;
+  }
+}
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function renderServices() {
+  const container = document.getElementById('servicesContent');
+  container.innerHTML = '';
+
+  SECTIONS.forEach((section, si) => {
+    const filled = section.services.filter(s => prices[s.id] && prices[s.id] > 0).length;
+    const total = section.services.length;
+
+    const block = document.createElement('div');
+    block.className = 'section-block';
+
+    const indClass = filled === 0 ? '' : filled === total ? 'complete' : 'partial';
+
+    block.innerHTML = `
+      <div class="section-header open" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-indicator ${indClass}" id="ind-${section.id}"></div>
+          <span class="section-name">${section.name}</span>
+        </div>
+        <div class="section-meta">
+          <span class="section-count" id="count-${section.id}">${filled} / ${total}</span>
+          <span class="chevron">▲</span>
+        </div>
+      </div>
+      <div class="section-body open" id="body-${section.id}"></div>
+    `;
+
+    container.appendChild(block);
+
+    const body = block.querySelector(`#body-${section.id}`);
+
+    section.services.forEach(service => {
+      const card = document.createElement('div');
+      card.className = 'service-card';
+
+      const val = prices[service.id] || 0;
+      const hasVal = val > 0;
+
+      card.innerHTML = `
+        <div class="service-top">
+          <div class="service-info">
+            <div class="service-name">
+              ${service.name}
+              ${service.badge ? `<span class="service-badge ${service.badgeType||''}">${service.badge}</span>` : ''}
+            </div>
+            <div class="service-desc">${service.desc}</div>
+          </div>
+          <div class="price-block">
+            <div class="price-status ${hasVal ? 'filled' : ''}" id="status-${service.id}">
+              ${hasVal ? 'Cargado' : 'Pendiente'}
+            </div>
+            <div class="price-input-wrap">
+              <span class="price-currency">$</span>
+              <input
+                type="number"
+                class="price-input ${hasVal ? 'has-value' : ''}"
+                id="input-${service.id}"
+                placeholder="0"
+                value="${val > 0 ? val : ''}"
+                oninput="onPriceInput('${service.id}', '${section.id}', this)"
+              />
+            </div>
+            <div class="price-label">Precio total del servicio en ARS</div>
+            <div class="fx-display-row">
+              <div class="fx-chip">
+                <div class="fx-chip-label">USD Oficial</div>
+                <div class="fx-chip-value ${hasVal ? 'active' : ''}" id="usd-${service.id}">
+                  ${hasVal && fxRate ? 'U$S ' + (val / fxRate).toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2}) : '—'}
+                </div>
+              </div>
+              <div class="fx-chip intl">
+                <div class="fx-chip-label">Internacional +20%</div>
+                <div class="fx-chip-value ${hasVal ? 'active' : ''}" id="intl-${service.id}">
+                  ${hasVal && fxRate ? 'U$S ' + (val * 1.2 / fxRate).toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2}) : '—'}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="detail-toggle" onclick="toggleDetail('detail-${service.id}', this)">
+          <span>▼</span> Ver mis tareas en este servicio
+        </button>
+        <div class="detail-body" id="detail-${service.id}">
+          <div class="detail-title">Tus tareas</div>
+          <div class="detail-text">${formatTasks(service.tasks)}</div>
+          <div class="delivery-row">
+            <span class="delivery-label">⏱ Tiempo estimado</span>
+            <input
+              type="text"
+              class="delivery-input ${(times[service.id] && times[service.id].trim()) ? 'has-value' : ''}"
+              id="time-${service.id}"
+              placeholder="Ej: 3 – 5 días hábiles"
+              value="${times[service.id] || ''}"
+              oninput="onTimeInput('${service.id}', this)"
+            />
+          </div>
+        </div>
+      `;
+
+      body.appendChild(card);
+    });
+  });
+}
+
+// ─── FORMAT TASKS ─────────────────────────────────────────────────────────────
+function formatTasks(text) {
+  const lines = text.split('\n');
+  let html = '';
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed === '') continue;
+
+    const isBullet = trimmed.startsWith('•') || trimmed.startsWith('-');
+    const isEtapa  = /^Etapa\s+\d+\s*[—–-]/.test(trimmed);
+
+    if (isEtapa) {
+      html += `<span class="task-title">${trimmed}</span>`;
+      continue;
+    }
+
+    if (!isBullet) {
+      const colonIdx = trimmed.indexOf(':');
+      if (colonIdx > 0 && colonIdx < trimmed.length - 1) {
+        // Tiene ":" en el medio: partir en título + cuerpo
+        const titlePart = trimmed.slice(0, colonIdx + 1).trim();
+        const bodyPart  = trimmed.slice(colonIdx + 1).trim();
+        html += `<span class="task-title">${titlePart}</span>`;
+        html += `<span class="task-line">${bodyPart}</span>`;
+        continue;
+      }
+      if (trimmed.endsWith(':')) {
+        html += `<span class="task-title">${trimmed}</span>`;
+        continue;
+      }
+    }
+
+    html += `<span class="task-line">${trimmed}</span>`;
+  }
+  return html;
+}
+
+function toggleSection(header) {
+  header.classList.toggle('open');
+  const sectionId = header.querySelector('.section-indicator').id.replace('ind-', '');
+  const body = document.getElementById(`body-${sectionId}`);
+  body.classList.toggle('open');
+  const chevron = header.querySelector('.chevron');
+  chevron.textContent = body.classList.contains('open') ? '▲' : '▼';
+}
+
+function toggleDetail(id, btn) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+  btn.innerHTML = el.classList.contains('open')
+    ? '<span>▲</span> Ocultar detalle'
+    : '<span>▼</span> Ver mis tareas en este servicio';
+}
+
+function onPriceInput(serviceId, sectionId, input) {
+  const val = parseFloat(input.value) || 0;
+  prices[serviceId] = val;
+
+  const hasVal = val > 0;
+  input.classList.toggle('has-value', hasVal);
+
+  const status = document.getElementById(`status-${serviceId}`);
+  status.textContent = hasVal ? 'Cargado' : 'Pendiente';
+  status.classList.toggle('filled', hasVal);
+
+  const usdEl = document.getElementById(`usd-${serviceId}`);
+  const intlEl = document.getElementById(`intl-${serviceId}`);
+
+  if (hasVal && fxRate) {
+    usdEl.textContent = 'U$S ' + (val / fxRate).toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2});
+    intlEl.textContent = 'U$S ' + (val * 1.2 / fxRate).toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2});
+    usdEl.classList.add('active');
+    intlEl.classList.add('active');
+  } else {
+    usdEl.textContent = '—';
+    intlEl.textContent = '—';
+    usdEl.classList.remove('active');
+    intlEl.classList.remove('active');
+  }
+
+  updateSectionProgress(sectionId);
+  updateGlobalProgress();
+  scheduleSave();
+}
+
+function onTimeInput(serviceId, input) {
+  const val = input.value.trim();
+  if (val) {
+    times[serviceId] = val;
+    input.classList.add('has-value');
+  } else {
+    delete times[serviceId];
+    input.classList.remove('has-value');
+  }
+  scheduleSave();
+}
+
+function updateSectionProgress(sectionId) {
+  const section = SECTIONS.find(s => s.id === sectionId);
+  if (!section) return;
+  const filled = section.services.filter(s => prices[s.id] && prices[s.id] > 0).length;
+  const total = section.services.length;
+  document.getElementById(`count-${sectionId}`).textContent = `${filled} / ${total}`;
+  const ind = document.getElementById(`ind-${sectionId}`);
+  ind.className = 'section-indicator';
+  if (filled > 0) ind.classList.add(filled === total ? 'complete' : 'partial');
+}
+
+function updateGlobalProgress() {
+  const allServices = SECTIONS.flatMap(s => s.services);
+  const filled = allServices.filter(s => prices[s.id] && prices[s.id] > 0).length;
+  const total = allServices.length;
+  const pct = total > 0 ? Math.round((filled / total) * 100) : 0;
+  document.getElementById('globalFill').style.width = pct + '%';
+  document.getElementById('globalPct').textContent = pct + '%';
+}
+
+// ─── DRIVE ────────────────────────────────────────────────────────────────────
+// ─── DRIVE ────────────────────────────────────────────────────────────────────
+let driveLoadedOk = false; // flag: solo se puede guardar si la carga inicial fue exitosa
+
+async function refreshTokenIfNeeded() {
+  return new Promise((resolve) => {
+    tokenClient.requestAccessToken({ prompt: '' });
+    const start = Date.now();
+    const check = setInterval(() => {
+      if (accessToken || Date.now() - start > 3000) {
+        clearInterval(check);
+        resolve();
+      }
+    }, 100);
+  });
+}
+
+async function driveRequest(url, options = {}) {
+  let res = await fetch(url, {
+    ...options,
+    headers: { Authorization: `Bearer ${accessToken}`, ...(options.headers || {}) }
+  });
+  if (res.status === 401) {
+    showToast('Sesión vencida, reconectando...', 'warn');
+    await refreshTokenIfNeeded();
+    res = await fetch(url, {
+      ...options,
+      headers: { Authorization: `Bearer ${accessToken}`, ...(options.headers || {}) }
+    });
+  }
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res;
+}
+
+async function loadFromDrive() {
+  driveLoadedOk = false;
+  setSaveStatus('loading');
+  try {
+    const search = await driveRequest(
+      `https://www.googleapis.com/drive/v3/files?q=name='${FILE_NAME}' and '${DRIVE_FOLDER_ID}' in parents and trashed=false&fields=files(id,name)`
+    );
+    const data = await search.json();
+
+    if (data.files && data.files.length > 0) {
+      driveFileId = data.files[0].id;
+      const content = await driveRequest(
+        `https://www.googleapis.com/drive/v3/files/${driveFileId}?alt=media`
+      );
+      const saved = await content.json();
+
+      // Parseo correcto: prices y times son campos separados
+      prices = saved.prices || {};
+      times = saved.times || {};
+
+      const loadedCount = Object.values(prices).filter(v => v > 0).length;
+      if (loadedCount === 0 && driveFileId) {
+        showToast('⚠️ Archivo en Drive sin precios cargados', 'warn');
+      }
+
+      driveLoadedOk = true;
+      setSaveStatus('saved');
+      showToast('Datos cargados desde Drive', 'ok');
+    } else {
+      driveLoadedOk = true;
+      setSaveStatus('idle');
+    }
+  } catch(e) {
+    driveLoadedOk = false;
+    setSaveStatus('error');
+    showToast('⚠️ No se pudo leer Drive. No se guardarán cambios hasta reconectar.', 'error');
+  }
+}
+
+async function saveToDrive() {
+  if (!accessToken) return;
+
+  if (!driveLoadedOk) {
+    setSaveStatus('error');
+    showToast('⚠️ No se guardó: Drive no estaba conectado al iniciar. Recargá la página.', 'error');
+    return;
+  }
+
+  setSaveStatus('saving');
+  const payload = {
+    colaboradora: 'Victoria',
+    rol: 'Estrategia de Contenido',
+    moneda: 'ARS',
+    timestamp: new Date().toISOString(),
+    prices,
+    times
+  };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+
+  try {
+    if (driveFileId) {
+      await driveRequest(
+        `https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`,
+        { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: blob }
+      );
+    } else {
+      const meta = await driveRequest(
+        'https://www.googleapis.com/drive/v3/files',
+        {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: FILE_NAME, parents: [DRIVE_FOLDER_ID] })
+        }
+      );
+      const metaData = await meta.json();
+      driveFileId = metaData.id;
+      await driveRequest(
+        `https://www.googleapis.com/upload/drive/v3/files/${driveFileId}?uploadType=media`,
+        { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: blob }
+      );
+    }
+    setSaveStatus('saved');
+    showToast('Guardado en Drive ✓', 'ok');
+  } catch(e) {
+    setSaveStatus('error');
+    showToast('Error al guardar. Intentá de nuevo.', 'error');
+  }
+}
+
+function scheduleSave() {
+  if (!driveLoadedOk) {
+    setSaveStatus('error');
+    return;
+  }
+  clearTimeout(saveTimer);
+  setSaveStatus('saving');
+  saveTimer = setTimeout(saveToDrive, 1500);
+}
+
+function setSaveStatus(state) {
+  const dot = document.getElementById('saveDot');
+  const txt = document.getElementById('saveText');
+  dot.className = 'save-dot';
+  if (state === 'saved')        { dot.classList.add('saved');  txt.textContent = 'Guardado'; }
+  else if (state === 'saving')  { dot.classList.add('saving'); txt.textContent = 'Guardando...'; }
+  else if (state === 'error')   { dot.classList.add('error');  txt.textContent = '⚠️ Error al guardar — recargá'; }
+  else if (state === 'warn')    { dot.classList.add('error');  txt.textContent = '⚠️ Drive sin datos'; }
+  else if (state === 'loading') { dot.classList.add('saving'); txt.textContent = 'Cargando...'; }
+  else { txt.textContent = 'Sin cambios'; }
+}
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  const dot = document.getElementById('toastDot');
+  document.getElementById('toastMsg').textContent = msg;
+  dot.style.background = type === 'ok' ? 'var(--lime)' : type === 'error' ? 'var(--red)' : 'var(--orange)';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+window.onload = () => {
+  google.accounts.id.initialize({
+    client_id: CLIENT_ID,
+    callback: onGoogleSignIn,
+  });
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: onTokenReceived,
+  });
+};
+</script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+</body>
+</html>
