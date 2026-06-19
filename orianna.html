@@ -1,0 +1,1255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contentive Studio — Costos Orianna</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+  :root {
+    --bg: #0e0e0e;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --orange: #F5A623;
+    --lime: #B8E04A;
+    --text: #f0ede8;
+    --muted: #6b6b6b;
+    --muted2: #3a3a3a;
+    --red: #ff4444;
+    --green: #4ade80;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 0 0 80px 0;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .header-left { display: flex; align-items: center; gap: 16px; }
+
+  .logo-dot { width: 10px; height: 10px; background: var(--orange); border-radius: 50%; flex-shrink: 0; }
+
+  .header-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .header-subtitle { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; }
+
+  .header-right { display: flex; align-items: center; gap: 24px; }
+
+  /* SAVE STATUS */
+  .save-status { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+  .save-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted2); }
+  .save-dot.saved { background: var(--lime); }
+  .save-dot.saving { background: var(--orange); animation: pulse 1s infinite; }
+  .save-dot.error { background: var(--red); }
+
+  @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+  .user-chip {
+    display: flex; align-items: center; gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 12px 6px 6px;
+  }
+  .user-name { font-size: 12px; color: var(--muted); }
+
+  .logout-btn {
+    background: none; border: none; color: var(--muted);
+    cursor: pointer; font-size: 11px; padding: 4px 8px;
+    border-radius: 6px; transition: color 0.2s;
+  }
+  .logout-btn:hover { color: var(--red); }
+
+  /* AUTH */
+  #auth-screen {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    flex-direction: column; gap: 32px; padding: 40px;
+  }
+
+  .auth-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 48px 40px;
+    width: 100%; max-width: 400px;
+    text-align: center;
+  }
+
+  .auth-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px; font-weight: 700;
+    letter-spacing: 0.16em; text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 32px;
+  }
+
+  .auth-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; margin-bottom: 8px; }
+  .auth-sub { font-size: 13px; color: var(--muted); margin-bottom: 36px; line-height: 1.5; }
+
+  /* PIN PAD */
+  .pin-display { display: flex; justify-content: center; gap: 16px; margin-bottom: 12px; }
+  .pin-dot { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--border); background: transparent; transition: all 0.15s; }
+  .pin-dot.filled { background: var(--orange); border-color: var(--orange); }
+  .pin-dot.error  { background: var(--red);    border-color: var(--red); }
+
+  .pin-error { font-size: 12px; color: var(--red); text-align: center; min-height: 18px; margin-bottom: 8px; }
+
+  .pin-pad { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 8px; }
+
+  .pin-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 20px; font-weight: 700;
+    padding: 18px 0;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .pin-btn:active { background: var(--orange); color: #000; transform: scale(0.95); }
+  .pin-btn.pin-del { font-size: 18px; color: var(--muted); }
+  .pin-btn.pin-empty { background: transparent; border-color: transparent; cursor: default; }
+  .pin-btn.pin-empty:active { background: transparent; transform: none; }
+
+  /* MAIN APP */
+  #app { display: none; }
+
+  /* PROGRESS BAR */
+  .progress-global {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .progress-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .progress-track { flex: 1; height: 3px; background: var(--muted2); border-radius: 2px; overflow: hidden; }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--orange), var(--lime));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .progress-pct {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--orange);
+    min-width: 36px;
+    text-align: right;
+  }
+
+  /* CONTENT */
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* SECTION BLOCK */
+  .section-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .section-header.open { border-bottom-color: var(--border); }
+
+  .section-header-left { display: flex; align-items: center; gap: 12px; }
+
+  .section-indicator { width: 8px; height: 8px; border-radius: 50%; background: var(--muted2); flex-shrink: 0; transition: background 0.3s; }
+  .section-indicator.partial { background: var(--orange); }
+  .section-indicator.complete { background: var(--lime); }
+
+  .section-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .section-meta { display: flex; align-items: center; gap: 12px; }
+  .section-count { font-family: 'Syne', sans-serif; font-size: 11px; color: var(--muted); }
+  .chevron { color: var(--muted); font-size: 12px; transition: transform 0.25s; }
+  .section-header.open .chevron { transform: rotate(180deg); }
+
+  .section-body { display: none; flex-direction: column; gap: 0; }
+  .section-body.open { display: flex; }
+
+  /* SERVICE CARD */
+  .service-card { border-bottom: 1px solid var(--border); padding: 20px; }
+  .service-card:last-child { border-bottom: none; }
+
+  .service-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 14px;
+  }
+
+  .service-info { flex: 1; }
+
+  .service-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .service-badge {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 20px;
+    background: var(--muted2);
+    color: var(--muted);
+  }
+
+  .service-badge.parcial { background: rgba(245, 166, 35, 0.15); color: var(--orange); }
+
+  .service-desc { font-size: 12px; color: var(--muted); line-height: 1.5; max-width: 500px; }
+
+  /* PRICE BLOCK */
+  .price-block { display: flex; flex-direction: column; gap: 8px; min-width: 220px; }
+
+  .price-status {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: right;
+    margin-bottom: 2px;
+  }
+  .price-status.filled { color: var(--lime); }
+
+  .price-input-wrap { position: relative; display: flex; align-items: center; }
+
+  .price-currency {
+    position: absolute;
+    left: 12px;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    pointer-events: none;
+  }
+
+  .price-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px 10px 28px;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+    text-align: right;
+  }
+  .price-input:focus { border-color: var(--orange); }
+  .price-input.has-value { border-color: var(--lime); color: var(--lime); }
+  .price-input:disabled { opacity: 0.5; cursor: not-allowed; }
+  .price-input::placeholder { color: var(--muted2); }
+
+  .price-label { font-size: 10px; color: var(--muted); text-align: right; letter-spacing: 0.04em; }
+
+  /* HOURS / AM CALC */
+  .hours-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .hours-item {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px;
+  }
+
+  .hours-item-label {
+    font-size: 10px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+    margin-bottom: 6px;
+  }
+
+  .hours-item-row { display: flex; align-items: center; gap: 6px; }
+
+  .hours-input {
+    width: 56px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 6px 8px;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    text-align: center;
+    outline: none;
+  }
+  .hours-input:focus { border-color: var(--orange); }
+  .hours-input:disabled { cursor: not-allowed; opacity: 0.4; }
+
+  .hours-unit { font-size: 10px; color: var(--muted); }
+  .hours-result { margin-left: auto; font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; color: var(--text); }
+
+  .toggle-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-top: 10px;
+  }
+  .toggle-label { font-size: 11px; color: var(--text); }
+  .toggle-sub { font-size: 9px; color: var(--muted); margin-top: 2px; }
+
+  .switch { position: relative; width: 38px; height: 22px; flex-shrink: 0; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .switch-track {
+    position: absolute; cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: var(--muted2);
+    border-radius: 22px;
+    transition: 0.2s;
+  }
+  .switch-track::before {
+    content: '';
+    position: absolute;
+    width: 16px; height: 16px;
+    left: 3px; bottom: 3px;
+    background: var(--text);
+    border-radius: 50%;
+    transition: 0.2s;
+  }
+  .switch input:checked + .switch-track { background: var(--lime); }
+  .switch input:checked + .switch-track::before { transform: translateX(16px); background: #0e0e0e; }
+
+  .am-total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px solid var(--border);
+  }
+  .am-total-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .am-total-value { font-family: 'Syne', sans-serif; font-size: 17px; font-weight: 800; color: var(--orange); }
+
+  /* TARIFA DECRECIENTE (audiovisual) */
+  .decreasing-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 4px;
+  }
+  .decreasing-field { display: flex; flex-direction: column; gap: 4px; }
+  .decreasing-field label { font-size: 9px; color: var(--muted); letter-spacing: 0.04em; }
+
+  .decreasing-breakdown {
+    font-size: 10px;
+    color: var(--muted);
+    margin-top: 8px;
+    line-height: 1.6;
+  }
+
+  /* DETAIL TOGGLE */
+  .detail-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--muted);
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    transition: color 0.2s;
+    margin-top: 8px;
+  }
+  .detail-toggle:hover { color: var(--orange); }
+
+  .detail-body {
+    display: none;
+    margin-top: 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+  .detail-body.open { display: block; }
+
+  .detail-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 10px;
+  }
+
+  .detail-text { font-size: 12px; color: #999; line-height: 1.7; }
+  .detail-text .task-title {
+    display: block;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #f0ede8;
+    margin-top: 20px;
+    margin-bottom: 8px;
+  }
+  .detail-text .task-title:first-child { margin-top: 0; }
+  .detail-text .task-line { display: block; margin-bottom: 2px; }
+
+  /* NOTE BOX */
+  .note-box {
+    font-size: 11px;
+    color: var(--muted);
+    line-height: 1.6;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 10px;
+  }
+  .note-box strong { color: var(--text); }
+
+  /* ADICIONAL BLOCK */
+  .adicional-block {
+    margin-top: 14px;
+    padding-top: 14px;
+    border-top: 1px dashed var(--border);
+  }
+  .adicional-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .adicional-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .adicional-sub {
+    font-size: 10px;
+    color: var(--muted2);
+  }
+  .adicional-row {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+  .adicional-desc-input {
+    flex: 1;
+    min-width: 180px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--text);
+    outline: none;
+  }
+  .adicional-desc-input:focus { border-color: var(--orange); }
+  .adicional-desc-input::placeholder { color: var(--muted2); }
+  .adicional-price-wrap { position: relative; width: 140px; }
+  .adicional-price-wrap .price-currency { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); font-size: 12px; }
+  .adicional-price-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 12px 9px 26px;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--text);
+    outline: none;
+    text-align: right;
+  }
+  .adicional-price-input:focus { border-color: var(--orange); }
+  .adicional-price-input.has-value { color: var(--lime); border-color: var(--lime); }
+
+  /* TOAST */
+  .toast {
+    position: fixed; bottom: 24px; right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 12px;
+    color: var(--text);
+    display: flex; align-items: flex-start; gap: 8px;
+    opacity: 0; transform: translateY(8px);
+    transition: all 0.25s;
+    pointer-events: none;
+    z-index: 999;
+    max-width: 420px;
+    word-break: break-all;
+  }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+  .toast-body { display: flex; flex-direction: column; gap: 3px; }
+
+  @media (max-width: 640px) {
+    .header { padding: 16px 18px; }
+    .header-subtitle { display: none; }
+    .content { padding: 24px 14px; }
+    .service-top { flex-direction: column; }
+    .price-block { min-width: 0; width: 100%; }
+  }
+
+  /* FX DISPLAY — equivalente USD para clientes del exterior (Orianna carga en ARS) */
+  .fx-display-row { display: flex; gap: 8px; margin-top: 10px; }
+  .fx-chip { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; text-align: center; }
+  .fx-chip-label { font-size: 9px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 3px; }
+  .fx-chip-value { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; color: var(--muted); }
+  .fx-chip-value.active { color: var(--text); }
+  .fx-chip.intl .fx-chip-value.active { color: var(--orange); }
+  .fx-chip.usd .fx-chip-value.active { color: var(--lime); }
+
+  .fx-banner {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 32px;
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--muted);
+  }
+  .fx-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted2); flex-shrink: 0; }
+  .fx-dot.live { background: var(--lime); animation: pulse 2s infinite; }
+  .fx-rate { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; color: var(--lime); }
+  .fx-error { color: var(--red); }
+
+  /* CUENTA TAG */
+  .cuenta-tag {
+    font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase;
+    padding: 2px 8px; border-radius: 20px;
+    background: rgba(184, 224, 74, 0.12); color: var(--lime);
+  }
+</style>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">Contentive Studio</div>
+    <div class="auth-title">Hola, Orianna 👋</div>
+    <div class="auth-sub">Ingresá tu PIN para acceder al módulo de carga de tus tarifas.</div>
+    <div class="pin-display" id="pinDisplay">
+      <div class="pin-dot" id="pin0"></div>
+      <div class="pin-dot" id="pin1"></div>
+      <div class="pin-dot" id="pin2"></div>
+      <div class="pin-dot" id="pin3"></div>
+    </div>
+    <div id="pinError" class="pin-error"></div>
+    <div class="pin-pad">
+      <button class="pin-btn" onclick="pinPress('1')">1</button>
+      <button class="pin-btn" onclick="pinPress('2')">2</button>
+      <button class="pin-btn" onclick="pinPress('3')">3</button>
+      <button class="pin-btn" onclick="pinPress('4')">4</button>
+      <button class="pin-btn" onclick="pinPress('5')">5</button>
+      <button class="pin-btn" onclick="pinPress('6')">6</button>
+      <button class="pin-btn" onclick="pinPress('7')">7</button>
+      <button class="pin-btn" onclick="pinPress('8')">8</button>
+      <button class="pin-btn" onclick="pinPress('9')">9</button>
+      <button class="pin-btn pin-empty"></button>
+      <button class="pin-btn" onclick="pinPress('0')">0</button>
+      <button class="pin-btn pin-del" onclick="pinDelete()">⌫</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <div class="header">
+    <div class="header-left">
+      <div class="logo-dot"></div>
+      <div>
+        <div class="header-title">Contentive Studio — Costos</div>
+        <div class="header-subtitle">Orianna · Producción &amp; Edición Audiovisual</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="save-status">
+        <div class="save-dot" id="saveDot"></div>
+        <span id="saveText">Sin cambios</span>
+      </div>
+      <div class="user-chip"><span class="user-name" id="userName">Orianna</span></div>
+      <button class="logout-btn" onclick="handleLogout()">Salir</button>
+    </div>
+  </div>
+
+  <div class="fx-banner">
+    <div class="fx-dot" id="fxDot"></div>
+    <span>USD Oficial Venta:</span>
+    <span class="fx-rate" id="fxRateDisplay">—</span>
+    <span id="fxTime"></span>
+  </div>
+
+  <div class="progress-global">
+    <span class="progress-label">Completado</span>
+    <div class="progress-track"><div class="progress-fill" id="globalFill"></div></div>
+    <span class="progress-pct" id="globalPct">0%</span>
+  </div>
+
+  <div class="content" id="servicesContent"></div>
+</div>
+
+<div class="toast" id="toast">
+  <div class="toast-dot" id="toastDot"></div>
+  <div class="toast-body"><span id="toastMsg"></span></div>
+</div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+// ⚠️ Reemplazá esta URL con la que te dé Apps Script al deployar (mismo patrón que daniela/victoria/pedro)
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx9rjJdophviygL_fhG6Rns3Uez7HsnmBleSyanNhpHNyAmOJSuy7vDoXBmxrlDm6i2/exec';
+const CORRECT_PIN = '0102';
+
+// ─── ESTRUCTURA: 3 CUENTAS, CADA UNA CON SU MODALIDAD REAL (no simétrica) ──────
+// Donna: Orianna graba + edita (cámara + edición, el estudio da la idea).
+// Seklou y TecnoTips: Orianna solo edita, la grabación la hace otra persona.
+// Cuentas actuales: Donna tiene dos modalidades (cámara+edición Y solo edición).
+// Seklou y TecnoTips: solo edición. Packs actuales son transitoriamente x5 y x8.
+// Cuentas nuevas: dos categorías (Grabar+Editar / Solo Editar) con todos los packs del estudio x1/x4/x8/x12/x16/x20.
+const SECTIONS = [
+  {
+    id: 'donna_camara',
+    name: 'Panadería Venezolana Donna — Cámara + Edición',
+    cuenta: 'Donna',
+    modalidad: 'Cámara + Edición',
+    note: 'Producís y editás vos: el estudio da la idea y el guion, vos grabás y editás el reel completo.',
+    services: [
+      {
+        id: 'donna_camara_edicion',
+        name: 'Producción + Edición de Reels — Donna',
+        desc: 'Grabación y edición completa de los reels mensuales de Donna. Vos hacés cámara y montaje — el estudio aporta la idea y el guion.',
+        packs: [
+          { key: 'x5', label: 'x5 reels/mes', hint: '' },
+          { key: 'x8', label: 'x8 reels/mes', hint: '' }
+        ],
+        tasks: `Lo que hacés vos en este servicio:
+
+Recibís la idea y el guion del equipo (Victoria conceptualiza, vos ejecutás). Coordinás la grabación en el local o donde corresponda, manejás cámara, luz y sonido. Después editás el material: montaje, corrección de color, musicalización, textos en pantalla y entrega final lista para publicar.`
+      }
+    ]
+  },
+  {
+    id: 'donna_edicion',
+    name: 'Panadería Venezolana Donna — Solo Edición',
+    cuenta: 'Donna',
+    modalidad: 'Edición pura',
+    note: 'Edición del material ya grabado.',
+    services: [
+      {
+        id: 'donna_solo_edicion',
+        name: 'Edición de Reels — Donna',
+        desc: 'Edición completa del material grabado. No incluye rodaje.',
+        packs: [
+          { key: 'x5', label: 'x5 reels/mes', hint: '' },
+          { key: 'x8', label: 'x8 reels/mes', hint: '' }
+        ],
+        tasks: `Lo que hacés vos en este servicio:
+
+Recibís el material ya grabado y hacés el montaje completo: selección de tomas, corrección de color, musicalización, textos en pantalla y entrega final lista para publicar. No incluye rodaje.`
+      }
+    ]
+  },
+  {
+    id: 'seklou',
+    name: 'Seklou — Solo Edición',
+    cuenta: 'Seklou',
+    modalidad: 'Edición pura',
+    note: 'Solo editás: la grabación la hace otra persona. Cotizá por cantidad de reels/videos editados en el mes.',
+    services: [
+      {
+        id: 'seklou_edicion',
+        name: 'Edición de Reels — Seklou',
+        desc: 'Edición completa del material grabado por otra persona. No incluye rodaje.',
+        packs: [
+          { key: 'x8', label: 'x8 reels/mes', hint: '' }
+        ],
+        tasks: `Lo que hacés vos en este servicio:
+
+Recibís el material crudo grabado por la colaboradora exclusiva de Seklou. Tu trabajo es el montaje completo: selección de tomas, corrección de color, musicalización, textos en pantalla y entrega final lista para publicar.
+
+No hacés rodaje en esta cuenta — solo edición.`
+      }
+    ]
+  },
+  {
+    id: 'tecnotips',
+    name: 'TecnoTips — Solo Edición',
+    cuenta: 'TecnoTips',
+    modalidad: 'Edición pura',
+    note: 'Solo editás: la grabación la hace otra persona. Cotizá por cantidad de reels/videos editados en el mes.',
+    services: [
+      {
+        id: 'tecnotips_edicion',
+        name: 'Edición de Reels — TecnoTips',
+        desc: 'Edición completa del material grabado por otra persona. No incluye rodaje.',
+        packs: [
+          { key: 'x8', label: 'x8 reels/mes', hint: '' }
+        ],
+        tasks: `Lo que hacés vos en este servicio:
+
+Recibís el material crudo grabado por la colaboradora exclusiva de TecnoTips. Tu trabajo es el montaje completo: selección de tomas, corrección de color, musicalización, textos en pantalla y entrega final lista para publicar.
+
+No hacés rodaje en esta cuenta — solo edición.`
+      }
+    ]
+  },
+  {
+    id: 'nuevos_camara',
+    name: 'Cuentas Nuevas — Grabar + Editar',
+    cuenta: null,
+    modalidad: 'Cámara + Edición',
+    note: 'Para cuentas nuevas donde grabás y editás vos. El estudio aporta la idea y el guion. Cotizá por pack mensual de reels.',
+    services: [
+      {
+        id: 'nuevo_camara_edicion',
+        name: 'Producción + Edición de Reels',
+        desc: 'Grabación y edición completa. Todos los packs del estudio.',
+        packs: [
+          { key: 'x1',  label: 'x1 reel/mes',   hint: '' },
+          { key: 'x4',  label: 'x4 reels/mes',   hint: '' },
+          { key: 'x8',  label: 'x8 reels/mes',   hint: '' },
+          { key: 'x12', label: 'x12 reels/mes',  hint: '' },
+          { key: 'x16', label: 'x16 reels/mes',  hint: '' },
+          { key: 'x20', label: 'x20 reels/mes',  hint: '' }
+        ],
+        tasks: `Lo que hacés vos en este servicio:
+
+Grabación y edición completa de los reels del mes. El estudio (Pedro/Victoria) aporta la idea y el guion — vos ejecutás cámara y montaje: grabación, corrección de color, musicalización, textos en pantalla y entrega final lista para publicar.`
+      }
+    ]
+  },
+  {
+    id: 'nuevos_edicion',
+    name: 'Cuentas Nuevas — Solo Editar',
+    cuenta: null,
+    modalidad: 'Edición pura',
+    note: 'Para cuentas nuevas donde solo editás. La grabación la hace otra persona. Cotizá por pack mensual de reels.',
+    services: [
+      {
+        id: 'nuevo_solo_edicion',
+        name: 'Edición de Reels',
+        desc: 'Edición completa del material grabado por otra persona. Todos los packs del estudio.',
+        packs: [
+          { key: 'x1',  label: 'x1 reel/mes',   hint: '' },
+          { key: 'x4',  label: 'x4 reels/mes',   hint: '' },
+          { key: 'x8',  label: 'x8 reels/mes',   hint: '' },
+          { key: 'x12', label: 'x12 reels/mes',  hint: '' },
+          { key: 'x16', label: 'x16 reels/mes',  hint: '' },
+          { key: 'x20', label: 'x20 reels/mes',  hint: '' }
+        ],
+        tasks: `Lo que hacés vos en este servicio:
+
+Recibís el material crudo grabado por otra persona y hacés el montaje completo: selección de tomas, corrección de color, musicalización, textos en pantalla y entrega final lista para publicar. No incluye rodaje.`
+      }
+    ]
+  }
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+// packPrices: { serviceId: { packKey: precio en ARS } } — Orianna siempre carga en ARS.
+let packPrices = {};
+let fxRate = null;
+let saveTimer = null;
+let driveLoadedOk = false;
+let pinBuffer = '';
+let openSections = new Set(SECTIONS.map(s => s.id)); // todas abiertas por default
+
+// ─── PIN AUTH ─────────────────────────────────────────────────────────────────
+function pinPress(digit) {
+  if (pinBuffer.length >= 4) return;
+  pinBuffer += digit;
+  updatePinDots();
+  if (pinBuffer.length === 4) setTimeout(checkPin, 120);
+}
+
+function pinDelete() {
+  pinBuffer = pinBuffer.slice(0, -1);
+  updatePinDots();
+  document.getElementById('pinError').textContent = '';
+  document.querySelectorAll('.pin-dot').forEach(d => d.classList.remove('error'));
+}
+
+function updatePinDots() {
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById('pin' + i);
+    dot.classList.toggle('filled', i < pinBuffer.length);
+    dot.classList.remove('error');
+  }
+}
+
+function checkPin() {
+  if (pinBuffer === CORRECT_PIN) {
+    showApp();
+  } else {
+    document.querySelectorAll('.pin-dot').forEach(d => {
+      d.classList.remove('filled');
+      d.classList.add('error');
+    });
+    document.getElementById('pinError').textContent = 'PIN incorrecto. Intentá de nuevo.';
+    setTimeout(() => {
+      pinBuffer = '';
+      updatePinDots();
+      document.querySelectorAll('.pin-dot').forEach(d => d.classList.remove('error'));
+      document.getElementById('pinError').textContent = '';
+    }, 900);
+  }
+}
+
+function handleLogout() {
+  pinBuffer = '';
+  packPrices = {};
+  driveLoadedOk = false;
+  updatePinDots();
+  document.getElementById('pinError').textContent = '';
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+// ─── APP INIT ─────────────────────────────────────────────────────────────────
+async function showApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  await fetchFxRate();
+  await loadFromScript();
+  renderServices();
+  updateGlobalProgress();
+}
+
+// ─── FX RATE — equivalente USD para clientes del exterior ─────────────────────
+async function fetchFxRate() {
+  try {
+    const res = await fetch('https://dolarapi.com/v1/dolares/oficial');
+    const data = await res.json();
+    fxRate = data.venta;
+    document.getElementById('fxRateDisplay').textContent = `$ ${fxRate.toLocaleString('es-AR', {minimumFractionDigits:2})}`;
+    document.getElementById('fxTime').textContent = `· Actualizado ${data.fechaActualizacion ? new Date(data.fechaActualizacion).toLocaleTimeString('es-AR', {hour:'2-digit',minute:'2-digit'}) : 'hoy'}`;
+    document.getElementById('fxDot').classList.add('live');
+  } catch(e) {
+    document.getElementById('fxRateDisplay').innerHTML = '<span class="fx-error">No disponible</span>';
+    document.getElementById('fxTime').textContent = '· Revisá tu conexión';
+    fxRate = null;
+  }
+}
+
+// ─── APPS SCRIPT (mismo patrón que daniela/victoria/pedro) ────────────────────
+async function loadFromScript() {
+  driveLoadedOk = false;
+  packPrices = {};
+  setSaveStatus('loading');
+  try {
+    const url = `${SCRIPT_URL}?pin=${CORRECT_PIN}`;
+    const res = await fetch(url);
+    const json = await res.json();
+
+    if (!json.ok) throw new Error(json.error || 'Error al cargar');
+
+    if (json.data) {
+      packPrices = json.data.packPrices || {};
+      const count = Object.values(packPrices).reduce((sum, packs) => sum + Object.values(packs || {}).filter(v => v > 0).length, 0);
+      if (count === 0) showToast('⚠️ Drive sin tarifas cargadas', 'warn');
+      else showToast('Datos cargados ✓', 'ok');
+    }
+
+    driveLoadedOk = true;
+    setSaveStatus('saved');
+  } catch(e) {
+    driveLoadedOk = false;
+    setSaveStatus('error');
+    showToast('⚠️ No se pudo cargar. No se guardarán cambios.', 'error');
+  }
+}
+
+async function saveToScript() {
+  if (!driveLoadedOk) {
+    setSaveStatus('error');
+    showToast('⚠️ No se guardó: hubo un error al cargar. Recargá la página.', 'error');
+    return;
+  }
+
+  setSaveStatus('saving');
+  const payload = { pin: CORRECT_PIN, packPrices };
+
+  try {
+    const res = await fetch(SCRIPT_URL, {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error);
+    setSaveStatus('saved');
+    showToast('Guardado ✓', 'ok');
+  } catch(e) {
+    setSaveStatus('error');
+    showToast('Error al guardar. Intentá de nuevo.', 'error');
+  }
+}
+
+function scheduleSave() {
+  if (!driveLoadedOk) { setSaveStatus('error'); return; }
+  clearTimeout(saveTimer);
+  setSaveStatus('saving');
+  saveTimer = setTimeout(saveToScript, 1500);
+}
+
+function setSaveStatus(state) {
+  const dot = document.getElementById('saveDot');
+  const txt = document.getElementById('saveText');
+  dot.className = 'save-dot';
+  if (state === 'saved')        { dot.classList.add('saved');  txt.textContent = 'Guardado'; }
+  else if (state === 'saving')  { dot.classList.add('saving'); txt.textContent = 'Guardando...'; }
+  else if (state === 'error')   { dot.classList.add('error');  txt.textContent = '⚠️ Error al guardar — recargá'; }
+  else if (state === 'loading') { dot.classList.add('saving'); txt.textContent = 'Cargando...'; }
+  else { txt.textContent = 'Sin cambios'; }
+}
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type) {
+  const t   = document.getElementById('toast');
+  const dot = document.getElementById('toastDot');
+  document.getElementById('toastMsg').textContent = msg;
+  dot.style.background = type === 'ok' ? 'var(--lime)' : type === 'error' ? 'var(--red)' : 'var(--orange)';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 5000);
+}
+
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+window.onload = () => {
+  // Sin OAuth — arranca directo en pantalla de PIN, igual que daniela/victoria/pedro
+};
+
+// ─── HELPERS DE PRECIO/PACK ─────────────────────────────────────────────────────
+function getPackPrice(serviceId, packKey) {
+  return (packPrices[serviceId] && packPrices[serviceId][packKey]) || 0;
+}
+
+function countFilledPacks(service) {
+  return service.packs.filter(p => getPackPrice(service.id, p.key) > 0).length;
+}
+
+function fmt(n) { return '$ ' + Math.round(n).toLocaleString('es-AR'); }
+
+// ─── RENDER ───────────────────────────────────────────────────────────────────
+function renderServices() {
+  const container = document.getElementById('servicesContent');
+  container.innerHTML = '';
+
+  SECTIONS.forEach(section => {
+    const filled = countFilledInSection(section);
+    const total = section.services.length;
+    const indClass = filled === 0 ? '' : filled === total ? 'complete' : 'partial';
+    const isOpen = openSections.has(section.id);
+
+    const block = document.createElement('div');
+    block.className = 'section-block';
+    block.innerHTML = `
+      <div class="section-header ${isOpen ? 'open' : ''}" onclick="toggleSection(this, '${section.id}')">
+        <div class="section-header-left">
+          <div class="section-indicator ${indClass}" id="ind-${section.id}"></div>
+          <span class="section-name">${section.name}</span>
+        </div>
+        <div class="section-meta">
+          <span class="section-count" id="count-${section.id}">${filled} / ${total}</span>
+          <span class="chevron">${isOpen ? '▲' : '▼'}</span>
+        </div>
+      </div>
+      <div class="section-body ${isOpen ? 'open' : ''}" id="body-${section.id}"></div>
+    `;
+    container.appendChild(block);
+
+    const body = block.querySelector(`#body-${section.id}`);
+    if (section.note) {
+      const noteEl = document.createElement('div');
+      noteEl.className = 'note-box';
+      noteEl.style.margin = '16px 20px 0 20px';
+      noteEl.innerHTML = `<strong>Cómo usar esta sección:</strong> ${section.note}`;
+      body.appendChild(noteEl);
+    }
+    section.services.forEach(service => renderCatalogCard(body, section, service));
+  });
+}
+
+function countFilledInSection(section) {
+  return section.services.filter(s => countFilledPacks(s) === s.packs.length && s.packs.length > 0).length;
+}
+
+function renderCatalogCard(body, section, service) {
+  const card = document.createElement('div');
+  card.className = 'service-card';
+
+  const filledCount = countFilledPacks(service);
+  const totalPacks = service.packs.length;
+
+  let packsHtml = '';
+  service.packs.forEach(pack => {
+    const val = getPackPrice(service.id, pack.key);
+    const hasVal = val > 0;
+    const usdEquiv = (hasVal && fxRate) ? (val / fxRate) : null;
+    const usdIntl = (hasVal && fxRate) ? (val * 1.2 / fxRate) : null;
+
+    packsHtml += `
+      <div class="hours-item" style="padding:12px 14px;">
+        <div class="hours-item-label" style="margin-bottom:8px;">${pack.label}${pack.hint ? ` <span style="color:var(--muted2); font-weight:400; text-transform:none; letter-spacing:0;">— ${pack.hint}</span>` : ''}</div>
+        <div class="price-input-wrap">
+          <span class="price-currency" style="position:absolute; left:8px; font-size:12px;">$</span>
+          <input type="number" class="price-input ${hasVal ? 'has-value' : ''}" style="font-size:14px; padding:8px 10px 8px 24px;" placeholder="0" value="${val > 0 ? val : ''}"
+            oninput="onPackPriceInput('${service.id}', '${pack.key}', '${section.id}', this)">
+        </div>
+        <div class="fx-display-row">
+          <div class="fx-chip usd">
+            <div class="fx-chip-label">U$S Oficial</div>
+            <div class="fx-chip-value ${usdEquiv !== null ? 'active' : ''}">${usdEquiv !== null ? 'U$S ' + usdEquiv.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2}) : '—'}</div>
+          </div>
+          <div class="fx-chip intl">
+            <div class="fx-chip-label">Exterior +20%</div>
+            <div class="fx-chip-value ${usdIntl !== null ? 'active' : ''}">${usdIntl !== null ? 'U$S ' + usdIntl.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2}) : '—'}</div>
+          </div>
+        </div>
+      </div>
+    `;
+  });
+
+  card.innerHTML = `
+    <div class="service-top">
+      <div class="service-info">
+        <div class="service-name">
+          ${service.name}
+          <span class="cuenta-tag">${section.modalidad}</span>
+          <span class="service-badge ${filledCount === totalPacks ? '' : 'parcial'}">${filledCount}/${totalPacks} packs cargados</span>
+        </div>
+        <div class="service-desc">${service.desc}</div>
+      </div>
+    </div>
+    <div class="hours-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">${packsHtml}</div>
+    <button class="detail-toggle" onclick="toggleDetail('detail-${service.id}', this)">
+      <span>▼</span> Ver detalle de este servicio
+    </button>
+    <div class="detail-body" id="detail-${service.id}">
+      <div class="detail-title">Tu rol en este servicio</div>
+      <div class="detail-text">${formatTasks(service.tasks)}</div>
+    </div>
+  `;
+
+  body.appendChild(card);
+}
+
+// ─── FORMAT TASKS ─────────────────────────────────────────────────────────────
+function formatTasks(text) {
+  const lines = text.split('\n');
+  let html = '';
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed === '') continue;
+
+    const isBullet = trimmed.startsWith('•') || trimmed.startsWith('-');
+    const isEtapa  = /^Etapa\s+\d+\s*[—–-]/.test(trimmed);
+
+    if (isEtapa) {
+      html += `<span class="task-title">${trimmed}</span>`;
+      continue;
+    }
+
+    if (!isBullet) {
+      const colonIdx = trimmed.indexOf(':');
+      if (colonIdx > 0 && colonIdx < trimmed.length - 1) {
+        const titlePart = trimmed.slice(0, colonIdx + 1).trim();
+        const bodyPart  = trimmed.slice(colonIdx + 1).trim();
+        html += `<span class="task-title">${titlePart}</span>`;
+        html += `<span class="task-line">${bodyPart}</span>`;
+        continue;
+      }
+      if (trimmed.endsWith(':')) {
+        html += `<span class="task-title">${trimmed}</span>`;
+        continue;
+      }
+    }
+
+    html += `<span class="task-line">${trimmed}</span>`;
+  }
+  return html;
+}
+
+function toggleSection(header, sectionId) {
+  header.classList.toggle('open');
+  const body = document.getElementById(`body-${sectionId}`);
+  body.classList.toggle('open');
+  const chevron = header.querySelector('.chevron');
+  const isOpen = body.classList.contains('open');
+  chevron.textContent = isOpen ? '▲' : '▼';
+  if (isOpen) openSections.add(sectionId); else openSections.delete(sectionId);
+}
+
+function toggleDetail(id, btn) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+  btn.innerHTML = el.classList.contains('open')
+    ? '<span>▲</span> Ocultar detalle'
+    : '<span>▼</span> Ver detalle de este servicio';
+}
+
+function onPackPriceInput(serviceId, packKey, sectionId, input) {
+  const val = parseFloat(input.value) || 0;
+  if (!packPrices[serviceId]) packPrices[serviceId] = {};
+  packPrices[serviceId][packKey] = val;
+
+  // Re-render solo la card afectada es más simple re-renderizando toda la sección,
+  // pero para no perder el foco del input activo, actualizamos los chips FX in-place.
+  const hasVal = val > 0;
+  input.classList.toggle('has-value', hasVal);
+
+  const wrap = input.closest('.hours-item');
+  const usdEquiv = (hasVal && fxRate) ? (val / fxRate) : null;
+  const usdIntl = (hasVal && fxRate) ? (val * 1.2 / fxRate) : null;
+  const usdChipVal = wrap.querySelector('.fx-chip.usd .fx-chip-value');
+  const intlChipVal = wrap.querySelector('.fx-chip.intl .fx-chip-value');
+  usdChipVal.textContent = usdEquiv !== null ? 'U$S ' + usdEquiv.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2}) : '—';
+  usdChipVal.classList.toggle('active', usdEquiv !== null);
+  intlChipVal.textContent = usdIntl !== null ? 'U$S ' + usdIntl.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2}) : '—';
+  intlChipVal.classList.toggle('active', usdIntl !== null);
+
+  updateServiceBadge(serviceId, sectionId);
+  updateSectionProgress(sectionId);
+  updateGlobalProgress();
+  scheduleSave();
+}
+
+function updateServiceBadge(serviceId, sectionId) {
+  const section = SECTIONS.find(s => s.id === sectionId);
+  const service = section.services.find(s => s.id === serviceId);
+  const filledCount = countFilledPacks(service);
+  const totalPacks = service.packs.length;
+  const card = document.getElementById(`body-${sectionId}`).querySelectorAll('.service-card');
+  // Solo hay 1 service por sección en este esquema, así que actualizamos el primer badge encontrado
+  const badge = document.getElementById(`body-${sectionId}`).querySelector('.service-badge');
+  if (badge) {
+    badge.textContent = `${filledCount}/${totalPacks} packs cargados`;
+    badge.classList.toggle('parcial', filledCount !== totalPacks);
+  }
+}
+
+function updateSectionProgress(sectionId) {
+  const section = SECTIONS.find(s => s.id === sectionId);
+  if (!section) return;
+  const filled = countFilledInSection(section);
+  const total = section.services.length;
+  document.getElementById(`count-${sectionId}`).textContent = `${filled} / ${total}`;
+  const ind = document.getElementById(`ind-${sectionId}`);
+  ind.className = 'section-indicator';
+  if (filled > 0) ind.classList.add(filled === total ? 'complete' : 'partial');
+}
+
+function updateGlobalProgress() {
+  const allServices = SECTIONS.flatMap(s => s.services);
+  const filled = allServices.filter(s => countFilledPacks(s) === s.packs.length && s.packs.length > 0).length;
+  const total = allServices.length;
+  const pct = total > 0 ? Math.round((filled / total) * 100) : 0;
+  document.getElementById('globalFill').style.width = pct + '%';
+  document.getElementById('globalPct').textContent = pct + '%';
+}
+</script>
+</body>
+</html>
