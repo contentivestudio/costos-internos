@@ -1,0 +1,1519 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contentive Studio — Costos Victoria</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+  :root {
+    --bg: #0e0e0e;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --orange: #F5A623;
+    --lime: #B8E04A;
+    --text: #f0ede8;
+    --muted: #6b6b6b;
+    --muted2: #3a3a3a;
+    --red: #ff4444;
+    --green: #4ade80;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 0 0 80px 0;
+  }
+
+  /* HEADER */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+
+  .header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .logo-dot {
+    width: 10px;
+    height: 10px;
+    background: var(--orange);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .header-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .header-subtitle {
+    font-size: 12px;
+    color: var(--muted);
+    letter-spacing: 0.04em;
+  }
+
+  .header-right {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+  }
+
+  /* FX BANNER */
+  .fx-banner {
+    background: var(--surface2);
+    border-bottom: 1px solid var(--border);
+    padding: 10px 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .fx-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--muted2);
+    flex-shrink: 0;
+  }
+
+  .fx-dot.live { background: var(--lime); animation: pulse 2s infinite; }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .fx-rate {
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: var(--lime);
+  }
+
+  .fx-label { color: var(--muted); }
+  .fx-error { color: var(--red); }
+
+  /* SAVE STATUS */
+  .save-status {
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .save-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: var(--muted2);
+  }
+  .save-dot.saved { background: var(--lime); }
+  .save-dot.saving { background: var(--orange); animation: pulse 1s infinite; }
+  .save-dot.error { background: var(--red); }
+
+  /* AUTH */
+  #auth-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 32px;
+    padding: 40px;
+  }
+
+  .auth-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 48px 40px;
+    width: 100%;
+    max-width: 400px;
+    text-align: center;
+  }
+
+  .auth-logo {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 32px;
+  }
+
+  .auth-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .auth-sub {
+    font-size: 13px;
+    color: var(--muted);
+    margin-bottom: 36px;
+    line-height: 1.5;
+  }
+
+  .google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    padding: 14px 20px;
+    background: var(--text);
+    color: #1a1a1a;
+    border: none;
+    border-radius: 10px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .google-btn:hover { background: #e0ddd8; transform: translateY(-1px); }
+
+  .google-btn svg { width: 18px; height: 18px; }
+
+  /* PIN PAD */
+  .pin-display {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 12px;
+  }
+
+  .pin-dot {
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    border: 2px solid var(--border);
+    background: transparent;
+    transition: all 0.15s;
+  }
+
+  .pin-dot.filled { background: var(--orange); border-color: var(--orange); }
+  .pin-dot.error  { background: var(--red);    border-color: var(--red); }
+
+  .pin-error {
+    font-size: 12px;
+    color: var(--red);
+    text-align: center;
+    min-height: 18px;
+    margin-bottom: 8px;
+  }
+
+  .pin-pad {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 8px;
+  }
+
+  .pin-btn {
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    color: var(--text);
+    font-family: 'Syne', sans-serif;
+    font-size: 20px;
+    font-weight: 700;
+    padding: 18px 0;
+    cursor: pointer;
+    transition: all 0.15s;
+    user-select: none;
+  }
+
+  .pin-btn:active { background: var(--orange); color: #000; transform: scale(0.95); }
+  .pin-btn.pin-del { font-size: 18px; color: var(--muted); }
+  .pin-btn.pin-empty { background: transparent; border-color: transparent; cursor: default; }
+  .pin-btn.pin-empty:active { background: transparent; transform: none; }
+
+  /* MAIN APP */
+  #app { display: none; }
+
+  /* PROGRESS BAR */
+  .progress-global {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 32px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  .progress-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .progress-track {
+    flex: 1;
+    height: 3px;
+    background: var(--muted2);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--orange), var(--lime));
+    border-radius: 2px;
+    transition: width 0.4s ease;
+    width: 0%;
+  }
+
+  .progress-pct {
+    font-family: 'Syne', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--orange);
+    min-width: 36px;
+    text-align: right;
+  }
+
+  /* CONTENT */
+  .content {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 32px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  /* SECTION BLOCK */
+  .section-block {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.2s;
+  }
+
+  .section-header.open {
+    border-bottom-color: var(--border);
+  }
+
+  .section-header-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-indicator {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--muted2);
+    flex-shrink: 0;
+    transition: background 0.3s;
+  }
+
+  .section-indicator.partial { background: var(--orange); }
+  .section-indicator.complete { background: var(--lime); }
+
+  .section-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text);
+  }
+
+  .section-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .section-count {
+    font-family: 'Syne', sans-serif;
+    font-size: 11px;
+    color: var(--muted);
+  }
+
+  .chevron {
+    color: var(--muted);
+    font-size: 12px;
+    transition: transform 0.25s;
+  }
+
+  .section-header.open .chevron { transform: rotate(180deg); }
+
+  .section-body {
+    display: none;
+    flex-direction: column;
+    gap: 0;
+  }
+
+  .section-body.open { display: flex; }
+
+  /* SERVICE CARD */
+  .service-card {
+    border-bottom: 1px solid var(--border);
+    padding: 20px;
+  }
+
+  .service-card:last-child { border-bottom: none; }
+
+  .service-top {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 14px;
+  }
+
+  .service-info { flex: 1; }
+
+  .service-name {
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text);
+    margin-bottom: 4px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .service-badge {
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 20px;
+    background: var(--muted2);
+    color: var(--muted);
+  }
+
+  .service-badge.parcial {
+    background: rgba(245, 166, 35, 0.15);
+    color: var(--orange);
+  }
+
+  .service-desc {
+    font-size: 12px;
+    color: var(--muted);
+    line-height: 1.5;
+    max-width: 500px;
+  }
+
+  /* PRICE BLOCK */
+  .price-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 220px;
+  }
+
+  .price-status {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: right;
+    margin-bottom: 2px;
+  }
+
+  .price-status.filled { color: var(--lime); }
+
+  .price-input-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  .price-currency {
+    position: absolute;
+    left: 12px;
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+    pointer-events: none;
+  }
+
+  .price-input {
+    width: 100%;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 10px 12px 10px 28px;
+    font-family: 'Syne', sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+    text-align: right;
+  }
+
+  .price-input:focus { border-color: var(--orange); }
+  .price-input.has-value { border-color: var(--lime); color: var(--lime); }
+
+  .price-label {
+    font-size: 10px;
+    color: var(--muted);
+    text-align: right;
+    letter-spacing: 0.04em;
+  }
+
+  /* FX DISPLAY ROW */
+  .fx-display-row {
+    display: flex;
+    gap: 8px;
+    margin-top: 4px;
+  }
+
+  .fx-chip {
+    flex: 1;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 8px 10px;
+    text-align: center;
+  }
+
+  .fx-chip-label {
+    font-size: 9px;
+    color: var(--muted);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 3px;
+  }
+
+  .fx-chip-value {
+    font-family: 'Syne', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+
+  .fx-chip-value.active { color: var(--text); }
+  .fx-chip.intl .fx-chip-value.active { color: var(--orange); }
+
+  /* DETAIL TOGGLE */
+  .detail-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    color: var(--muted);
+    cursor: pointer;
+    border: none;
+    background: none;
+    padding: 0;
+    transition: color 0.2s;
+    margin-top: 8px;
+  }
+
+  .detail-toggle:hover { color: var(--orange); }
+
+  .detail-body {
+    display: none;
+    margin-top: 14px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+  }
+
+  .detail-body.open { display: block; }
+
+  .detail-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--orange);
+    margin-bottom: 10px;
+  }
+
+  .detail-text {
+    font-size: 12px;
+    color: #999;
+    line-height: 1.7;
+  }
+
+  .detail-text .task-title {
+    display: block;
+    font-family: 'Syne', sans-serif;
+    font-size: 14px;
+    font-weight: 700;
+    color: #f0ede8;
+    margin-top: 20px;
+    margin-bottom: 8px;
+    letter-spacing: 0.01em;
+  }
+
+  .detail-text .task-title:first-child {
+    margin-top: 0;
+  }
+
+  .detail-text .task-line {
+    display: block;
+    margin-bottom: 2px;
+  }
+
+  /* DELIVERY TIME FIELD */
+  .delivery-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 16px;
+    padding-top: 14px;
+    border-top: 1px solid var(--border);
+  }
+
+  .delivery-label {
+    font-family: 'Syne', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+
+  .delivery-input {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 12px;
+    color: var(--text);
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .delivery-input:focus { border-color: var(--orange); }
+  .delivery-input::placeholder { color: var(--muted2); }
+  .delivery-input.has-value { border-color: rgba(184, 224, 74, 0.3); color: var(--lime); }
+
+  /* USER CHIP */
+  .user-chip {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--surface2);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 6px 12px 6px 6px;
+  }
+
+  .user-avatar {
+    width: 24px; height: 24px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .user-name {
+    font-size: 12px;
+    color: var(--muted);
+  }
+
+  .logout-btn {
+    background: none;
+    border: none;
+    color: var(--muted);
+    cursor: pointer;
+    font-size: 11px;
+    padding: 4px 8px;
+    border-radius: 6px;
+    transition: color 0.2s;
+  }
+
+  .logout-btn:hover { color: var(--red); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 18px;
+    font-size: 12px;
+    color: var(--text);
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    opacity: 0;
+    transform: translateY(8px);
+    transition: all 0.25s;
+    pointer-events: none;
+    z-index: 999;
+    max-width: 420px;
+    word-break: break-all;
+  }
+
+  .toast-body { display: flex; flex-direction: column; gap: 3px; }
+  .toast-email { font-size: 11px; color: var(--muted); font-family: monospace; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+  .toast-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; margin-top: 4px; }
+</style>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-logo">Contentive Studio</div>
+    <div class="auth-title">Hola, Victoria 👋</div>
+    <div class="auth-sub">Ingresá tu PIN para acceder al módulo de carga de costos.</div>
+    <div class="pin-display" id="pinDisplay">
+      <div class="pin-dot" id="pin0"></div>
+      <div class="pin-dot" id="pin1"></div>
+      <div class="pin-dot" id="pin2"></div>
+      <div class="pin-dot" id="pin3"></div>
+    </div>
+    <div id="pinError" class="pin-error"></div>
+    <div class="pin-pad">
+      <button class="pin-btn" onclick="pinPress('1')">1</button>
+      <button class="pin-btn" onclick="pinPress('2')">2</button>
+      <button class="pin-btn" onclick="pinPress('3')">3</button>
+      <button class="pin-btn" onclick="pinPress('4')">4</button>
+      <button class="pin-btn" onclick="pinPress('5')">5</button>
+      <button class="pin-btn" onclick="pinPress('6')">6</button>
+      <button class="pin-btn" onclick="pinPress('7')">7</button>
+      <button class="pin-btn" onclick="pinPress('8')">8</button>
+      <button class="pin-btn" onclick="pinPress('9')">9</button>
+      <button class="pin-btn pin-empty"></button>
+      <button class="pin-btn" onclick="pinPress('0')">0</button>
+      <button class="pin-btn pin-del" onclick="pinDelete()">⌫</button>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app">
+  <div class="header">
+    <div class="header-left">
+      <div class="logo-dot"></div>
+      <div>
+        <div class="header-title">Contentive Studio — Costos</div>
+        <div class="header-subtitle">Victoria · Estratega de Contenido</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="save-status">
+        <div class="save-dot" id="saveDot"></div>
+        <span id="saveText">Sin cambios</span>
+      </div>
+      <div class="user-chip">
+        <span class="user-name" id="userName">Victoria</span>
+      </div>
+      <button class="logout-btn" onclick="handleLogout()">Salir</button>
+    </div>
+  </div>
+
+  <div class="fx-banner" id="fxBanner">
+    <div class="fx-dot" id="fxDot"></div>
+    <span class="fx-label">USD Oficial Venta:</span>
+    <span class="fx-rate" id="fxRate">—</span>
+    <span class="fx-label" id="fxTime"></span>
+  </div>
+
+  <div class="progress-global">
+    <span class="progress-label">Completado</span>
+    <div class="progress-track">
+      <div class="progress-fill" id="globalFill"></div>
+    </div>
+    <span class="progress-pct" id="globalPct">0%</span>
+  </div>
+
+  <div class="content" id="servicesContent"></div>
+</div>
+
+<div class="toast" id="toast">
+  <div class="toast-dot" id="toastDot"></div>
+  <div class="toast-body">
+    <span id="toastMsg"></span>
+    <span class="toast-email" id="toastEmail" style="display:none;"></span>
+  </div>
+</div>
+
+<script>
+// ─── CONFIG ───────────────────────────────────────────────────────────────────
+// ⚠️ Reemplazá esta URL con la que te da Apps Script al deployar
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzfzz1iqtVLo0q5a-kT7twZW62SF2g-DjrVqc47rIYF7Hfb7FwnXOyu4QC_vNsFTzFM/exec';
+const CORRECT_PIN = '1101';
+
+// ─── SERVICES DATA ────────────────────────────────────────────────────────────
+const SECTIONS = [
+  // ── 1. BRANDING E IDENTIDAD VISUAL ──────────────────────────────────────────
+  {
+    id: 'branding',
+    name: 'Branding e Identidad Visual',
+    services: [
+      {
+        id: 'branding_book_etapa10',
+        name: 'Branding Book — Etapa 10: Comunicación verbal',
+        badge: 'Participación parcial',
+        badgeType: 'parcial',
+        desc: 'Redactás la comunicación verbal de la marca: misión, visión, valores, tono de voz, mensajes clave y tagline. Solo la Etapa 10. El resto del Branding Book es de Daniela.',
+        tasks: `Lo que hacés vos en este servicio:
+
+Participás exclusivamente en la Etapa 10 del Branding Book. Todo lo demás es territorio de Daniela.
+
+Definís la comunicación verbal de la marca:
+• Misión, visión y valores redactados con criterio de marca (no como texto corporativo genérico)
+• Tono de voz y estilo comunicacional — cómo habla la marca, con qué registro, qué evita, qué palabras la definen
+• Mensajes clave y tagline
+• Ejemplos concretos de redacción coherente con la identidad para que el cliente entienda cómo aplicarlo
+
+Tu participación en este servicio se cotiza por etapa, no por el servicio completo. La tarifa que ingresás corresponde exclusivamente a la Etapa 10.`
+      }
+    ]
+  },
+
+  // ── 2. GESTIÓN Y ESTRATEGIA DE REDES SOCIALES ───────────────────────────────
+  {
+    id: 'estrategia',
+    name: 'Gestión y Estrategia de Redes Sociales',
+    services: [
+      {
+        id: 'plan_contenidos',
+        name: 'Plan de Contenidos Estratégico',
+        badge: null,
+        desc: 'Diagnóstico de comunicación, definición estratégica de pilares, tono de voz y arquetipos de audiencia. Planificación del primer mes lista para ejecutar.',
+        tasks: `Lo que hacés vos en este servicio:
+
+Recibís el brief del cliente y conducís el diagnóstico de comunicación: analizás el estado actual de la marca en redes, identificás brechas, oportunidades y problemas de coherencia. Si la marca no tiene presencia previa, el diagnóstico lo hacés sobre el negocio, el mercado y la competencia.
+
+Con esa base definís los pilares estratégicos:
+• Objetivos de comunicación claros y medibles
+• Tono de voz y personalidad de marca
+• Arquetipos de audiencia (quién es, qué consume, qué lo mueve)
+• Ejes temáticos: las categorías de contenido que la marca va a trabajar de forma sistemática
+
+Construís la estructura de contenidos: tipos de publicación por eje, formatos recomendados por objetivo, frecuencia por plataforma y dinámicas de interacción.
+
+Desarrollás la guía de redacción: cómo escribe la marca, qué evita, qué palabras la definen. Nada visual — eso es territorio de Daniela.
+
+Cerrás con la planificación del mes 1: calendario con ideas concretas para cada publicación — tema, formato, eje temático y recomendaciones de copy y hashtags.
+
+Tus entregables: documento estratégico en PDF, calendario del mes 1 en formato editable, guía de redacción y tono de voz.`
+      },
+      {
+        id: 'community_pack',
+        name: 'Community Pack (diseño + redacción)',
+        badge: null,
+        desc: 'Planificación mensual de 12 piezas, brief narrativo por publicación para Daniela y copys completos con hashtags para cada una.',
+        tasks: `Lo que hacés vos en este servicio:
+
+Al inicio de cada mes conducís el briefing con el cliente: definís temas, campañas, productos o mensajes clave del período.
+
+Definís los 12 temas o ideas de publicación, organizados en el calendario con eje temático, formato y secuencia. Te asegurás de que haya diversidad de formatos y mensajes para que el feed no se vuelva monótono.
+
+Para cada publicación, conceptualizás el mensaje: qué tiene que decir la pieza, desde qué ángulo, con qué jerarquía de información. Eso es el brief narrativo que le pasás a Daniela. No definís nada visual — Daniela toma las decisiones de diseño.
+
+Redactás los copys completos de las 12 publicaciones: texto principal, llamado a la acción y hashtags estratégicos en el tono de voz de la marca.
+
+Elaborás la guía de publicación: orden recomendado, mejores horarios, recomendaciones de interacción post-publicación y notas estratégicas por pieza.
+
+Tus entregables: planificación mensual, brief narrativo para Daniela, documento de copys y hashtags, guía de publicación.`
+      },
+      {
+        id: 'consultoria',
+        name: 'Consultoría de Estrategia Digital (1 sesión)',
+        badge: null,
+        desc: 'Diagnóstico previo conjunto con Pedro y entregables post-sesión: resumen ejecutivo y plan de acción de 30 días. La sesión la conduce Pedro.',
+        tasks: `Lo que hacés vos en este servicio:
+
+La sesión la conduce Pedro. Tu rol es de soporte estratégico antes y después.
+
+Antes de la sesión (junto a Pedro): analizás el estado digital actual de la marca — redes, comunicación, métricas disponibles y coherencia con los objetivos del negocio. Pedro complementa con su conocimiento del cliente y criterio de negocio. Ese análisis conjunto es la materia prima que Pedro usa durante la reunión.
+
+Después de la sesión: elaborás los entregables post-reunión bajo supervisión de Pedro: resumen ejecutivo en PDF, plan de acción de 30 días con tareas concretas ordenadas por impacto y esfuerzo, y checklist de implementación inmediata.
+
+Tus entregables: contribución al informe de diagnóstico previo, resumen ejecutivo post-sesión, plan de acción de 30 días.`
+      },
+      {
+        id: 'auditoria',
+        name: 'Auditoría de Marca Digital',
+        badge: null,
+        desc: 'Elaborás el informe completo con estado actual, diagnóstico y recomendaciones por área, más la tabla de prioridades (quick wins vs. cambios estructurales). Pedro presenta al cliente.',
+        tasks: `Lo que hacés vos en este servicio:
+
+El flujo es así: Pedro conduce la reunión con el cliente. Gemini genera la minuta automáticamente. Pedro procesa esa minuta y te pasa el detalle accionable.
+
+Con ese insumo elaborás el informe de auditoría completo. Para cada área documentás:
+• Estado actual (qué hay)
+• Diagnóstico (qué está bien, qué no y por qué)
+• Recomendación concreta (qué hacer al respecto)
+
+Producís la tabla de prioridades de acción: quick wins vs. cambios estructurales.
+
+El informe no es una lista de críticas — es una hoja de ruta accionable. Pedro presenta al cliente.
+
+Tus entregables: informe de auditoría completo en PDF, tabla de prioridades de acción.`
+      },
+      {
+        id: 'calendario_campanas',
+        name: 'Calendario de Campañas Promocionales',
+        badge: null,
+        desc: 'Relevamiento del rubro, selección de fechas con potencial real para la marca, calendario anual e ideas de contenido con formato y tono sugerido por fecha.',
+        tasks: `Lo que hacés vos en este servicio:
+
+Relevás el rubro y la marca para identificar las fechas con mayor potencial de impacto. Descartás las efemérides genéricas que no aplican y seleccionás solo las que tienen sentido para esa audiencia y tipo de marca.
+
+Construís el calendario anual completo:
+• Fechas comerciales clave (Hot Sale, Cyber Monday, Navidad, Día de la Madre, etc.)
+• Efemérides relevantes del rubro
+• Oportunidades estacionales
+• Fechas internas de la marca (aniversario, lanzamientos, hitos)
+
+Para cada fecha relevante desarrollás la idea de contenido: qué comunicar y desde qué ángulo, formato recomendado, tono sugerido. Sin referencias visuales — eso es de Daniela.
+
+Producís la guía de anticipación: con cuántos días de antelación preparar cada campaña.
+
+Tus entregables: calendario anual en PDF y formato editable, documento de ideas por fecha, guía de anticipación.`
+      },
+      {
+        id: 'gestion_integral_x4',
+        name: 'Gestión Integral de Redes — Pack Inicial (x4 publicaciones)',
+        badge: 'Mensual',
+        desc: '4 publicaciones/mes (4 Reels IG/FB + TikTok). Historias interdiarias incluidas. Onboarding estratégico al inicio, luego planificación mensual, briefs para Daniela y copys para Paula.',
+        tasks: `Lo que hacés vos en este servicio:
+
+Conducís el onboarding estratégico al inicio (se hace una sola vez): analizás el rubro, investigás la competencia, definís pilares de contenido, tono de voz y KPIs.
+
+Optimizás los perfiles: bio, highlights, link en bio.
+
+Cada mes: planificás las 4 publicaciones con eje temático, formato y secuencia. Conceptualizás el mensaje de cada pieza para Daniela. Redactás los copys completos para Paula. Incluís el plan de historias interdiarias.
+
+Tus entregables mensuales: plan de contenido aprobado, briefs narrativos para Daniela, documento de copys y hashtags para Paula.`
+      },
+      {
+        id: 'gestion_integral_x8',
+        name: 'Gestión Integral de Redes — Pack Básico (x8 publicaciones)',
+        badge: 'Mensual',
+        desc: '8 publicaciones/mes — 4 Instagram + 4 TikTok. 2 semanales por red. Historias interdiarias incluidas.',
+        tasks: `Lo que hacés vos en este servicio:
+
+Ídem Pack Inicial pero con 8 publicaciones mensuales distribuidas entre Instagram y TikTok.
+
+Cada mes: planificás las 8 publicaciones con eje temático, formato y secuencia. Conceptualizás el mensaje de cada pieza para Daniela. Redactás los 8 copys completos para Paula. Incluís el plan de historias interdiarias.
+
+Tus entregables mensuales: plan de contenido aprobado, briefs narrativos para Daniela, documento de copys y hashtags para Paula.`
+      },
+      {
+        id: 'gestion_integral_x12',
+        name: 'Gestión Integral de Redes — Pack Avanzado (x12 publicaciones)',
+        badge: 'Mensual',
+        desc: '12 publicaciones/mes — 8 Instagram + 4 TikTok. 3 semanales. Historias interdiarias incluidas.',
+        tasks: `Lo que hacés vos en este servicio:
+
+12 publicaciones mensuales distribuidas entre Instagram y TikTok.
+
+Cada mes: planificás las 12 publicaciones con eje temático, formato y secuencia. Conceptualizás el mensaje de cada pieza para Daniela. Redactás los 12 copys completos para Paula. Incluís el plan de historias interdiarias.
+
+Tus entregables mensuales: plan de contenido aprobado, briefs narrativos para Daniela, documento de copys y hashtags para Paula.`
+      },
+      {
+        id: 'gestion_integral_x16',
+        name: 'Gestión Integral de Redes — Pack Premium (x16 publicaciones)',
+        badge: 'Mensual',
+        desc: '16 publicaciones/mes — 12 Instagram + 4 TikTok. 4 semanales. Historias interdiarias incluidas.',
+        tasks: `Lo que hacés vos en este servicio:
+
+16 publicaciones mensuales. Mayor volumen de planificación y redacción.
+
+Cada mes: planificás las 16 publicaciones, conceptualizás briefs para Daniela y redactás los 16 copys para Paula. Incluís el plan de historias interdiarias.
+
+Tus entregables mensuales: plan de contenido aprobado, briefs narrativos para Daniela, documento de copys y hashtags para Paula.`
+      },
+      {
+        id: 'gestion_integral_x20',
+        name: 'Gestión Integral de Redes — Pack Ultra (x20 publicaciones)',
+        badge: 'Mensual',
+        desc: '20 publicaciones/mes — 16 Instagram + 4 TikTok. 5 semanales. Historias diarias incluidas.',
+        tasks: `Lo que hacés vos en este servicio:
+
+20 publicaciones mensuales. El volumen más alto de planificación y redacción del catálogo.
+
+Cada mes: planificás las 20 publicaciones, conceptualizás briefs para Daniela y redactás los 20 copys para Paula. Incluís el plan de historias diarias (todos los días del mes).
+
+Tus entregables mensuales: plan de contenido aprobado, briefs narrativos para Daniela, documento de copys y hashtags para Paula.`
+      },
+      {
+        id: 'gestion_integral_historias',
+        name: 'Add-on: Historias Diarias (Gestión Integral)',
+        badge: 'Add-on mensual',
+        desc: 'Planificación de historias todos los días del mes para cuentas en Pack Inicial, Básico o Avanzado. La marca permanece activa en la mente de su comunidad sin excepción.',
+        tasks: `Lo que hacés vos en este servicio:
+
+Este add-on se activa cuando una cuenta en Pack x4, x8 o x12 quiere cobertura diaria de historias (en x16 y x20 ya están incluidas).
+
+Planificás el contenido de historias para todos los días del mes: qué se comunica, con qué tono, qué formato (encuesta, pregunta, cuenta regresiva, behind the scenes, promocional, etc.). La producción gráfica es de Daniela; la publicación y gestión la hace Paula.
+
+Tu entregable: plan de historias diarias con concepto y orientación narrativa por día.`
+      },
+      {
+        id: 'meta_ads_respaldo',
+        name: 'Meta Ads — Respaldo estratégico de contenido',
+        badge: 'Participación parcial',
+        badgeType: 'parcial',
+        desc: 'Cuando el cliente activa pauta, definís el mensaje y ángulo de cada anuncio, revisás los copys y articulás el contenido orgánico con el pago. La ejecución técnica es de Paula.',
+        tasks: `Lo que hacés vos en este servicio:
+
+La ejecución técnica de Meta Ads (configuración del gestor, segmentaciones, optimización de campañas) es responsabilidad de Paula. Tu rol es el respaldo estratégico de contenido.
+
+Cuando el cliente activa pauta, das soporte en:
+• Definición del mensaje clave y ángulo comunicacional de cada anuncio
+• Revisión del copy de los anuncios desde el criterio de tono de voz de la marca
+• Articulación entre el contenido orgánico y el pago para que la comunicación sea coherente
+• Sugerencias de creatividades según la estrategia de contenido vigente
+
+No tocás el gestor de anuncios ni definís segmentaciones — eso es Paula.
+
+Tu entregable: brief de contenido para anuncios, revisión de copys y alineación estratégica con el contenido orgánico.`
+      },
+      {
+        id: 'email_mkt_respaldo',
+        name: 'Email Marketing — Respaldo estratégico de contenido',
+        badge: 'Participación parcial',
+        badgeType: 'parcial',
+        desc: 'Definís los temas y mensajes de cada envío, redactás o revisás los copys en el tono de voz de la marca y estructurás secuencias automatizadas. La ejecución técnica es de Paula.',
+        tasks: `Lo que hacés vos en este servicio:
+
+La configuración técnica de la plataforma, el setup de listas y la gestión de envíos es responsabilidad de Paula. Tu rol es el respaldo estratégico de contenido.
+
+Cuando el cliente activa email marketing, das soporte en:
+• Definición de los temas y mensajes de cada envío
+• Redacción o revisión del copy de los emails en el tono de voz de la marca
+• Estructura narrativa de secuencias automatizadas
+• Articulación entre la estrategia de redes y la estrategia de email para que la comunicación sea consistente en todos los canales
+
+No tocás la plataforma ni configurás envíos — eso es Paula.
+
+Tu entregable: plan de contenido de emails, copys o revisión de copys, estructura narrativa de secuencias.`
+      }
+    ]
+  },
+
+  // ── 3. PRODUCCIÓN AUDIOVISUAL — ESTRATEGIA Y GUIONES ────────────────────────
+  {
+    id: 'audiovisual',
+    name: 'Producción Audiovisual — Estrategia y Guiones',
+    services: [
+      {
+        id: 'reels_ideas_x1',
+        name: 'Reels con ideas — Pack Inicial (x1 video)',
+        badge: 'Etapa estratégica',
+        badgeType: 'parcial',
+        desc: 'Investigás tendencias, conceptualizás la idea y escribís el guion o escaleta de 1 video. La producción, rodaje y edición son de Orianna.',
+        tasks: `Lo que hacés vos en este servicio:
+
+Sos responsable de la etapa estratégica y creativa. Orianna ejecuta — producción, rodaje y edición son su territorio.
+
+Investigás tendencias del rubro, referentes de contenido y comportamientos del público objetivo. Definís la estrategia: qué idea se va a producir, con qué enfoque y por qué.
+
+Conceptualizás el video: desarrollás la idea central, el mensaje clave, el tono y la estructura narrativa. Escribís el guion o escaleta con el nivel de detalle que Orianna necesita para ejecutar:
+• Qué se dice / Cómo se dice / Qué se muestra / En qué orden
+
+Tus entregables: estrategia de contenido, idea conceptualizada, guion o escaleta listo para producción.`
+      },
+      {
+        id: 'reels_ideas_x4',
+        name: 'Reels con ideas — Pack Básico (x4 videos)',
+        badge: 'Etapa estratégica',
+        badgeType: 'parcial',
+        desc: 'Investigás tendencias, desarrollás 4 conceptos diferenciados y escribís los 4 guiones o escaletas. La producción, rodaje y edición son de Orianna.',
+        tasks: `Lo que hacés vos en este servicio:
+
+Ídem Pack Inicial pero para 4 videos.
+
+Investigás tendencias, definís la estrategia del mes y desarrollás 4 conceptos diferenciados. Para cada video escribís el guion o escaleta completa que Orianna necesita para ejecutar.
+
+Tus entregables: estrategia de contenido, 4 ideas conceptualizadas, 4 guiones o escaletas listos para producción.`
+      },
+      {
+        id: 'reels_ideas_x8',
+        name: 'Reels con ideas — Pack Avanzado (x8 videos)',
+        badge: 'Etapa estratégica',
+        badgeType: 'parcial',
+        desc: 'Investigás tendencias, desarrollás 8 conceptos diferenciados y escribís los 8 guiones o escaletas. La producción, rodaje y edición son de Orianna.',
+        tasks: `Lo que hacés vos en este servicio:
+
+Para 8 videos mensuales. Es el pack más habitual en cuentas activas con producción semanal.
+
+Investigás tendencias, definís la estrategia y desarrollás 8 conceptos. Para cada video escribís el guion o escaleta completa.
+
+Tus entregables: estrategia de contenido, 8 ideas conceptualizadas, 8 guiones o escaletas listos para producción.`
+      },
+      {
+        id: 'reels_ideas_x10',
+        name: 'Reels con ideas — Pack Premium (x10 videos)',
+        badge: 'Etapa estratégica',
+        badgeType: 'parcial',
+        desc: 'Investigás tendencias, desarrollás 10 conceptos diferenciados y escribís los 10 guiones o escaletas. La producción, rodaje y edición son de Orianna.',
+        tasks: `Lo que hacés vos en este servicio:
+
+Para 10 videos mensuales. Mayor volumen de investigación y desarrollo creativo.
+
+Investigás tendencias, definís la estrategia y desarrollás 10 conceptos diferenciados. Para cada video escribís el guion o escaleta completa.
+
+Tus entregables: estrategia de contenido, 10 ideas conceptualizadas, 10 guiones o escaletas listos para producción.`
+      },
+      {
+        id: 'reels_ideas_x12',
+        name: 'Reels con ideas — Pack Ultra (x12 videos)',
+        badge: 'Etapa estratégica',
+        badgeType: 'parcial',
+        desc: 'Investigás tendencias, desarrollás 12 conceptos diferenciados y escribís los 12 guiones o escaletas. La producción, rodaje y edición son de Orianna.',
+        tasks: `Lo que hacés vos en este servicio:
+
+El pack de mayor volumen. 12 videos mensuales — prácticamente 3 por semana.
+
+Investigás tendencias, definís la estrategia y desarrollás 12 conceptos. Para cada video escribís el guion o escaleta completa.
+
+Tus entregables: estrategia de contenido, 12 ideas conceptualizadas, 12 guiones o escaletas listos para producción.`
+      }
+    ]
+  }
+];
+
+// ─── STATE ────────────────────────────────────────────────────────────────────
+let prices = {};
+let times = {};
+let fxRate = null;
+let saveTimer = null;
+let driveLoadedOk = false;
+let pinBuffer = '';
+
+// ─── PIN AUTH ─────────────────────────────────────────────────────────────────
+function pinPress(digit) {
+  if (pinBuffer.length >= 4) return;
+  pinBuffer += digit;
+  updatePinDots();
+  if (pinBuffer.length === 4) setTimeout(checkPin, 120);
+}
+
+function pinDelete() {
+  pinBuffer = pinBuffer.slice(0, -1);
+  updatePinDots();
+  document.getElementById('pinError').textContent = '';
+  document.querySelectorAll('.pin-dot').forEach(d => d.classList.remove('error'));
+}
+
+function updatePinDots() {
+  for (let i = 0; i < 4; i++) {
+    const dot = document.getElementById('pin' + i);
+    dot.classList.toggle('filled', i < pinBuffer.length);
+    dot.classList.remove('error');
+  }
+}
+
+function checkPin() {
+  if (pinBuffer === CORRECT_PIN) {
+    showApp();
+  } else {
+    document.querySelectorAll('.pin-dot').forEach(d => {
+      d.classList.remove('filled');
+      d.classList.add('error');
+    });
+    document.getElementById('pinError').textContent = 'PIN incorrecto. Intentá de nuevo.';
+    setTimeout(() => {
+      pinBuffer = '';
+      updatePinDots();
+      document.querySelectorAll('.pin-dot').forEach(d => d.classList.remove('error'));
+      document.getElementById('pinError').textContent = '';
+    }, 900);
+  }
+}
+
+function handleLogout() {
+  pinBuffer = '';
+  prices = {};
+  times = {};
+  driveLoadedOk = false;
+  updatePinDots();
+  document.getElementById('pinError').textContent = '';
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+// ─── APP INIT ─────────────────────────────────────────────────────────────────
+async function showApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  await fetchFxRate();
+  await loadFromScript();
+  renderServices();
+  updateGlobalProgress();
+}
+
+// ─── FX RATE ──────────────────────────────────────────────────────────────────
+async function fetchFxRate() {
+  try {
+    const res = await fetch('https://dolarapi.com/v1/dolares/oficial');
+    const data = await res.json();
+    fxRate = data.venta;
+    document.getElementById('fxRate').textContent = `$ ${fxRate.toLocaleString('es-AR', {minimumFractionDigits:2})}`;
+    document.getElementById('fxTime').textContent = `· Actualizado ${data.fechaActualizacion ? new Date(data.fechaActualizacion).toLocaleTimeString('es-AR', {hour:'2-digit',minute:'2-digit'}) : 'hoy'}`;
+    document.getElementById('fxDot').classList.add('live');
+  } catch(e) {
+    document.getElementById('fxRate').innerHTML = '<span class="fx-error">No disponible</span>';
+    document.getElementById('fxTime').textContent = '· Revisá tu conexión';
+    fxRate = null;
+  }
+}
+
+// ─── APPS SCRIPT ──────────────────────────────────────────────────────────────
+async function loadFromScript() {
+  driveLoadedOk = false;
+  prices = {};
+  times = {};
+  setSaveStatus('loading');
+  try {
+    const res = await fetch(`${SCRIPT_URL}?pin=${CORRECT_PIN}`);
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error || 'Error al cargar');
+    if (json.data) {
+      prices = json.data.prices || {};
+      times  = json.data.times  || {};
+      const count = Object.values(prices).filter(v => v > 0).length;
+      if (count === 0) showToast('⚠️ Sin precios cargados aún', 'warn');
+      else showToast('Datos cargados ✓', 'ok');
+    }
+    driveLoadedOk = true;
+    setSaveStatus('saved');
+  } catch(e) {
+    driveLoadedOk = false;
+    setSaveStatus('error');
+    showToast('⚠️ No se pudo cargar. No se guardarán cambios.', 'error');
+  }
+}
+
+async function saveToScript() {
+  if (!driveLoadedOk) {
+    setSaveStatus('error');
+    showToast('⚠️ No se guardó: hubo un error al cargar. Recargá la página.', 'error');
+    return;
+  }
+  setSaveStatus('saving');
+  const payload = { pin: CORRECT_PIN, prices, times };
+  try {
+    const res = await fetch(SCRIPT_URL, { method: 'POST', body: JSON.stringify(payload) });
+    const json = await res.json();
+    if (!json.ok) throw new Error(json.error);
+    setSaveStatus('saved');
+    showToast('Guardado ✓', 'ok');
+  } catch(e) {
+    setSaveStatus('error');
+    showToast('Error al guardar. Intentá de nuevo.', 'error');
+  }
+}
+
+function scheduleSave() {
+  if (!driveLoadedOk) { setSaveStatus('error'); return; }
+  clearTimeout(saveTimer);
+  setSaveStatus('saving');
+  saveTimer = setTimeout(saveToScript, 1500);
+}
+
+function setSaveStatus(state) {
+  const dot = document.getElementById('saveDot');
+  const txt = document.getElementById('saveText');
+  dot.className = 'save-dot';
+  if (state === 'saved')        { dot.classList.add('saved');  txt.textContent = 'Guardado'; }
+  else if (state === 'saving')  { dot.classList.add('saving'); txt.textContent = 'Guardando...'; }
+  else if (state === 'error')   { dot.classList.add('error');  txt.textContent = '⚠️ Error al guardar — recargá'; }
+  else if (state === 'loading') { dot.classList.add('saving'); txt.textContent = 'Cargando...'; }
+  else { txt.textContent = 'Sin cambios'; }
+}
+
+// ─── TOAST ────────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type) {
+  const t   = document.getElementById('toast');
+  const dot = document.getElementById('toastDot');
+  document.getElementById('toastMsg').textContent = msg;
+  dot.style.background = type === 'ok' ? 'var(--lime)' : type === 'error' ? 'var(--red)' : 'var(--orange)';
+  document.getElementById('toastEmail').style.display = 'none';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 5000);
+}
+
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+window.onload = () => {
+  // Sin OAuth — arranca directo en pantalla de PIN
+};
+
+function renderServices() {
+  const container = document.getElementById('servicesContent');
+  container.innerHTML = '';
+
+  SECTIONS.forEach((section, si) => {
+    const filled = section.services.filter(s => prices[s.id] && prices[s.id] > 0).length;
+    const total = section.services.length;
+
+    const block = document.createElement('div');
+    block.className = 'section-block';
+
+    const indClass = filled === 0 ? '' : filled === total ? 'complete' : 'partial';
+
+    block.innerHTML = `
+      <div class="section-header open" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-indicator ${indClass}" id="ind-${section.id}"></div>
+          <span class="section-name">${section.name}</span>
+        </div>
+        <div class="section-meta">
+          <span class="section-count" id="count-${section.id}">${filled} / ${total}</span>
+          <span class="chevron">▲</span>
+        </div>
+      </div>
+      <div class="section-body open" id="body-${section.id}"></div>
+    `;
+
+    container.appendChild(block);
+
+    const body = block.querySelector(`#body-${section.id}`);
+
+    section.services.forEach(service => {
+      const card = document.createElement('div');
+      card.className = 'service-card';
+
+      const val = prices[service.id] || 0;
+      const hasVal = val > 0;
+
+      card.innerHTML = `
+        <div class="service-top">
+          <div class="service-info">
+            <div class="service-name">
+              ${service.name}
+              ${service.badge ? `<span class="service-badge ${service.badgeType||''}">${service.badge}</span>` : ''}
+            </div>
+            <div class="service-desc">${service.desc}</div>
+          </div>
+          <div class="price-block">
+            <div class="price-status ${hasVal ? 'filled' : ''}" id="status-${service.id}">
+              ${hasVal ? 'Cargado' : 'Pendiente'}
+            </div>
+            <div class="price-input-wrap">
+              <span class="price-currency">$</span>
+              <input
+                type="number"
+                class="price-input ${hasVal ? 'has-value' : ''}"
+                id="input-${service.id}"
+                placeholder="0"
+                value="${val > 0 ? val : ''}"
+                oninput="onPriceInput('${service.id}', '${section.id}', this)"
+              />
+            </div>
+            <div class="price-label">Precio total del servicio en ARS</div>
+            <div class="fx-display-row">
+              <div class="fx-chip">
+                <div class="fx-chip-label">USD Oficial</div>
+                <div class="fx-chip-value ${hasVal ? 'active' : ''}" id="usd-${service.id}">
+                  ${hasVal && fxRate ? 'U$S ' + (val / fxRate).toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2}) : '—'}
+                </div>
+              </div>
+              <div class="fx-chip intl">
+                <div class="fx-chip-label">Internacional +20%</div>
+                <div class="fx-chip-value ${hasVal ? 'active' : ''}" id="intl-${service.id}">
+                  ${hasVal && fxRate ? 'U$S ' + (val * 1.2 / fxRate).toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2}) : '—'}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <button class="detail-toggle" onclick="toggleDetail('detail-${service.id}', this)">
+          <span>▼</span> Ver mis tareas en este servicio
+        </button>
+        <div class="detail-body" id="detail-${service.id}">
+          <div class="detail-title">Tus tareas</div>
+          <div class="detail-text">${formatTasks(service.tasks)}</div>
+          <div class="delivery-row">
+            <span class="delivery-label">⏱ Tiempo estimado</span>
+            <input
+              type="text"
+              class="delivery-input ${(times[service.id] && times[service.id].trim()) ? 'has-value' : ''}"
+              id="time-${service.id}"
+              placeholder="Ej: 3 – 5 días hábiles"
+              value="${times[service.id] || ''}"
+              oninput="onTimeInput('${service.id}', this)"
+            />
+          </div>
+        </div>
+      `;
+
+      body.appendChild(card);
+    });
+  });
+}
+
+// ─── FORMAT TASKS ─────────────────────────────────────────────────────────────
+function formatTasks(text) {
+  const lines = text.split('\n');
+  let html = '';
+  for (const line of lines) {
+    const trimmed = line.trim();
+    if (trimmed === '') continue;
+
+    const isBullet = trimmed.startsWith('•') || trimmed.startsWith('-');
+    const isEtapa  = /^Etapa\s+\d+\s*[—–-]/.test(trimmed);
+
+    if (isEtapa) {
+      html += `<span class="task-title">${trimmed}</span>`;
+      continue;
+    }
+
+    if (!isBullet) {
+      const colonIdx = trimmed.indexOf(':');
+      if (colonIdx > 0 && colonIdx < trimmed.length - 1) {
+        // Tiene ":" en el medio: partir en título + cuerpo
+        const titlePart = trimmed.slice(0, colonIdx + 1).trim();
+        const bodyPart  = trimmed.slice(colonIdx + 1).trim();
+        html += `<span class="task-title">${titlePart}</span>`;
+        html += `<span class="task-line">${bodyPart}</span>`;
+        continue;
+      }
+      if (trimmed.endsWith(':')) {
+        html += `<span class="task-title">${trimmed}</span>`;
+        continue;
+      }
+    }
+
+    html += `<span class="task-line">${trimmed}</span>`;
+  }
+  return html;
+}
+
+function toggleSection(header) {
+  header.classList.toggle('open');
+  const sectionId = header.querySelector('.section-indicator').id.replace('ind-', '');
+  const body = document.getElementById(`body-${sectionId}`);
+  body.classList.toggle('open');
+  const chevron = header.querySelector('.chevron');
+  chevron.textContent = body.classList.contains('open') ? '▲' : '▼';
+}
+
+function toggleDetail(id, btn) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
+  btn.innerHTML = el.classList.contains('open')
+    ? '<span>▲</span> Ocultar detalle'
+    : '<span>▼</span> Ver mis tareas en este servicio';
+}
+
+function onPriceInput(serviceId, sectionId, input) {
+  const val = parseFloat(input.value) || 0;
+  prices[serviceId] = val;
+
+  const hasVal = val > 0;
+  input.classList.toggle('has-value', hasVal);
+
+  const status = document.getElementById(`status-${serviceId}`);
+  status.textContent = hasVal ? 'Cargado' : 'Pendiente';
+  status.classList.toggle('filled', hasVal);
+
+  const usdEl = document.getElementById(`usd-${serviceId}`);
+  const intlEl = document.getElementById(`intl-${serviceId}`);
+
+  if (hasVal && fxRate) {
+    usdEl.textContent = 'U$S ' + (val / fxRate).toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2});
+    intlEl.textContent = 'U$S ' + (val * 1.2 / fxRate).toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2});
+    usdEl.classList.add('active');
+    intlEl.classList.add('active');
+  } else {
+    usdEl.textContent = '—';
+    intlEl.textContent = '—';
+    usdEl.classList.remove('active');
+    intlEl.classList.remove('active');
+  }
+
+  updateSectionProgress(sectionId);
+  updateGlobalProgress();
+  scheduleSave();
+}
+
+function onTimeInput(serviceId, input) {
+  const val = input.value.trim();
+  if (val) {
+    times[serviceId] = val;
+    input.classList.add('has-value');
+  } else {
+    delete times[serviceId];
+    input.classList.remove('has-value');
+  }
+  scheduleSave();
+}
+
+function updateSectionProgress(sectionId) {
+  const section = SECTIONS.find(s => s.id === sectionId);
+  if (!section) return;
+  const filled = section.services.filter(s => prices[s.id] && prices[s.id] > 0).length;
+  const total = section.services.length;
+  document.getElementById(`count-${sectionId}`).textContent = `${filled} / ${total}`;
+  const ind = document.getElementById(`ind-${sectionId}`);
+  ind.className = 'section-indicator';
+  if (filled > 0) ind.classList.add(filled === total ? 'complete' : 'partial');
+}
+
+function updateGlobalProgress() {
+  const allServices = SECTIONS.flatMap(s => s.services);
+  const filled = allServices.filter(s => prices[s.id] && prices[s.id] > 0).length;
+  const total = allServices.length;
+  const pct = total > 0 ? Math.round((filled / total) * 100) : 0;
+  document.getElementById('globalFill').style.width = pct + '%';
+  document.getElementById('globalPct').textContent = pct + '%';
+}
+
+</script>
+</body>
+</html>
