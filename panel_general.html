@@ -1,0 +1,1884 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contentive Studio — Panel Director</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+  :root {
+    --bg: #0e0e0e;
+    --surface: #161616;
+    --surface2: #1e1e1e;
+    --border: #2a2a2a;
+    --orange: #F5A623;
+    --lime: #B8E04A;
+    --text: #f0ede8;
+    --muted: #6b6b6b;
+    --muted2: #3a3a3a;
+    --red: #ff4444;
+    --green: #4ade80;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-weight: 300;
+    min-height: 100vh;
+    padding: 0 0 80px 0;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    padding: 20px 32px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+  }
+  .header-left { display: flex; align-items: center; gap: 14px; }
+  .logo-dot { width: 10px; height: 10px; background: var(--orange); border-radius: 50%; flex-shrink: 0; }
+  .header-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--text); }
+  .header-subtitle { font-size: 12px; color: var(--muted); letter-spacing: 0.04em; margin-top: 2px; }
+  .header-right { display: flex; align-items: center; gap: 16px; }
+
+  .user-chip { display: flex; align-items: center; gap: 8px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 5px 12px 5px 6px; font-size: 12px; color: var(--text); }
+  .user-avatar { width: 24px; height: 24px; border-radius: 50%; object-fit: cover; background: var(--border); }
+
+  .btn-logout { background: none; border: 1px solid var(--border); border-radius: 6px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 6px 12px; cursor: pointer; transition: border-color .2s, color .2s; }
+  .btn-logout:hover { border-color: var(--red); color: var(--red); }
+
+  /* ── FX BANNER ── */
+  .fx-banner { background: var(--surface2); border-bottom: 1px solid var(--border); padding: 8px 32px; display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
+  .fx-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--muted2); }
+  .fx-dot.live { background: var(--green); }
+  .fx-val { color: var(--text); font-weight: 500; }
+  .fx-error { color: var(--red); }
+
+  /* ── AUTH SCREEN ── */
+  #auth-screen { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 80vh; gap: 32px; padding: 40px; }
+
+  .auth-logo { display: flex; flex-direction: column; align-items: center; gap: 12px; }
+  .auth-dot-row { display: flex; gap: 6px; }
+  .auth-dot { width: 8px; height: 8px; border-radius: 50%; }
+  .auth-dot.orange { background: var(--orange); }
+  .auth-dot.lime { background: var(--lime); }
+  .auth-dot.muted { background: var(--muted2); }
+
+  .auth-title { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase; text-align: center; }
+  .auth-subtitle { font-size: 13px; color: var(--muted); text-align: center; max-width: 320px; line-height: 1.6; }
+
+  .badge-director { background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 4px 14px; font-size: 11px; font-family: 'Syne', sans-serif; letter-spacing: 0.1em; text-transform: uppercase; color: var(--orange); }
+
+  .btn-google { display: flex; align-items: center; gap: 10px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 14px; font-weight: 500; padding: 14px 28px; cursor: pointer; transition: border-color .2s, background .2s; }
+  .btn-google:hover { background: var(--surface2); border-color: var(--orange); }
+  .btn-google svg { flex-shrink: 0; }
+
+  /* ── ACCESO COLABORADORES (auth screen) ── */
+  .collab-access-section {
+    width: 100%;
+    max-width: 680px;
+    margin-top: 8px;
+  }
+  .collab-access-label {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    text-align: center;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .collab-access-label::before,
+  .collab-access-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+  .collab-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 10px;
+  }
+  .collab-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    text-decoration: none;
+    transition: border-color .2s, background .2s;
+    cursor: pointer;
+  }
+  .collab-card:hover { border-color: var(--orange); background: var(--surface2); }
+  .collab-card-name { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: 0.07em; text-transform: uppercase; color: var(--text); }
+  .collab-card-role { font-size: 11px; color: var(--muted); }
+  .collab-card-pin { font-size: 11px; color: var(--orange); margin-top: 4px; font-family: 'Syne', sans-serif; letter-spacing: 0.05em; }
+  .collab-card-link { font-size: 10px; color: var(--muted); margin-top: 2px; opacity: 0.6; }
+
+  /* ── APP ── */
+  #app { display: none; }
+
+  /* ── STATS ROW ── */
+  .stats-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; padding: 24px 32px 0; }
+
+  .stat-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px 20px; }
+  .stat-label { font-size: 11px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
+  .stat-value { font-family: 'Syne', sans-serif; font-size: 20px; font-weight: 700; color: var(--text); }
+  .stat-value.orange { color: var(--orange); }
+  .stat-value.lime { color: var(--lime); }
+  .stat-value.blue { color: #7aa2ff; }
+  .stat-value.purple { color: #c084fc; }
+  .stat-sub { font-size: 11px; color: var(--muted); margin-top: 4px; }
+
+  /* ── TABS ── */
+  .tabs-wrap { padding: 24px 32px 0; display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 0; overflow-x: auto; }
+
+  .tab-btn { background: none; border: none; border-bottom: 2px solid transparent; color: var(--muted); font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 10px 14px 12px; cursor: pointer; transition: color .2s, border-color .2s; position: relative; top: 1px; white-space: nowrap; }
+  .tab-btn.active { color: var(--text); border-bottom-color: var(--orange); }
+  .tab-btn:hover:not(.active) { color: var(--text); }
+
+  .tab-badge { display: inline-flex; align-items: center; justify-content: center; background: var(--surface2); border-radius: 10px; font-size: 10px; padding: 1px 7px; margin-left: 6px; color: var(--muted); }
+
+  /* ── CONTENT ── */
+  .tab-content { display: none; padding: 24px 32px; }
+  .tab-content.active { display: block; }
+
+  /* ── SECTION BLOCK ── */
+  .section-block { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 12px; overflow: hidden; }
+
+  .section-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; cursor: pointer; user-select: none; transition: background .15s; }
+  .section-header:hover { background: var(--surface2); }
+  .section-header-left { display: flex; align-items: center; gap: 10px; }
+
+  .section-indicator { width: 8px; height: 8px; border-radius: 50%; background: var(--muted2); flex-shrink: 0; }
+  .section-indicator.complete { background: var(--lime); }
+  .section-indicator.partial { background: var(--orange); }
+
+  .section-name { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.07em; text-transform: uppercase; }
+  .section-meta { display: flex; align-items: center; gap: 10px; }
+  .section-count { font-size: 11px; color: var(--muted); }
+  .chevron { font-size: 10px; color: var(--muted); transition: transform .2s; }
+  .section-header.open .chevron { transform: rotate(0deg); }
+  .section-header:not(.open) .chevron { transform: rotate(180deg); }
+  .section-body { display: none; border-top: 1px solid var(--border); }
+  .section-body.open { display: block; }
+
+  /* ── SERVICE ROW ── */
+  .service-row { display: flex; align-items: flex-start; justify-content: space-between; padding: 12px 20px; border-bottom: 1px solid var(--border); gap: 12px; }
+  .service-row:last-child { border-bottom: none; }
+
+  .service-name-col { font-size: 13px; color: var(--text); flex: 1; line-height: 1.4; }
+  .service-desc { font-size: 11px; color: var(--muted); margin-top: 3px; line-height: 1.5; }
+  .service-time { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  .price-chips { display: flex; gap: 6px; align-items: center; flex-shrink: 0; flex-wrap: wrap; justify-content: flex-end; max-width: 340px; }
+
+  .chip { display: inline-flex; align-items: center; border-radius: 6px; padding: 4px 10px; font-size: 12px; font-weight: 500; white-space: nowrap; }
+  .chip-pending { background: var(--surface2); color: var(--muted); border: 1px solid var(--border); }
+  .chip-usd { background: rgba(245,166,35,.12); color: var(--orange); border: 1px solid rgba(245,166,35,.25); }
+  .chip-ars { background: rgba(184,224,74,.1); color: var(--lime); border: 1px solid rgba(184,224,74,.2); }
+  .chip-ars-only { background: rgba(184,224,74,.1); color: var(--lime); border: 1px solid rgba(184,224,74,.2); }
+  .chip-pack { background: rgba(122,162,255,.1); color: #7aa2ff; border: 1px solid rgba(122,162,255,.25); font-size: 11px; }
+
+  /* Pack rows dentro de sección */
+  .pack-row { display: flex; align-items: center; justify-content: space-between; padding: 7px 20px 7px 36px; border-bottom: 1px solid var(--border); gap: 10px; }
+  .pack-row:last-child { border-bottom: none; }
+  .pack-label { font-size: 12px; color: var(--muted); flex: 1; }
+  .pack-chips { display: flex; gap: 6px; align-items: center; }
+
+  /* ── SERVICES CONSOLIDADO ── */
+  .services-intro { font-size: 13px; color: var(--muted); margin-bottom: 20px; line-height: 1.6; }
+  .services-collab-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--surface2); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); margin-left: 8px; vertical-align: middle; }
+
+  /* ── PROGRESS BAR ── */
+  .progress-wrap { display: flex; align-items: center; gap: 10px; padding: 20px 32px 0; }
+  .progress-label { font-size: 11px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; white-space: nowrap; width: 90px; flex-shrink: 0; }
+  .progress-bar { flex: 1; height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--orange); border-radius: 2px; transition: width .4s ease; width: 0%; }
+  .progress-fill.lime { background: var(--lime); }
+  .progress-fill.blue { background: #7aa2ff; }
+  .progress-fill.purple { background: #c084fc; }
+  .progress-pct { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; color: var(--text); width: 36px; text-align: right; flex-shrink: 0; }
+
+  /* ── REFRESH BTN ── */
+  .btn-refresh { background: none; border: 1px solid var(--border); border-radius: 8px; color: var(--muted); font-family: 'DM Sans', sans-serif; font-size: 12px; padding: 8px 16px; cursor: pointer; transition: border-color .2s, color .2s; display: flex; align-items: center; gap: 6px; }
+  .btn-refresh:hover { border-color: var(--orange); color: var(--orange); }
+  .btn-refresh.spinning svg { animation: spin .8s linear infinite; }
+  @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+  /* ── EMPTY STATE ── */
+  .empty-state { text-align: center; padding: 48px 20px; color: var(--muted); font-size: 13px; line-height: 1.7; }
+  .empty-icon { font-size: 28px; margin-bottom: 12px; }
+
+  /* ── LOADING ── */
+  .loading-overlay { display: none; flex-direction: column; align-items: center; justify-content: center; gap: 16px; padding: 60px; color: var(--muted); font-size: 13px; }
+  .loading-overlay.active { display: flex; }
+  .spinner { width: 24px; height: 24px; border: 2px solid var(--border); border-top-color: var(--orange); border-radius: 50%; animation: spin .7s linear infinite; }
+
+  /* ── TOAST ── */
+  .toast { position: fixed; bottom: 28px; left: 50%; transform: translateX(-50%) translateY(80px); background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 10px 18px; display: flex; align-items: center; gap: 8px; font-size: 13px; z-index: 999; opacity: 0; transition: transform .25s, opacity .25s; white-space: nowrap; }
+  .toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+  .toast-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--orange); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .stats-row { grid-template-columns: 1fr 1fr; padding: 16px 16px 0; }
+    .tabs-wrap { padding: 16px 16px 0; }
+    .tab-content { padding: 16px; }
+    .progress-wrap { padding: 16px 16px 0; }
+    .header { padding: 16px; }
+    .fx-banner { padding: 8px 16px; }
+    .collab-grid { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- AUTH SCREEN -->
+<div id="auth-screen">
+  <div class="auth-logo">
+    <div class="auth-dot-row">
+      <div class="auth-dot orange"></div>
+      <div class="auth-dot lime"></div>
+      <div class="auth-dot muted"></div>
+    </div>
+  </div>
+  <div>
+    <div class="auth-title" style="font-family:'Syne',sans-serif">Contentive Studio</div>
+    <div class="auth-subtitle" style="margin-top:8px">Panel de Costos — Director</div>
+  </div>
+  <div class="badge-director">Acceso Director</div>
+  <div class="auth-subtitle">
+    Iniciá sesión con tu cuenta de Google para ver los costos cargados por todo el equipo.
+  </div>
+  <button class="btn-google" onclick="handleLogin()">
+    <svg width="18" height="18" viewBox="0 0 18 18"><path fill="#4285F4" d="M16.51 8H8.98v3h4.3c-.18 1-.74 1.48-1.6 2.04v2.01h2.6a7.8 7.8 0 0 0 2.38-5.88c0-.57-.05-.66-.15-1.18z"/><path fill="#34A853" d="M8.98 17c2.16 0 3.97-.72 5.3-1.94l-2.6-2a4.8 4.8 0 0 1-7.18-2.54H1.83v2.07A8 8 0 0 0 8.98 17z"/><path fill="#FBBC05" d="M4.5 10.52a4.8 4.8 0 0 1 0-3.04V5.41H1.83a8 8 0 0 0 0 7.18l2.67-2.07z"/><path fill="#EA4335" d="M8.98 4.18c1.17 0 2.23.4 3.06 1.2l2.3-2.3A8 8 0 0 0 1.83 5.4L4.5 7.49a4.77 4.77 0 0 1 4.48-3.31z"/></svg>
+    Continuar con Google
+  </button>
+
+  <!-- ACCESO COLABORADORES -->
+  <div class="collab-access-section">
+    <div class="collab-access-label">Acceso colaboradores</div>
+    <div class="collab-grid">
+      <a class="collab-card" href="daniela.html" target="_blank">
+        <div class="collab-card-name">Daniela</div>
+        <div class="collab-card-role">Diseño Gráfico</div>
+        <div class="collab-card-pin">PIN · 2608</div>
+        <div class="collab-card-link">daniela.html</div>
+      </a>
+      <a class="collab-card" href="victoria.html" target="_blank">
+        <div class="collab-card-name">Victoria</div>
+        <div class="collab-card-role">Estrategia de Contenido</div>
+        <div class="collab-card-pin">PIN · 1101</div>
+        <div class="collab-card-link">victoria.html</div>
+      </a>
+      <a class="collab-card" href="orianna.html" target="_blank">
+        <div class="collab-card-name">Orianna</div>
+        <div class="collab-card-role">Producción Audiovisual</div>
+        <div class="collab-card-pin">PIN · 0102</div>
+        <div class="collab-card-link">orianna.html</div>
+      </a>
+      <a class="collab-card" href="paula.html" target="_blank">
+        <div class="collab-card-name">Paula</div>
+        <div class="collab-card-role">Community + Paid Media</div>
+        <div class="collab-card-pin">PIN · 0711</div>
+        <div class="collab-card-link">paula.html</div>
+      </a>
+      <a class="collab-card" href="pedro.html" target="_blank">
+        <div class="collab-card-name">Pedro</div>
+        <div class="collab-card-role">Dirección</div>
+        <div class="collab-card-pin">Acceso con Google</div>
+        <div class="collab-card-link">pedro.html</div>
+      </a>
+    </div>
+  </div>
+</div>
+
+<!-- APP -->
+<div id="app">
+
+  <div class="header">
+    <div class="header-left">
+      <div class="logo-dot"></div>
+      <div>
+        <div class="header-title">Contentive Studio</div>
+        <div class="header-subtitle">Panel de Costos · Solo lectura</div>
+      </div>
+    </div>
+    <div class="header-right">
+      <button class="btn-refresh" id="refreshBtn" onclick="reloadAll()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
+        Actualizar
+      </button>
+      <div class="user-chip">
+        <img class="user-avatar" id="userAvatar" src="" alt="">
+        <span id="userName">Pedro</span>
+      </div>
+      <button class="btn-logout" onclick="handleLogout()">Salir</button>
+    </div>
+  </div>
+
+  <div class="fx-banner">
+    <div class="fx-dot" id="fxDot"></div>
+    <span>Dólar oficial:</span>
+    <span class="fx-val" id="fxRateDisplay">Cargando...</span>
+    <span id="fxTime"></span>
+  </div>
+
+  <!-- STATS -->
+  <div class="stats-row">
+    <div class="stat-card">
+      <div class="stat-label">Daniela — completado</div>
+      <div class="stat-value orange" id="statDanielaPct">—</div>
+      <div class="stat-sub" id="statDanielaCount">de 43 servicios</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Victoria — completado</div>
+      <div class="stat-value lime" id="statVictoriaPct">—</div>
+      <div class="stat-sub" id="statVictoriaCount">de 19 servicios</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Orianna — completado</div>
+      <div class="stat-value blue" id="statOriannaPct">—</div>
+      <div class="stat-sub" id="statOriannaCount">packs cargados</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Paula — completado</div>
+      <div class="stat-value purple" id="statPaulaPct">—</div>
+      <div class="stat-sub" id="statPaulaCount">servicios cargados</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Pedro — completado</div>
+      <div class="stat-value" style="color:#c084fc" id="statPedroPct">—</div>
+      <div class="stat-sub" id="statPedroCount">servicios cargados</div>
+    </div>
+    <div class="stat-card">
+      <div class="stat-label">Última actualización</div>
+      <div class="stat-value" id="statLastUpdate" style="font-size:13px;margin-top:2px">—</div>
+      <div class="stat-sub" id="statLastUpdateSub">—</div>
+    </div>
+  </div>
+
+  <!-- PROGRESS BARS -->
+  <div class="progress-wrap">
+    <div class="progress-label">Daniela</div>
+    <div class="progress-bar"><div class="progress-fill" id="fillDaniela"></div></div>
+    <div class="progress-pct" id="pctDaniela">0%</div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">Victoria</div>
+    <div class="progress-bar"><div class="progress-fill lime" id="fillVictoria"></div></div>
+    <div class="progress-pct" id="pctVictoria">0%</div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">Orianna</div>
+    <div class="progress-bar"><div class="progress-fill blue" id="fillOrianna"></div></div>
+    <div class="progress-pct" id="pctOrianna">0%</div>
+  </div>
+  <div class="progress-wrap">
+    <div class="progress-label">Paula</div>
+    <div class="progress-bar"><div class="progress-fill purple" id="fillPaula"></div></div>
+    <div class="progress-pct" id="pctPaula">0%</div>
+  </div>
+  <div class="progress-wrap" style="padding-bottom:8px">
+    <div class="progress-label">Pedro</div>
+    <div class="progress-bar"><div class="progress-fill" style="background:#c084fc" id="fillPedro"></div></div>
+    <div class="progress-pct" id="pctPedro">0%</div>
+  </div>
+
+  <!-- TABS -->
+  <div class="tabs-wrap">
+    <button class="tab-btn active" onclick="switchTab('servicios', this)">
+      Servicios
+    </button>
+    <button class="tab-btn" onclick="switchTab('daniela', this)">
+      Daniela · Diseño <span class="tab-badge" id="badgeDaniela">—</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('victoria', this)">
+      Victoria · Estrategia <span class="tab-badge" id="badgeVictoria">—</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('orianna', this)">
+      Orianna · Audiovisual <span class="tab-badge" id="badgeOrianna">—</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('paula', this)">
+      Paula · Community <span class="tab-badge" id="badgePaula">—</span>
+    </button>
+    <button class="tab-btn" onclick="switchTab('pedro', this)">
+      Pedro · Dirección <span class="tab-badge" id="badgePedro">—</span>
+    </button>
+  </div>
+
+  <!-- TAB: SERVICIOS CONSOLIDADO -->
+  <div class="tab-content active" id="tab-servicios">
+    <div id="contentServicios"></div>
+  </div>
+
+  <!-- TAB: DANIELA -->
+  <div class="tab-content" id="tab-daniela">
+    <div class="loading-overlay active" id="loadDaniela">
+      <div class="spinner"></div>
+      <span>Cargando datos de Daniela...</span>
+    </div>
+    <div id="contentDaniela"></div>
+  </div>
+
+  <!-- TAB: VICTORIA -->
+  <div class="tab-content" id="tab-victoria">
+    <div class="loading-overlay active" id="loadVictoria">
+      <div class="spinner"></div>
+      <span>Cargando datos de Victoria...</span>
+    </div>
+    <div id="contentVictoria"></div>
+  </div>
+
+  <!-- TAB: ORIANNA -->
+  <div class="tab-content" id="tab-orianna">
+    <div class="loading-overlay active" id="loadOrianna">
+      <div class="spinner"></div>
+      <span>Cargando datos de Orianna...</span>
+    </div>
+    <div id="contentOrianna"></div>
+  </div>
+
+  <!-- TAB: PAULA -->
+  <div class="tab-content" id="tab-paula">
+    <div class="loading-overlay active" id="loadPaula">
+      <div class="spinner"></div>
+      <span>Cargando datos de Paula...</span>
+    </div>
+    <div id="contentPaula"></div>
+  </div>
+
+  <!-- TAB: PEDRO -->
+  <div class="tab-content" id="tab-pedro">
+    <div class="loading-overlay active" id="loadPedro">
+      <div class="spinner"></div>
+      <span>Cargando datos de Pedro...</span>
+    </div>
+    <div id="contentPedro"></div>
+  </div>
+
+</div>
+
+<div class="toast" id="toast">
+  <div class="toast-dot" id="toastDot"></div>
+  <span id="toastMsg"></span>
+</div>
+
+<script>
+// ── CONFIG ──────────────────────────────────────────────────────────────────
+const CLIENT_ID = '1089154369329-ofb9b8a7au5ds7c0kthg7nmul2n0srj3.apps.googleusercontent.com';
+const DRIVE_FOLDER_ID = '1g0Rnv7297gNZ2h2HK86eh7vTHZRaboP1';
+const SCOPES = 'https://www.googleapis.com/auth/drive.readonly';
+
+// Scripts de colaboradoras vía PIN
+const ORIANNA_SCRIPT = 'https://script.google.com/macros/s/AKfycbx9rjJdophviygL_fhG6Rns3Uez7HsnmBleSyanNhpHNyAmOJSuy7vDoXBmxrlDm6i2/exec';
+const ORIANNA_PIN = '0102';
+const PAULA_SCRIPT = 'https://script.google.com/macros/s/AKfycbyb5ZE9wlK4CqM4nLWLwSKYp-RWVqqAy7y1mODWw-JYb5RPoOG8pov9LZjh-o9SfS0j/exec';
+const PAULA_PIN = '0711';
+const PEDRO_SCRIPT = 'https://script.google.com/macros/s/AKfycbxXrP_rQtJo-8nE8r5JMlrSlVH7WBw9NOYAhh4--PhjatbArJMiMDCeHXX8gGFGpaADYw/exec';
+const PEDRO_PIN = '2510';
+
+// ── CATÁLOGO DANIELA ──────────────────────────────────────────────────────
+const DANIELA_SECTIONS = [
+  {
+    id: 'branding', name: 'Branding e Identidad Visual',
+    services: [
+      { id: 'id_simple',            name: 'Identidad Corporativa Simple',        desc: 'Logotipo, paleta de colores, tipografía y manual básico. 3 propuestas conceptuales. Entregables en AI, PSD, PNG, SVG y PDF vectorial.' },
+      { id: 'id_prof',              name: 'Identidad Corporativa Profesional',   desc: 'Sistema visual completo: logotipo con variantes, paleta HEX/CMYK/RGB/Pantone, sistema tipográfico y manual profesional. 3 propuestas conceptuales.' },
+      { id: 'branding_book',        name: 'Branding Book Completo',              desc: 'El servicio más integral. Sistema de identidad visual completo + universo de marca + plantillas de RRSS + papelería + comunicación verbal (Etapa 10 con Victoria).' },
+      { id: 'kit_identidad_digital',name: 'Kit de Identidad Digital',            desc: '8 plantillas de feed + 16 plantillas de historias + 6 portadas de destacadas. Todo editable en Canva, AI o PSD.' },
+      { id: 'papeleria',            name: 'Papelería Corporativa',               desc: 'Tarjeta personal (frente y dorso), membrete A4, sobre, carpeta de presentación, plantilla Word/Google Docs y firma de mail en HTML. Listo para imprenta.' },
+      { id: 'merch',                name: 'Merchandising Corporativo',           desc: 'Diseño de identidad sobre productos físicos. Archivos técnicos para proveedor + mockup 3D para aprobación.' }
+    ]
+  },
+  {
+    id: 'packs', name: 'Diseño Gráfico y Multimedia',
+    services: [
+      { id: 'pack_basico',                name: 'Pack Básico — x4 piezas de feed',              desc: '4 piezas estáticas de feed + 16 días de historias interdiarias + portadas destacadas (máx. 6).' },
+      { id: 'pack_medio',                 name: 'Pack Medio — x8 piezas de feed',               desc: '8 piezas estáticas de feed + 16 días de historias interdiarias + portadas destacadas (máx. 6).' },
+      { id: 'pack_full',                  name: 'Pack Full — x12 piezas de feed',               desc: '12 piezas de feed (incluye carruseles) + 16 días de historias interdiarias + portadas destacadas (máx. 8).' },
+      { id: 'pack_ultimate',              name: 'Pack Ultimate — x16 piezas de feed',           desc: '16 piezas de feed (carruseles hasta 6 slides) + 31 días de historias diarias + portadas destacadas (máx. 10).' },
+      { id: 'pack_ultra',                 name: 'Pack Ultra — x20 piezas de feed',              desc: '20 piezas de feed (carruseles incluidos) + 31 días de historias diarias + portadas destacadas (máx. 12).' },
+      { id: 'pack_ultimate_historias_addon', name: 'Add-on: Adaptación a Historias Diarias',   desc: '15 días adicionales de historias para cuentas en Pack Básico, Medio o Full que quieren cobertura diaria.' },
+      { id: 'historias_basico',           name: 'Add-on: Pack de Historias — Básico (x8 días)',  desc: '8 días de historias standalone. 1 o 2 artes por día.' },
+      { id: 'historias_medio',            name: 'Add-on: Pack de Historias — Medio (x12 días)', desc: '12 días de historias standalone. 1 o 2 artes por día.' },
+      { id: 'historias_full',             name: 'Add-on: Pack de Historias — Full (x16 días)',  desc: '16 días de historias standalone. 1 o 2 artes por día.' },
+      { id: 'historias_ultimate',         name: 'Add-on: Pack de Historias — Ultimate (x31 días)', desc: '31 días de historias diarias standalone.' },
+      { id: 'camp_basico',                name: 'Campaña Estacional — Pack Básico',             desc: '1 concepto visual base + 4 piezas adaptadas (post, historias, portada de reels, banner y header web).' },
+      { id: 'camp_full',                  name: 'Campaña Estacional — Pack Full',               desc: '1 concepto visual base + 8 piezas adaptadas (post, historias, portada de reels, banner y header web).' },
+      { id: 'packaging',                  name: 'Diseño de Packaging / Etiquetas',              desc: 'Diseño de 1 línea de producto + 2 adaptaciones + mockup 3D para aprobación antes de producción.' },
+      { id: 'pres_est_basico',            name: 'Presentaciones Estáticas — Básico (5-10 slides)', desc: 'PDF de 5 a 10 diapositivas con identidad visual aplicada.' },
+      { id: 'pres_est_medio',             name: 'Presentaciones Estáticas — Medio (10-20 slides)', desc: 'PDF de 10 a 20 diapositivas con identidad visual aplicada.' },
+      { id: 'pres_est_full',              name: 'Presentaciones Estáticas — Full (hasta 30 slides)', desc: 'PDF de hasta 30 diapositivas con identidad visual aplicada.' },
+      { id: 'pres_ed_basico',             name: 'Presentaciones Editables — Básico (5-10 slides)', desc: '5 a 10 slides editables en PowerPoint, Canva o PDF editable.' },
+      { id: 'pres_ed_medio',              name: 'Presentaciones Editables — Medio (10-20 slides)', desc: '10 a 20 slides editables en PowerPoint, Canva o PDF editable.' },
+      { id: 'pres_ed_full',               name: 'Presentaciones Editables — Full (hasta 30 slides)', desc: 'Hasta 30 slides editables en PowerPoint, Canva o PDF editable.' },
+      { id: 'landing',                    name: 'Diseño de Landing Page / One Page',            desc: 'Diseño UI visual completo (wireframe + layout). Sin programación.' },
+      { id: 'editorial',                  name: 'Diseño Editorial (catálogo, eBook, menú)',     desc: 'Catálogo, eBook o menú de 4 a 12 páginas con identidad visual aplicada.' },
+      { id: 'tarjeta_1',                  name: 'Tarjeta de Presentación — 1 faz',              desc: 'Diseño de tarjeta personal o corporativa de una cara, lista para imprenta.' },
+      { id: 'tarjeta_2',                  name: 'Tarjeta de Presentación — Doble faz',          desc: 'Diseño de tarjeta personal o corporativa de dos caras, lista para imprenta.' },
+      { id: 'flyer_1_1f',                 name: 'Flyer — 1 unidad (1 faz)',                     desc: '1 flyer digital o imprimible de una cara.' },
+      { id: 'flyer_3_1f',                 name: 'Flyer — Pack de 3 (1 faz)',                    desc: '3 flyers digitales o imprimibles de una cara.' },
+      { id: 'flyer_5_1f',                 name: 'Flyer — Pack de 5 (1 faz)',                    desc: '5 flyers digitales o imprimibles de una cara.' },
+      { id: 'flyer_1_2f',                 name: 'Flyer — 1 unidad (doble faz)',                 desc: '1 flyer digital o imprimible de doble cara.' },
+      { id: 'flyer_3_2f',                 name: 'Flyer — Pack de 3 (doble faz)',                desc: '3 flyers digitales o imprimibles de doble cara.' },
+      { id: 'flyer_5_2f',                 name: 'Flyer — Pack de 5 (doble faz)',                desc: '5 flyers digitales o imprimibles de doble cara.' },
+      { id: 'brochure',                   name: 'Brochure / Tríptico',                          desc: 'Diseño de brochure o tríptico plegable, digital o para impresión.' },
+      { id: 'banner_1',                   name: 'Banner Web — 1 unidad',                        desc: '1 banner digital adaptado al formato requerido.' },
+      { id: 'banner_3',                   name: 'Banner Web — Pack de 3',                       desc: '3 banners digitales en distintos formatos o versiones.' },
+      { id: 'banner_5',                   name: 'Banner Web — Pack de 5',                       desc: '5 banners digitales en distintos formatos o versiones.' },
+      { id: 'news_1',                     name: 'Newsletter — 1 plantilla de mail',             desc: 'Diseño completo de 1 plantilla de email marketing responsive. Sin programación.' },
+      { id: 'news_2',                     name: 'Newsletter — Pack de 2 plantillas',            desc: 'Diseño de 2 plantillas de email marketing responsive.' },
+      { id: 'news_4',                     name: 'Newsletter — Pack de 4 plantillas',            desc: 'Diseño de 4 plantillas de email marketing responsive.' },
+      { id: 'news_8',                     name: 'Newsletter — Pack de 8 plantillas',            desc: 'Diseño de 8 plantillas de email marketing responsive.' }
+    ]
+  }
+];
+
+// ── CATÁLOGO VICTORIA ──────────────────────────────────────────────────────
+const VICTORIA_SECTIONS = [
+  {
+    id: 'estrategia', name: 'Gestión y Estrategia de Redes Sociales',
+    services: [
+      { id: 'plan_contenidos',      name: 'Plan de Contenidos Estratégico',              desc: 'Diagnóstico de comunicación, definición estratégica y planificación del primer mes.' },
+      { id: 'community_pack',       name: 'Community Pack (diseño + redacción)',          desc: 'Planificación mensual, conceptos narrativos para Daniela y copys completos de las 12 publicaciones.' },
+      { id: 'consultoria',          name: 'Consultoría de Estrategia Digital (1 sesión)', desc: 'Soporte estratégico antes y después de la sesión que conduce Pedro.' },
+      { id: 'auditoria',            name: 'Auditoría de Marca Digital',                  desc: 'Elaboración del informe y tabla de prioridades a partir del insumo que pasa Pedro.' },
+      { id: 'calendario_campanas',  name: 'Calendario de Campañas Promocionales',        desc: 'Relevamiento del rubro, construcción del calendario anual e ideas de contenido por fecha.' },
+      { id: 'gestion_integral_x4',  name: 'Gestión Integral de Redes — Pack Inicial (x4)',  desc: '4 publicaciones/mes. Onboarding estratégico, planificación, briefs para Daniela y copys para Paula.' },
+      { id: 'gestion_integral_x8',  name: 'Gestión Integral de Redes — Pack Básico (x8)',   desc: '8 publicaciones/mes — 4 Instagram + 4 TikTok. 2 semanales por red.' },
+      { id: 'gestion_integral_x12', name: 'Gestión Integral de Redes — Pack Avanzado (x12)',desc: '12 publicaciones/mes — 8 Instagram + 4 TikTok. 3 semanales.' },
+      { id: 'gestion_integral_x16', name: 'Gestión Integral de Redes — Pack Premium (x16)', desc: '16 publicaciones/mes — 12 Instagram + 4 TikTok. 4 semanales.' },
+      { id: 'gestion_integral_x20', name: 'Gestión Integral de Redes — Pack Ultra (x20)',   desc: '20 publicaciones/mes — 16 Instagram + 4 TikTok. 5 semanales.' }
+    ]
+  },
+  {
+    id: 'audiovisual', name: 'Producción Audiovisual — Estrategia y Guiones',
+    services: [
+      { id: 'reels_ideas_x1',  name: 'Reels con ideas — Pack Inicial (x1)',  desc: 'Investigación, concepto y guion de 1 video. Orianna ejecuta producción y edición.' },
+      { id: 'reels_ideas_x4',  name: 'Reels con ideas — Pack Básico (x4)',   desc: 'Investigación, 4 conceptos y 4 guiones. Orianna ejecuta producción y edición.' },
+      { id: 'reels_ideas_x8',  name: 'Reels con ideas — Pack Avanzado (x8)', desc: 'Investigación, 8 conceptos y 8 guiones. Orianna ejecuta producción y edición.' },
+      { id: 'reels_ideas_x10', name: 'Reels con ideas — Pack Premium (x10)', desc: 'Investigación, 10 conceptos y 10 guiones. Orianna ejecuta producción y edición.' },
+      { id: 'reels_ideas_x12', name: 'Reels con ideas — Pack Ultra (x12)',   desc: 'Investigación, 12 conceptos y 12 guiones. Orianna ejecuta producción y edición.' }
+    ]
+  },
+  {
+    id: 'pauta', name: 'Pauta Digital y Email Marketing — Respaldo Estratégico',
+    services: [
+      { id: 'meta_ads_respaldo',  name: 'Meta Ads — Respaldo estratégico de contenido',    desc: 'La ejecución técnica es de Paula. Rol de Victoria: respaldo estratégico de contenido.' },
+      { id: 'email_mkt_respaldo', name: 'Email Marketing — Respaldo estratégico de contenido', desc: 'La ejecución técnica es de Paula. Rol de Victoria: respaldo estratégico de contenido.' }
+    ]
+  },
+  {
+    id: 'branding', name: 'Branding e Identidad Visual',
+    services: [
+      { id: 'branding_book_etapa10', name: 'Branding Book — Etapa 10: Comunicación verbal', desc: 'Solo la etapa de comunicación verbal. El resto del servicio es de Daniela.' }
+    ]
+  }
+];
+
+// ── CATÁLOGO ORIANNA ──────────────────────────────────────────────────────
+// Espejo exacto de orianna.html — mismos IDs, mismos packs (sin x10, ella no lo tiene).
+// group: 'actuales' | 'nuevas' — usado por renderOrianna() para los encabezados de grupo.
+const ORIANNA_SECTIONS = [
+  {
+    id: 'donna_camara', name: 'Panadería Venezolana Donna — Cámara + Edición', group: 'actuales',
+    services: [
+      { id: 'donna_camara_edicion', name: 'Producción + Edición de Reels — Donna',
+        desc: 'Grabación y edición completa de los reels mensuales de Donna. Cámara y montaje — el estudio aporta la idea y el guion.',
+        packs: ['x5','x8'] }
+    ]
+  },
+  {
+    id: 'donna_edicion', name: 'Panadería Venezolana Donna — Solo Edición', group: 'actuales',
+    services: [
+      { id: 'donna_solo_edicion', name: 'Edición de Reels — Donna',
+        desc: 'Edición completa del material grabado. No incluye rodaje.',
+        packs: ['x5','x8'] }
+    ]
+  },
+  {
+    id: 'seklou', name: 'Seklou — Solo Edición', group: 'actuales',
+    services: [
+      { id: 'seklou_edicion', name: 'Edición de Reels — Seklou',
+        desc: 'Edición completa del material grabado por otra persona. No incluye rodaje.',
+        packs: ['x8'] }
+    ]
+  },
+  {
+    id: 'tecnotips', name: 'TecnoTips — Solo Edición', group: 'actuales',
+    services: [
+      { id: 'tecnotips_edicion', name: 'Edición de Reels — TecnoTips',
+        desc: 'Edición completa del material grabado por otra persona. No incluye rodaje.',
+        packs: ['x8'] }
+    ]
+  },
+  {
+    id: 'nuevos_camara', name: 'Cuentas Nuevas — Grabar + Editar', group: 'nuevas',
+    services: [
+      { id: 'nuevo_camara_edicion', name: 'Producción + Edición de Reels',
+        desc: 'Grabación y edición completa. Todos los packs del estudio.',
+        packs: ['x1','x4','x8','x12','x16','x20'] }
+    ]
+  },
+  {
+    id: 'nuevos_edicion', name: 'Cuentas Nuevas — Solo Editar', group: 'nuevas',
+    services: [
+      { id: 'nuevo_solo_edicion', name: 'Edición de Reels',
+        desc: 'Edición completa del material grabado por otra persona. Todos los packs del estudio.',
+        packs: ['x1','x4','x8','x12','x16','x20'] }
+    ]
+  }
+];
+
+// ── CATÁLOGO PAULA ──────────────────────────────────────────────────────
+const PAULA_SECTIONS = [
+  {
+    id: 'community_actual', name: 'Community Management — Cuentas Actuales',
+    services: [
+      { id: 'cm_donna',    name: 'Panadería Venezolana Donna', desc: '5 reels/TikToks por mes · 16 bloques de historias interdiarias · Instagram + TikTok. Plan transitorio.', isFlat: true },
+      { id: 'cm_seklou',   name: 'Seklou',    desc: '8 reels/TikToks por mes · 16 bloques de historias interdiarias · Instagram + TikTok + YouTube (los mismos 8 reels subidos al canal).', isFlat: true },
+      { id: 'cm_tecnotips',name: 'TecnoTips', desc: '8 reels/TikToks por mes · 16 bloques de historias interdiarias · Instagram + TikTok + YouTube (los mismos 8 reels subidos al canal).', isFlat: true }
+    ]
+  },
+  {
+    id: 'community_nuevos', name: 'Community Management — Cuentas Nuevas',
+    hasPacks: true,
+    packServices: ['pack_inicial','pack_basico','pack_avanzado','pack_premium','pack_ultra'],
+    packLabels: { pack_inicial: 'Pack Inicial', pack_basico: 'Pack Básico', pack_avanzado: 'Pack Avanzado', pack_premium: 'Pack Premium', pack_ultra: 'Pack Ultra' },
+    services: [
+      { id: 'adicional_historias_diarias', name: 'Adicional — Historias Diarias', desc: 'El cliente solicita historias todos los días del mes (en vez de interdiarias). Precio adicional sobre cualquier pack.', isFlat: true },
+      { id: 'adicional_youtube',           name: 'Adicional — Gestión de YouTube', desc: 'Subir y gestionar los mismos videos del pack en YouTube (programación + comunidad del canal). Precio adicional sobre cualquier pack.', isFlat: true }
+    ]
+  },
+  {
+    id: 'meta_ads', name: 'Meta Ads — Gestión de Pauta Digital',
+    services: [
+      { id: 'meta_ads_setup',    name: 'Setup Avanzado de Campaña',          desc: 'Configuración completa del gestor de anuncios: estructura de campañas, conjuntos, segmentación de audiencias, objetivos y píxel de Meta.', isFlat: true },
+      { id: 'meta_ads_gestion',  name: 'Gestión de Performance',             desc: 'Administración mensual activa: monitoreo de CPM/CPC/CTR/ROAS/costo por lead, optimización de segmentaciones, ajuste de presupuestos y A/B testing. Incluye informe mensual.', isFlat: true },
+      { id: 'meta_ads_escalado', name: 'Gestión de Escalado',               desc: 'Para cuentas con historial y resultados probados que buscan aumentar presupuesto sin perder eficiencia. Escalado vertical y horizontal, expansión de audiencias.', isFlat: true },
+      { id: 'meta_ads_auditoria',name: 'Auditoría de Cuenta Publicitaria',  desc: 'Revisión diagnóstica de una cuenta existente: estructura, segmentaciones, creatividades, métricas históricas y eficiencia del presupuesto. Entregás informe con hallazgos y recomendaciones.', isFlat: true }
+    ]
+  },
+  {
+    id: 'email_marketing', name: 'Email Marketing',
+    services: [
+      { id: 'email_setup',      name: 'Setup Básico',            desc: 'Configuración inicial de la plataforma: listas, segmentaciones, formularios de suscripción, configuración técnica de dominio (SPF/DKIM) y plantilla base de marca.', isFlat: true },
+      { id: 'email_gestion',    name: 'Gestión Mensual',         desc: 'Planificación, redacción, diseño y envío de los emails del mes. Incluye monitoreo de apertura/clics/bajas e informe mensual.', isFlat: true },
+      { id: 'email_secuencia',  name: 'Secuencia Automatizada',  desc: 'Diseño e implementación de una secuencia de emails automáticos activada por una acción del usuario (suscripción, descarga, compra, abandono de carrito, etc.).', isFlat: true }
+    ]
+  }
+];
+
+// ── STATE ──────────────────────────────────────────────────────────────────
+let accessToken = null;
+let userInfo = null;
+let fxRate = null;
+let tokenClient;
+let danielaData = null;
+let victoriaData = null;
+let oriannaData = null;
+let paulaData = null;
+let pedroData = null;
+
+// ── AUTH ──────────────────────────────────────────────────────────────────
+window.onload = () => {
+  google.accounts.id.initialize({ client_id: CLIENT_ID, callback: onGoogleSignIn });
+  tokenClient = google.accounts.oauth2.initTokenClient({
+    client_id: CLIENT_ID,
+    scope: SCOPES,
+    callback: onTokenReceived,
+  });
+};
+
+function handleLogin() {
+  tokenClient.requestAccessToken({ prompt: 'select_account' });
+}
+
+async function onGoogleSignIn(response) {
+  const payload = parseJwt(response.credential);
+  userInfo = payload;
+  tokenClient.requestAccessToken({ prompt: '' });
+}
+
+async function onTokenReceived(tokenResponse) {
+  if (tokenResponse.error) { showToast('Error de autenticación', 'error'); return; }
+  accessToken = tokenResponse.access_token;
+  if (!userInfo) {
+    try {
+      const r = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', { headers: { Authorization: `Bearer ${accessToken}` } });
+      userInfo = await r.json();
+    } catch(e) {}
+  }
+  showApp();
+}
+
+function parseJwt(token) {
+  try { return JSON.parse(atob(token.split('.')[1])); } catch(e) { return {}; }
+}
+
+function handleLogout() {
+  google.accounts.id.disableAutoSelect();
+  accessToken = null; userInfo = null;
+  danielaData = null; victoriaData = null; oriannaData = null; paulaData = null; pedroData = null;
+  document.getElementById('auth-screen').style.display = 'flex';
+  document.getElementById('app').style.display = 'none';
+}
+
+// ── APP INIT ──────────────────────────────────────────────────────────────
+async function showApp() {
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('app').style.display = 'block';
+  if (userInfo) {
+    document.getElementById('userAvatar').src = userInfo.picture || '';
+    document.getElementById('userName').textContent = userInfo.given_name || userInfo.name || 'Pedro';
+  }
+  await fetchFxRate();
+  await loadAllFiles();
+}
+
+async function reloadAll() {
+  const btn = document.getElementById('refreshBtn');
+  btn.classList.add('spinning');
+  await fetchFxRate();
+  await loadAllFiles();
+  btn.classList.remove('spinning');
+  showToast('Datos actualizados', 'ok');
+}
+
+// ── FX ──────────────────────────────────────────────────────────────────
+async function fetchFxRate() {
+  try {
+    const res = await fetch('https://dolarapi.com/v1/dolares/oficial');
+    const data = await res.json();
+    fxRate = data.venta;
+    document.getElementById('fxRateDisplay').textContent = `$ ${fxRate.toLocaleString('es-AR', {minimumFractionDigits:2})}`;
+    document.getElementById('fxTime').textContent = `· Actualizado ${data.fechaActualizacion ? new Date(data.fechaActualizacion).toLocaleTimeString('es-AR', {hour:'2-digit',minute:'2-digit'}) : 'hoy'}`;
+    document.getElementById('fxDot').classList.add('live');
+  } catch(e) {
+    document.getElementById('fxRateDisplay').innerHTML = '<span class="fx-error">No disponible</span>';
+    fxRate = null;
+  }
+}
+
+// ── DRIVE (Daniela + Victoria via OAuth) ──────────────────────────────────
+async function readFileFromDrive(fileName) {
+  const search = await fetch(
+    `https://www.googleapis.com/drive/v3/files?q=name='${fileName}' and '${DRIVE_FOLDER_ID}' in parents and trashed=false&fields=files(id,name,modifiedTime)`,
+    { headers: { Authorization: `Bearer ${accessToken}` } }
+  );
+  const data = await search.json();
+  if (!data.files || data.files.length === 0) return null;
+  const file = data.files[0];
+  const content = await fetch(
+    `https://www.googleapis.com/drive/v3/files/${file.id}?alt=media`,
+    { headers: { Authorization: `Bearer ${accessToken}` } }
+  );
+  const json = await content.json();
+  json._modifiedTime = file.modifiedTime;
+  return json;
+}
+
+// ── SCRIPT (Orianna + Paula + Pedro via PIN) ──────────────────────────────
+// Mapa de script URL → nombre de archivo en Drive (para leer _modifiedTime)
+const SCRIPT_FILENAMES = {
+  [ORIANNA_SCRIPT]: 'costos_orianna_v1.json',
+  [PAULA_SCRIPT]:   'costos_paula_v1.json',
+  [PEDRO_SCRIPT]:   'costos_pedro_v1.json',
+};
+
+async function readFromScript(scriptUrl, pin) {
+  try {
+    const url = `${scriptUrl}?pin=${encodeURIComponent(pin)}`;
+    const res = await fetch(url);
+    const json = await res.json();
+    if (!json.ok || !json.data) return null;
+    const data = json.data;
+    // Intentar obtener _modifiedTime desde Drive si hay token
+    if (accessToken) {
+      try {
+        const fname = SCRIPT_FILENAMES[scriptUrl];
+        if (fname) {
+          const sr = await fetch(
+            `https://www.googleapis.com/drive/v3/files?q=name='${fname}' and '${DRIVE_FOLDER_ID}' in parents and trashed=false&fields=files(modifiedTime)`,
+            { headers: { Authorization: `Bearer ${accessToken}` } }
+          );
+          const sd = await sr.json();
+          if (sd.files && sd.files[0]) data._modifiedTime = sd.files[0].modifiedTime;
+        }
+      } catch(_) {}
+    }
+    return data;
+  } catch(e) { return null; }
+}
+
+// ── LOAD ALL ──────────────────────────────────────────────────────────────
+async function loadAllFiles() {
+  // Reset loaders
+  ['Daniela','Victoria','Orianna','Paula','Pedro'].forEach(name => {
+    document.getElementById('load'+name).classList.add('active');
+    document.getElementById('content'+name).innerHTML = '';
+  });
+
+  const [dData, vData, oData, pData, pedData] = await Promise.allSettled([
+    readFileFromDrive('costos_daniela_v5.json'),
+    readFileFromDrive('costos_victoria_v1.json'),
+    readFromScript(ORIANNA_SCRIPT, ORIANNA_PIN),
+    readFromScript(PAULA_SCRIPT, PAULA_PIN),
+    readFromScript(PEDRO_SCRIPT, PEDRO_PIN)
+  ]);
+
+  danielaData  = dData.status === 'fulfilled' ? dData.value   : null;
+  victoriaData = vData.status === 'fulfilled' ? vData.value   : null;
+  oriannaData  = oData.status === 'fulfilled' ? oData.value   : null;
+  paulaData    = pData.status === 'fulfilled' ? pData.value   : null;
+  pedroData    = pedData.status === 'fulfilled' ? pedData.value : null;
+
+  ['Daniela','Victoria','Orianna','Paula'].forEach(name => {
+    document.getElementById('load'+name).classList.remove('active');
+  });
+
+  renderDaniela();
+  renderVictoria();
+  renderOrianna();
+  renderPaula();
+  renderPedro();
+  renderServicios();
+  updateStats();
+}
+
+// ── RENDER DANIELA ──────────────────────────────────────────────────────────
+function renderDaniela() {
+  const container = document.getElementById('contentDaniela');
+  if (!danielaData) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div>No se encontró el archivo de Daniela en Drive.<br>Verificá que ella haya cargado al menos un precio.</div>`;
+    return;
+  }
+  const prices = danielaData.prices || {};
+  const times = danielaData.times || {};
+  container.innerHTML = '';
+
+  DANIELA_SECTIONS.forEach(section => {
+    const filled = section.services.filter(s => prices[s.id] && prices[s.id] > 0);
+    const total = section.services.length;
+    const indClass = filled.length === 0 ? '' : filled.length === total ? 'complete' : 'partial';
+    const block = document.createElement('div');
+    block.className = 'section-block';
+    block.innerHTML = `
+      <div class="section-header open" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-indicator ${indClass}"></div>
+          <span class="section-name">${section.name}</span>
+        </div>
+        <div class="section-meta">
+          <span class="section-count">${filled.length} / ${total}</span>
+          <span class="chevron">▲</span>
+        </div>
+      </div>
+      <div class="section-body open" id="body-d-${section.id}"></div>
+    `;
+    container.appendChild(block);
+    const body = block.querySelector(`#body-d-${section.id}`);
+
+    section.services.forEach(svc => {
+      const val = prices[svc.id] || 0;
+      const time = times[svc.id] || '';
+      const hasVal = val > 0;
+      const usd = hasVal ? `U$S ${val.toLocaleString('es-AR', {minimumFractionDigits:2})}` : null;
+      const usdIntl = hasVal ? `U$S ${(val*1.2).toLocaleString('es-AR', {minimumFractionDigits:2})} (+20%)` : null;
+      const ars = (hasVal && fxRate) ? `$ ${Math.round(val*fxRate).toLocaleString('es-AR')} ARS` : null;
+
+      const row = document.createElement('div');
+      row.className = 'service-row';
+      row.innerHTML = `
+        <div class="service-name-col">
+          ${svc.name}
+          ${svc.desc ? `<div class="service-desc">${svc.desc}</div>` : ''}
+          ${time ? `<div class="service-time">⏱ ${time}</div>` : ''}
+        </div>
+        <div class="price-chips">
+          ${!hasVal ? `<span class="chip chip-pending">Sin cargar</span>` : `
+            <span class="chip chip-usd">${usd}</span>
+            <span class="chip chip-usd" style="opacity:.7;font-size:11px">${usdIntl}</span>
+            ${ars ? `<span class="chip chip-ars">${ars}</span>` : ''}
+          `}
+        </div>
+      `;
+      body.appendChild(row);
+    });
+  });
+}
+
+// ── RENDER VICTORIA ──────────────────────────────────────────────────────────
+function renderVictoria() {
+  const container = document.getElementById('contentVictoria');
+  if (!victoriaData) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div>No se encontró el archivo de Victoria en Drive.</div>`;
+    return;
+  }
+  const prices = victoriaData.prices || {};
+  const times = victoriaData.times || {};
+  container.innerHTML = '';
+
+  VICTORIA_SECTIONS.forEach(section => {
+    const filled = section.services.filter(svc => prices[svc.id] && prices[svc.id] > 0);
+    const total = section.services.length;
+    const indClass = filled.length === 0 ? '' : filled.length === total ? 'complete' : 'partial';
+    const block = document.createElement('div');
+    block.className = 'section-block';
+    block.innerHTML = `
+      <div class="section-header open" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-indicator ${indClass}"></div>
+          <span class="section-name">${section.name}</span>
+        </div>
+        <div class="section-meta">
+          <span class="section-count">${filled.length} / ${total}</span>
+          <span class="chevron">▲</span>
+        </div>
+      </div>
+      <div class="section-body open" id="body-v-${section.id}"></div>
+    `;
+    container.appendChild(block);
+    const body = block.querySelector(`#body-v-${section.id}`);
+
+    section.services.forEach(svc => {
+      const val = prices[svc.id] || 0;
+      const time = times[svc.id] || '';
+      const hasVal = val > 0;
+      const arsDisplay = hasVal ? `$ ${Math.round(val).toLocaleString('es-AR')} ARS` : null;
+      const row = document.createElement('div');
+      row.className = 'service-row';
+      row.innerHTML = `
+        <div class="service-name-col">
+          ${svc.name}
+          ${svc.desc ? `<div class="service-desc">${svc.desc}</div>` : ''}
+          ${time ? `<div class="service-time">⏱ ${time}</div>` : ''}
+        </div>
+        <div class="price-chips">
+          ${!hasVal ? `<span class="chip chip-pending">Sin cargar</span>` : `<span class="chip chip-ars-only">${arsDisplay}</span>`}
+        </div>
+      `;
+      body.appendChild(row);
+    });
+  });
+}
+
+// ── RENDER ORIANNA ──────────────────────────────────────────────────────────
+function renderOrianna() {
+  const container = document.getElementById('contentOrianna');
+  if (!oriannaData) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div>No se encontraron datos de Orianna.<br>Verificá que el Apps Script esté deployado y que ella haya cargado precios.</div>`;
+    return;
+  }
+  // packPrices es ANIDADO: { serviceId: { packKey: precio } }
+  const packPrices = oriannaData.packPrices || {};
+  container.innerHTML = '';
+
+  let lastGroup = null;
+  const groupLabels = { actuales: 'Clientes actuales', nuevas: 'Cuentas nuevas' };
+
+  ORIANNA_SECTIONS.forEach(section => {
+    if (section.group && section.group !== lastGroup) {
+      lastGroup = section.group;
+      const groupHeader = document.createElement('div');
+      groupHeader.style.cssText = 'font-family:"Syne",sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--orange);margin:20px 0 4px;padding:0 4px;';
+      groupHeader.textContent = groupLabels[section.group] || section.group;
+      container.appendChild(groupHeader);
+    }
+
+    const svc = section.services[0];
+    const packs = svc.packs || [];
+    const svcPacks = packPrices[svc.id] || {};
+    const filled = packs.filter(pk => (svcPacks[pk] || 0) > 0).length;
+    const total = packs.length;
+    const indClass = filled === 0 ? '' : filled === total ? 'complete' : 'partial';
+
+    const block = document.createElement('div');
+    block.className = 'section-block';
+    block.innerHTML = `
+      <div class="section-header open" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-indicator ${indClass}"></div>
+          <span class="section-name">${section.name}</span>
+        </div>
+        <div class="section-meta">
+          <span class="section-count">${filled} / ${total} packs</span>
+          <span class="chevron">▲</span>
+        </div>
+      </div>
+      <div class="section-body open" id="body-o-${section.id}"></div>
+    `;
+    container.appendChild(block);
+    const body = block.querySelector(`#body-o-${section.id}`);
+
+    const svcRow = document.createElement('div');
+    svcRow.className = 'service-row';
+    svcRow.style.flexDirection = 'column';
+    svcRow.style.alignItems = 'flex-start';
+    svcRow.innerHTML = `
+      <div class="service-name-col">
+        ${svc.name}
+        ${svc.desc ? `<div class="service-desc">${svc.desc}</div>` : ''}
+      </div>
+    `;
+    body.appendChild(svcRow);
+
+    packs.forEach(pk => {
+      const val = svcPacks[pk] || 0;
+      const hasVal = val > 0;
+      const arsDisplay = hasVal ? `$ ${Math.round(val).toLocaleString('es-AR')} ARS` : null;
+      const usdDisplay = (hasVal && fxRate) ? `U$S ${(val/fxRate).toLocaleString('es-AR', {minimumFractionDigits:2})}` : null;
+      const usdIntl = (hasVal && fxRate) ? `U$S ${(val/fxRate*1.2).toLocaleString('es-AR', {minimumFractionDigits:2})} (+20%)` : null;
+
+      const packRow = document.createElement('div');
+      packRow.className = 'pack-row';
+      packRow.innerHTML = `
+        <div class="pack-label">${pk.toUpperCase()}</div>
+        <div class="pack-chips">
+          ${!hasVal ? `<span class="chip chip-pending">Sin cargar</span>` : `
+            <span class="chip chip-ars-only">${arsDisplay}</span>
+            ${usdDisplay ? `<span class="chip chip-pack">${usdDisplay}</span>` : ''}
+            ${usdIntl ? `<span class="chip chip-pack" style="opacity:.7;font-size:10px">${usdIntl}</span>` : ''}
+          `}
+        </div>
+      `;
+      body.appendChild(packRow);
+    });
+  });
+}
+
+// ── RENDER PAULA ──────────────────────────────────────────────────────────
+function renderPaula() {
+  const container = document.getElementById('contentPaula');
+  if (!paulaData) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div>No se encontraron datos de Paula.<br>Verificá que ella haya cargado al menos un precio.</div>`;
+    return;
+  }
+  const prices = paulaData.prices || {};
+  const packPrices = paulaData.packPrices || {};
+  container.innerHTML = '';
+
+  PAULA_SECTIONS.forEach(section => {
+    // Contar llenados
+    let filled = 0, total = 0;
+    if (section.hasPacks) {
+      section.packServices.forEach(id => { total++; if ((packPrices[id] || 0) > 0) filled++; });
+    }
+    section.services.forEach(svc => {
+      total++;
+      const val = prices[svc.id] || packPrices[svc.id] || 0;
+      if (val > 0) filled++;
+    });
+
+    const indClass = filled === 0 ? '' : filled === total ? 'complete' : 'partial';
+    const block = document.createElement('div');
+    block.className = 'section-block';
+    block.innerHTML = `
+      <div class="section-header open" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-indicator ${indClass}"></div>
+          <span class="section-name">${section.name}</span>
+        </div>
+        <div class="section-meta">
+          <span class="section-count">${filled} / ${total}</span>
+          <span class="chevron">▲</span>
+        </div>
+      </div>
+      <div class="section-body open" id="body-p-${section.id}"></div>
+    `;
+    container.appendChild(block);
+    const body = block.querySelector(`#body-p-${section.id}`);
+
+    // Packs de cuentas nuevas
+    if (section.hasPacks) {
+      section.packServices.forEach(id => {
+        const val = packPrices[id] || 0;
+        const hasVal = val > 0;
+        const arsDisplay = hasVal ? `$ ${Math.round(val).toLocaleString('es-AR')} ARS` : null;
+        const packRow = document.createElement('div');
+        packRow.className = 'pack-row';
+        packRow.innerHTML = `
+          <div class="pack-label">${section.packLabels[id] || id}</div>
+          <div class="pack-chips">
+            ${!hasVal ? `<span class="chip chip-pending">Sin cargar</span>` : `<span class="chip chip-ars-only">${arsDisplay}</span>`}
+          </div>
+        `;
+        body.appendChild(packRow);
+      });
+    }
+
+    // Servicios individuales
+    section.services.forEach(svc => {
+      const val = prices[svc.id] || packPrices[svc.id] || 0;
+      const hasVal = val > 0;
+      const arsDisplay = hasVal ? `$ ${Math.round(val).toLocaleString('es-AR')} ARS` : null;
+      const row = document.createElement('div');
+      row.className = 'service-row';
+      row.innerHTML = `
+        <div class="service-name-col">
+          ${svc.name}
+          ${svc.desc ? `<div class="service-desc">${svc.desc}</div>` : ''}
+        </div>
+        <div class="price-chips">
+          ${!hasVal ? `<span class="chip chip-pending">Sin cargar</span>` : `<span class="chip chip-ars-only">${arsDisplay}</span>`}
+        </div>
+      `;
+      body.appendChild(row);
+    });
+  });
+}
+
+// ── RENDER PEDRO ──────────────────────────────────────────────────────────
+function renderPedro() {
+  const container = document.getElementById('contentPedro');
+  document.getElementById('loadPedro').classList.remove('active');
+  if (!pedroData) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div>No se encontraron datos de Pedro.<br>Verificá que hayas guardado precios en pedro.html.</div>`;
+    document.getElementById('statPedroPct').textContent = '0%';
+    document.getElementById('statPedroCount').textContent = '0 servicios';
+    document.getElementById('fillPedro').style.width = '0%';
+    document.getElementById('pctPedro').textContent = '0%';
+    document.getElementById('badgePedro').textContent = '0';
+    return;
+  }
+
+  const prices      = pedroData.prices      || {};
+  const packPrices  = pedroData.packPrices   || {};
+  const coursePrices= pedroData.coursePrices || {};
+  const amHours     = pedroData.amHours      || {};
+  const avTarifas   = pedroData.avTarifas    || {};
+  const weddingCfg  = pedroData.weddingConfig|| {};
+  const tarifaDir   = pedroData.tarifaDireccion || 9000;
+  container.innerHTML = '';
+
+  // ── Helpers ────────────────────────────────────────────────────────────────
+  const AM_DEF = { briefing:1.5, rodaje:2.5, supervision:2, reuniones:1, presentacion:1.5, tieneAudiovisual:true };
+  const ACT_LABELS = { briefing:'Briefing', rodaje:'Presencia en rodaje', supervision:'Supervisión / aprobación', reuniones:'Reuniones con cliente', presentacion:'Presentación mensual' };
+  const PACK_LABELS = {
+    basico:'Pack Básico', medio:'Pack Medio', full:'Pack Full',
+    h1:'Hasta 1hr', h2:'Hasta 2hrs', h4:'Hasta 4hrs', h6:'Hasta 6hrs', express:'Adicional Express 72hs',
+    x1:'1 video/clase', x3:'3 videos/clases', x5:'5 videos/clases',
+    sesion_unica:'Sesión Única (60 min)', pack4:'Pack 4 sesiones', pack8:'Pack 8 sesiones',
+    grupal:'Grupal', particular:'Particular'
+  };
+  const fmt = v => `$ ${Math.round(v).toLocaleString('es-AR')} ARS`;
+  const fmtU = v => fxRate ? `U$S ${(v/fxRate).toLocaleString('es-AR',{minimumFractionDigits:2})}` : '';
+  const fmtU20 = v => fxRate ? `U$S ${(v/fxRate*1.2).toLocaleString('es-AR',{minimumFractionDigits:2})} (+20%)` : '';
+
+  function chips(ars) {
+    if (!ars) return `<span class="chip chip-pending">Sin cargar</span>`;
+    return `<span class="chip chip-ars-only">${fmt(ars)}</span>${fxRate?`<span class="chip chip-pack">${fmtU(ars)}</span><span class="chip chip-pack" style="opacity:.7;font-size:10px">${fmtU20(ars)}</span>`:''}`;
+  }
+
+  function getAmCosto(id) {
+    const h = { ...AM_DEF, ...(amHours[id] || {}) };
+    let t = h.briefing + h.supervision + h.reuniones + h.presentacion;
+    if (h.tieneAudiovisual) t += h.rodaje;
+    return t * tarifaDir;
+  }
+
+  function makeSection(title, note, count) {
+    const block = document.createElement('div');
+    block.className = 'section-block';
+    const bodyId = `body-ped-${title.replace(/[^a-z0-9]/gi,'_')}`;
+    block.innerHTML = `
+      <div class="section-header open" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-indicator"></div>
+          <span class="section-name">${title}</span>
+        </div>
+        <div class="section-meta"><span class="section-count">${count} servicio${count!==1?'s':''}</span><span class="chevron">▲</span></div>
+      </div>
+      <div class="section-body open" id="${bodyId}">
+        ${note ? `<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:10px 14px;margin:8px 0 4px;font-size:11px;color:var(--muted);line-height:1.5">${note}</div>` : ''}
+      </div>`;
+    container.appendChild(block);
+    return block.querySelector(`#${bodyId}`);
+  }
+
+  function addRow(body, name, desc, chipsHtml) {
+    const row = document.createElement('div');
+    row.className = 'service-row';
+    row.innerHTML = `
+      <div class="service-name-col" style="flex:1">
+        <div>${name}</div>
+        ${desc ? `<div class="service-desc">${desc}</div>` : ''}
+      </div>
+      <div class="price-chips" style="flex-direction:column;align-items:flex-end;gap:4px">${chipsHtml}</div>`;
+    body.appendChild(row);
+  }
+
+  function addPackRows(body, name, desc, id, packs) {
+    const row = document.createElement('div');
+    row.className = 'service-row';
+    row.style.cssText = 'flex-direction:column;align-items:flex-start;gap:6px';
+    let packsHtml = packs.map(pk => {
+      const val = (packPrices[id] || {})[pk] || 0;
+      return `<div class="pack-row">
+        <div class="pack-label">${PACK_LABELS[pk] || pk}</div>
+        <div class="pack-chips">${chips(val||null)}</div>
+      </div>`;
+    }).join('');
+    row.innerHTML = `
+      <div class="service-name-col" style="margin-bottom:2px">
+        <div>${name}</div>
+        ${desc ? `<div class="service-desc">${desc}</div>` : ''}
+      </div>
+      ${packsHtml}`;
+    body.appendChild(row);
+  }
+
+  function addAmRow(body, id, name, desc, isPuntual) {
+    const h = { ...AM_DEF, ...(amHours[id] || {}) };
+    const costo = getAmCosto(id);
+    const totalHoras = h.briefing + h.supervision + h.reuniones + h.presentacion + (h.tieneAudiovisual ? h.rodaje : 0);
+    const actHtml = Object.keys(ACT_LABELS).map(key => {
+      const disabled = key === 'rodaje' && !h.tieneAudiovisual;
+      const val = disabled ? 0 : h[key] * tarifaDir;
+      return `<div class="pack-row">
+        <div class="pack-label">${ACT_LABELS[key]}${disabled?' <span style="opacity:.4">(no aplica)</span>':''}</div>
+        <div class="pack-chips">
+          <span class="chip chip-pending" style="min-width:40px;text-align:center">${h[key]}hs</span>
+          ${!disabled ? `<span class="chip chip-ars-only">${fmt(val)}</span>` : ''}
+        </div>
+      </div>`;
+    }).join('');
+    const row = document.createElement('div');
+    row.className = 'service-row';
+    row.style.cssText = 'flex-direction:column;align-items:flex-start;gap:6px';
+    row.innerHTML = `
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%">
+        <div class="service-name-col">
+          <div>${name}</div>
+          ${desc ? `<div class="service-desc">${desc}</div>` : ''}
+          <div class="service-time" style="margin-top:4px">${totalHoras}hs ${isPuntual?'por proyecto':'mensual'} · $${tarifaDir.toLocaleString('es-AR')}/hora</div>
+        </div>
+        <div class="price-chips" style="flex-direction:column;align-items:flex-end;gap:4px">${chips(costo||null)}</div>
+      </div>
+      ${actHtml}`;
+    body.appendChild(row);
+  }
+
+  let totalFilled = 0, totalServices = 0;
+  function count(filled) { totalServices++; if(filled) totalFilled++; }
+
+  // ── 1. DIRECCIÓN & ACCOUNT MANAGEMENT ─────────────────────────────────────
+  let body = makeSection('DIRECCIÓN & ACCOUNT MANAGEMENT — Cuentas Actuales',
+    'Tu costo de dirección en las cuentas mensuales activas. Las horas son editables en pedro.html.', 3);
+  [
+    { id:'am_donna',    name:'Panadería Venezolana Donna', desc:'Briefing, supervisión, aprobación, reuniones y presentación de resultados.' },
+    { id:'am_tecnotips',name:'TecnoTips',                 desc:'Briefing, supervisión, aprobación, reuniones y presentación de resultados.' },
+    { id:'am_seklou',   name:'Seklou',                    desc:'Briefing, supervisión, aprobación, reuniones y presentación de resultados.' },
+  ].forEach(s => { count(getAmCosto(s.id)>0); addAmRow(body, s.id, s.name, s.desc, false); });
+
+  // ── 2. BRANDING & DISEÑO (puntual) ────────────────────────────────────────
+  body = makeSection('BRANDING, IDENTIDAD VISUAL & DISEÑO GRÁFICO — Proyectos Puntuales',
+    'Tu participación en proyectos puntuales de branding o diseño. Mismo modelo de horas que la dirección mensual, aplicado una sola vez al proyecto.', 1);
+  count(getAmCosto('puntual_branding')>0);
+  addAmRow(body, 'puntual_branding', 'Branding, Identidad Visual & Diseño Gráfico',
+    'Contacto comercial, cierre de venta, briefing, análisis y supervisión del proyecto.', true);
+
+  // ── 3. FOTOGRAFÍA ──────────────────────────────────────────────────────────
+  body = makeSection('FOTOGRAFÍA — Catálogo de Servicios', 'Pedro ejecuta personalmente todas estas sesiones.', 5);
+  [
+    { id:'foto_producto',           name:'Sesión Fotográfica de Producto',              desc:'Por cantidad de entregables. Fondo blanco o escenografía, 2 estilos.',          packs:['basico','medio','full'] },
+    { id:'foto_marca_equipo',       name:'Sesión Fotográfica de Marca / Equipo',        desc:'Retratos profesionales en exteriores o estudio.',                              packs:['basico','medio','full'] },
+    { id:'foto_marcas_horas',       name:'Sesión Fotográfica para Marcas (por horas)',  desc:'Se entregan todas las fotos tomadas en la jornada, editadas en HD.',            packs:['h1','h2','h4','express'] },
+    { id:'foto_eventos_entregables',name:'Fotografía de Eventos — por entregables',     desc:'Cantidad de fotografías editadas según horas de cobertura.',                    packs:['h1','h2','h4','h6'] },
+    { id:'foto_eventos_horas',      name:'Fotografía de Eventos — por horas',           desc:'Se entregan todas las fotos tomadas en la jornada, editadas en HD.',            packs:['h1','h2','h4','h6'] },
+  ].forEach(s => {
+    const hasSome = s.packs.some(pk => (packPrices[s.id]||{})[pk] > 0);
+    count(hasSome); addPackRows(body, s.name, s.desc, s.id, s.packs);
+  });
+
+  // ── 4. AUDIOVISUAL (Pedro ejecuta) ────────────────────────────────────────
+  body = makeSection('PRODUCCIÓN AUDIOVISUAL — Pedro ejecuta',
+    'Pedro ejecuta personalmente cámara y edición. La producción de Reels/Shorts de cuentas activas es de Orianna.', 5);
+  [
+    { id:'puntual_video_institucional', name:'Video Institucional / Spot Comercial',          desc:'Concepto, guion, preproducción, rodaje y edición. Precio por video.',   isSimple:true },
+    { id:'puntual_cobertura_eventos',   name:'Cobertura Audiovisual de Eventos',              desc:'Cobertura en vivo, montaje narrativo, video principal + piezas cortas.', packs:['h1','h2','h4','h6'] },
+    { id:'puntual_publicidad_digital',  name:'Producción de Contenido para Publicidad Digital',desc:'Concepto, estrategia, rodaje y edición por horas.',                    packs:['h1','h2','h4','h6'] },
+    { id:'puntual_entrevistas',         name:'Entrevistas / Testimoniales',                   desc:'Guion, rodaje profesional, edición y posproducción. Precio por pieza.', isSimple:true },
+    { id:'puntual_tutoriales',          name:'Videos Tutoriales / Clases Grabadas',           desc:'Por cantidad de videos/clases grabadas.',                              packs:['x1','x3','x5'] },
+  ].forEach(s => {
+    if (s.isSimple) {
+      const val = prices[s.id] || 0;
+      count(val > 0); addRow(body, s.name, s.desc, chips(val||null));
+    } else {
+      const hasSome = s.packs.some(pk => (packPrices[s.id]||{})[pk] > 0);
+      count(hasSome); addPackRows(body, s.name, s.desc, s.id, s.packs);
+    }
+  });
+
+  // ── 5. AUDIOVISUAL TRANSITORIO (tarifa decreciente) ───────────────────────
+  body = makeSection('AUDIOVISUAL PARA MARCAS — Cobertura Transitoria',
+    'Usar solo si cubrís temporalmente un rol audiovisual vacante (Seklou / TecnoTips). 1ra hora y horas siguientes editables en pedro.html.', 1);
+  const av1 = avTarifas?.hora1 || 0;
+  const av2 = avTarifas?.hora2 || 0;
+  count(av1 > 0);
+  const avRow = document.createElement('div');
+  avRow.className = 'service-row';
+  avRow.style.cssText = 'flex-direction:column;align-items:flex-start;gap:6px';
+  avRow.innerHTML = `
+    <div class="service-name-col"><div>Foto + Video — Entrega Completa</div>
+      <div class="service-desc">Cobertura transitoria de producción audiovisual completa mientras el rol de Filmmaker sigue vacante.</div>
+    </div>
+    <div class="pack-row"><div class="pack-label">1ra hora</div><div class="pack-chips">${chips(av1||null)}</div></div>
+    <div class="pack-row"><div class="pack-label">2da hora en adelante</div><div class="pack-chips">${chips(av2||null)}</div></div>`;
+  body.appendChild(avRow);
+
+  // ── 6. REDES SOCIALES (puntual) ───────────────────────────────────────────
+  body = makeSection('GESTIÓN Y ESTRATEGIA DE REDES SOCIALES — Proyectos Puntuales',
+    'Todo el bloque de redes: planes, community pack, consultoría, auditoría, calendario, gestión integral, Meta Ads y Email Marketing. Tu carga de horas es mayor que en Branding.', 1);
+  count(getAmCosto('puntual_redes')>0);
+  addAmRow(body, 'puntual_redes', 'Gestión y Estrategia de Redes Sociales (todo el bloque)',
+    'Plan de contenidos, community pack, consultoría, auditoría, calendario, gestión integral, Meta Ads y Email Marketing. Validás la estrategia de Victoria contra los objetivos del cliente, armás y das las presentaciones.', true);
+
+  // ── 7. FOTOGRAFÍA DE BODAS ────────────────────────────────────────────────
+  body = makeSection('FOTOGRAFÍA DE BODAS', 'Servicio personal de Pedro como prestador independiente.', 1);
+  const weddingTarifa = weddingCfg?.tarifaHora || 0;
+  const weddingHoras  = weddingCfg?.horas || 0;
+  const weddingTotal  = weddingTarifa * weddingHoras;
+  count(weddingTarifa > 0);
+  addRow(body, 'Cobertura de Boda — Evento Único',
+    `Tarifa por hora editable en pedro.html.${weddingTarifa ? ` · $${weddingTarifa.toLocaleString('es-AR')}/hora` : ''}`,
+    weddingTarifa ? chips(weddingTarifa) + `<span style="font-size:10px;color:var(--muted);margin-top:2px">tarifa/hora · total varía por duración</span>` : chips(null));
+
+  // ── 8. MENTORÍA ───────────────────────────────────────────────────────────
+  body = makeSection('MENTORÍA INDIVIDUAL 1:1', '', 1);
+  const hasMen = ['sesion_unica','pack4','pack8'].some(pk => (packPrices['mentoria_1on1']||{})[pk] > 0);
+  count(hasMen);
+  addPackRows(body, 'Mentoría Individual 1:1',
+    'Acompañamiento directo para fotógrafos, creadores de contenido y emprendedores creativos.',
+    'mentoria_1on1', ['sesion_unica','pack4','pack8']);
+
+  // ── 9. CURSOS ─────────────────────────────────────────────────────────────
+  body = makeSection('CONTENTIVE ACADEMY — Cursos', '', 3);
+  [
+    { id:'curso_fotografia_basico',      name:'Curso Básico de Fotografía',             desc:'3 sesiones (2 presenciales + 1 online). Hasta 6 estudiantes en grupal.' },
+    { id:'curso_contenido_audiovisual',  name:'Curso de Creación de Contenido Audiovisual', desc:'3 sesiones: estrategia, producción y edición.' },
+    { id:'curso_capacitacion_corporativa',name:'Capacitaciones Corporativas (a medida)', desc:'Programa a medida para equipos de empresas.' },
+  ].forEach(s => {
+    const cp = coursePrices[s.id] || {};
+    const hasSome = (cp.grupal||0) > 0 || (cp.particular||0) > 0 || (cp.unico||0) > 0;
+    count(hasSome);
+    const row = document.createElement('div');
+    row.className = 'service-row';
+    row.style.cssText = 'flex-direction:column;align-items:flex-start;gap:6px';
+    const packs = [];
+    if (cp.grupal)     packs.push({ label:'Grupal',     val:cp.grupal });
+    if (cp.particular) packs.push({ label:'Particular', val:cp.particular });
+    if (cp.unico)      packs.push({ label:'Precio',     val:cp.unico });
+    row.innerHTML = `
+      <div class="service-name-col"><div>${s.name}</div><div class="service-desc">${s.desc}</div></div>
+      ${hasSome
+        ? packs.map(p => `<div class="pack-row"><div class="pack-label">${p.label}</div><div class="pack-chips">${chips(p.val)}</div></div>`).join('')
+        : `<div class="pack-row"><div class="pack-chips">${chips(null)}</div></div>`}`;
+    body.appendChild(row);
+  });
+
+  // ── Stats ─────────────────────────────────────────────────────────────────
+  const pct = totalServices ? Math.round(totalFilled / totalServices * 100) : 0;
+  document.getElementById('statPedroPct').textContent = pct + '%';
+  document.getElementById('statPedroCount').textContent = `${totalFilled} de ${totalServices} servicios`;
+  document.getElementById('fillPedro').style.width = pct + '%';
+  document.getElementById('pctPedro').textContent = pct + '%';
+  document.getElementById('badgePedro').textContent = totalFilled;
+}
+
+// ── RENDER SERVICIOS CONSOLIDADO — con costos unificados ──────────────────
+function renderServicios() {
+  const container = document.getElementById('contentServicios');
+  container.innerHTML = '';
+
+  const intro = document.createElement('div');
+  intro.className = 'services-intro';
+  intro.textContent = 'Catálogo completo del estudio. Cada servicio muestra el costo interno total en ARS, USD y USD +20% (mercado exterior), sumando a todas las colaboradoras responsables.';
+  container.appendChild(intro);
+
+  // Helpers para leer precios de cada app
+  const D  = (danielaData?.prices  || {});
+  const V  = (victoriaData?.prices || {});
+  const Ovp = (oriannaData?.packPrices || {});  // anidado {svcId:{pk:val}}
+  const Ppr = (paulaData?.prices   || {});
+  const Ppp = (paulaData?.packPrices || {});
+  const Ped  = (pedroData?.prices   || {});
+  const PedPack = (pedroData?.packPrices || {});
+  const PedCourse = (pedroData?.coursePrices || {});
+
+  // Convierte USD (Daniela) → ARS
+  const dARS  = (id) => (D[id] || 0) * (fxRate || 0);
+  // ARS directo
+  const v     = (id) => V[id] || 0;
+  const pp    = (id) => Ppr[id] || Ppp[id] || 0;
+  const ped   = (id) => Ped[id] || 0;
+  const pedPk = (id, pk) => (PedPack[id] || {})[pk] || 0;
+  // Costo puntual de Pedro: amHours[id] * tarifaDireccion (igual que pedro.html)
+  const AM_DEFAULT = { briefing:1.5, rodaje:2.5, supervision:2, reuniones:1, presentacion:1.5, tieneAudiovisual:true };
+  const pedTarifa  = pedroData?.tarifaDireccion || 9000;
+  const pedAmCosto = (id) => {
+    const h = { ...AM_DEFAULT, ...(pedroData?.amHours?.[id] || {}) };
+    let total = h.briefing + h.supervision + h.reuniones + h.presentacion;
+    if (h.tieneAudiovisual) total += h.rodaje;
+    return total * pedTarifa;
+  };
+  const oriPk = (id, pk) => (Ovp[id] || {})[pk] || 0;
+  const pedCourse = (id, key) => (PedCourse[id] || {})[key] || 0;
+
+  // Formatea chips de precio
+  function priceChips(totalARS) {
+    if (!totalARS || totalARS === 0) return `<span class="chip chip-pending">Sin costos cargados</span>`;
+    const usd = fxRate ? totalARS / fxRate : 0;
+    const usdIntl = usd * 1.2;
+    return `
+      <span class="chip chip-ars-only">$ ${Math.round(totalARS).toLocaleString('es-AR')} ARS</span>
+      ${fxRate ? `<span class="chip chip-pack">U$S ${usd.toLocaleString('es-AR',{minimumFractionDigits:2})}</span>` : ''}
+      ${fxRate ? `<span class="chip chip-pack" style="opacity:.7;font-size:10px">U$S ${usdIntl.toLocaleString('es-AR',{minimumFractionDigits:2})} (+20%)</span>` : ''}
+    `;
+  }
+
+  // Colores por colaboradora
+  const CC = { Daniela:'var(--orange)', Victoria:'var(--lime)', Orianna:'#7aa2ff', Paula:'#c084fc', Pedro:'#f0ede8' };
+  function badge(name) {
+    return `<span style="display:inline-flex;align-items:center;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:2px 8px;font-size:10px;letter-spacing:.06em;color:${CC[name]};margin-left:4px">${name}</span>`;
+  }
+
+  function makeRow(body, name, desc, delivery, collabBadges, totalARS, pedroARS, breakdown) {
+    const row = document.createElement('div');
+    row.className = 'service-row';
+    const hasPedro = collabBadges && collabBadges.includes('>Pedro<');
+    const pedroVal = (hasPedro && pedroARS > 0) ? pedroARS : 0;
+    // Total real = colaboradoras + Pedro
+    const grandTotal = (totalARS || 0) + pedroVal;
+
+    // Desglose por colaboradora (incluye Pedro si tiene valor)
+    let breakdownHtml = '';
+    const breakdownFull = breakdown ? { ...breakdown } : {};
+    if (hasPedro) breakdownFull['Pedro'] = pedroVal;
+    const lines = Object.entries(breakdownFull)
+      .filter(([,v]) => v > 0)
+      .map(([k,v]) => `<span style="color:${CC[k]||'var(--muted)'}">${k}</span> <span style="color:var(--muted)">$${Math.round(v).toLocaleString('es-AR')}</span>`);
+    if (lines.length) {
+      breakdownHtml = `<div style="font-size:10px;margin-top:3px;display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end">${lines.join('<span style="color:var(--border)"> · </span>')}</div>`;
+    }
+
+    // Aviso si Pedro no cargó sus horas
+    const pedroWarning = (hasPedro && pedroVal === 0)
+      ? `<div style="font-size:10px;color:var(--muted);margin-top:2px">+ Pedro: pendiente en pedro.html</div>`
+      : '';
+
+    row.innerHTML = `
+      <div class="service-name-col" style="flex:1">
+        <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">
+          <span>${name}</span>${collabBadges}
+        </div>
+        ${desc ? `<div class="service-desc">${desc}</div>` : ''}
+        ${delivery ? `<div class="service-time">⏱ ${delivery}</div>` : ''}
+      </div>
+      <div class="price-chips" style="flex-direction:column;align-items:flex-end;gap:4px">
+        ${priceChips(grandTotal)}
+        ${breakdownHtml}
+        ${pedroWarning}
+      </div>
+    `;
+    body.appendChild(row);
+  }
+
+  function makeSection(container, title, count, bodyId) {
+    const block = document.createElement('div');
+    block.className = 'section-block';
+    block.innerHTML = `
+      <div class="section-header open" onclick="toggleSection(this)">
+        <div class="section-header-left">
+          <div class="section-indicator complete"></div>
+          <span class="section-name">${title}</span>
+        </div>
+        <div class="section-meta">
+          <span class="section-count">${count} servicios</span>
+          <span class="chevron">▲</span>
+        </div>
+      </div>
+      <div class="section-body open" id="${bodyId}"></div>
+    `;
+    container.appendChild(block);
+    return block.querySelector(`#${bodyId}`);
+  }
+
+  // ── BRANDING E IDENTIDAD VISUAL ──────────────────────────────────────────
+  let body = makeSection(container, 'BRANDING E IDENTIDAD VISUAL', 6, 'srv-branding');
+  makeRow(body, 'Identidad Corporativa Simple', 'Briefing, 3 propuestas, logotipo, manual básico y entregables técnicos.', '2–3 semanas hábiles',
+    badge('Daniela')+badge('Victoria')+badge('Pedro'), dARS('id_simple') + v('plan_contenidos'), pedAmCosto('puntual_branding'), {'Daniela': dARS('id_simple'), 'Victoria': v('plan_contenidos')});
+  makeRow(body, 'Identidad Corporativa Profesional', 'Sistema visual completo: logotipo con variantes, paleta HEX/CMYK/Pantone, sistema tipográfico y manual.', '3–4 semanas hábiles',
+    badge('Daniela')+badge('Victoria')+badge('Pedro'), dARS('id_prof') + v('plan_contenidos'), pedAmCosto('puntual_branding'), {'Daniela': dARS('id_prof'), 'Victoria': v('plan_contenidos')});
+  makeRow(body, 'Branding Book', 'Sistema visual, universo de marca, aplicaciones, soportes y Etapa 10 comunicación verbal.', '4–6 semanas hábiles',
+    badge('Daniela')+badge('Victoria')+badge('Pedro'), dARS('branding_book') + v('branding_book_etapa10'), pedAmCosto('puntual_branding'), {'Daniela': dARS('branding_book'), 'Victoria': v('branding_book_etapa10')});
+  makeRow(body, 'Kit de Identidad Digital', '8 plantillas de feed + 16 historias + 6 portadas destacadas, editables en Canva/AI/PSD.', '5–7 días hábiles',
+    badge('Daniela')+badge('Pedro'), dARS('id_simple'), pedAmCosto('puntual_branding'), {'Daniela': dARS('id_simple')});
+  makeRow(body, 'Papelería Corporativa', 'Tarjeta, membrete, sobre, carpeta, hoja A4 editable y firma de mail HTML.', '3–5 días hábiles',
+    badge('Daniela')+badge('Pedro'), dARS('papeleria'), pedAmCosto('puntual_branding'), {'Daniela': dARS('papeleria')});
+  makeRow(body, 'Merchandising Corporativo', 'Diseño de aplicación sobre productos físicos con mockup 3D y archivos para producción.', '4–5 días hábiles',
+    badge('Daniela')+badge('Pedro'), dARS('merch'), pedAmCosto('puntual_branding'), {'Daniela': dARS('merch')});
+
+  // ── PACKS DE PIEZAS GRÁFICAS MENSUALES ───────────────────────────────────
+  body = makeSection(container, 'DISEÑO GRÁFICO — PACKS MENSUALES', 8, 'srv-packs');
+  // Pack x4
+  makeRow(body, 'Pack Básico — x4 piezas/mes', '4 piezas estáticas + 16 días de historias interdiarias + portadas destacadas (máx. 6).', '10 días hábiles',
+    badge('Daniela')+badge('Pedro'), dARS('pack_basico'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pack_basico')});
+  makeRow(body, 'Pack Medio — x8 piezas/mes', '8 piezas + 16 días de historias interdiarias + portadas (máx. 6).', '10 días hábiles',
+    badge('Daniela')+badge('Pedro'), dARS('pack_medio'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pack_medio')});
+  makeRow(body, 'Pack Full — x12 piezas/mes', '12 piezas (incluye carruseles) + 16 días de historias + portadas (máx. 8).', '10 días hábiles',
+    badge('Daniela')+badge('Pedro'), dARS('pack_full'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pack_full')});
+  makeRow(body, 'Pack Ultimate — x16 piezas/mes', '16 piezas (carruseles hasta 6 slides) + 31 días de historias + portadas (máx. 10).', '10 días hábiles',
+    badge('Daniela')+badge('Pedro'), dARS('pack_ultimate'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pack_ultimate')});
+  makeRow(body, 'Pack Ultra — x20 piezas/mes', '20 piezas (carruseles) + 31 días de historias.', '10 días hábiles',
+    badge('Daniela')+badge('Pedro'), dARS('pack_ultra'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pack_ultra')});
+  makeRow(body, 'Add-on: Pack de Historias — Básico (x8 días)', '8 días de historias (frecuencia 2 semanales). 1 o 2 artes por día.', '10 días hábiles',
+    badge('Daniela'), dARS('historias_basico'));
+  makeRow(body, 'Add-on: Pack de Historias — Medio (x12 días)', '12 días de historias (frecuencia 3 semanales).', '10 días hábiles',
+    badge('Daniela'), dARS('historias_medio'));
+  makeRow(body, 'Add-on: Pack de Historias — Full (x16 días)', '16 días de historias (frecuencia 4 semanales).', '10 días hábiles',
+    badge('Daniela'), dARS('historias_full'));
+
+  // ── OTROS SERVICIOS DE DISEÑO ─────────────────────────────────────────────
+  body = makeSection(container, 'DISEÑO GRÁFICO — OTROS SERVICIOS', 12, 'srv-diseno-otros');
+  makeRow(body, 'Campaña Estacional — Pack Básico', '1 concepto base + 4 piezas adaptadas.', '', badge('Daniela')+badge('Pedro'), dARS('camp_basico'), pedAmCosto('puntual_branding'), {'Daniela': dARS('camp_basico')});
+  makeRow(body, 'Campaña Estacional — Pack Full', '1 concepto base + 8 piezas adaptadas.', '', badge('Daniela')+badge('Pedro'), dARS('camp_full'), pedAmCosto('puntual_branding'), {'Daniela': dARS('camp_full')});
+  makeRow(body, 'Diseño de Packaging / Etiquetas', '1 línea de producto + 2 adaptaciones + mockup 3D.', '10 días hábiles', badge('Daniela')+badge('Pedro'), dARS('packaging'), pedAmCosto('puntual_branding'), {'Daniela': dARS('packaging')});
+  makeRow(body, 'Presentaciones Estáticas — Básico', 'PDF de 5–10 diapositivas.', '', badge('Daniela')+badge('Pedro'), dARS('pres_est_basico'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pres_est_basico')});
+  makeRow(body, 'Presentaciones Estáticas — Medio', 'PDF de 10–20 diapositivas.', '', badge('Daniela')+badge('Pedro'), dARS('pres_est_medio'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pres_est_medio')});
+  makeRow(body, 'Presentaciones Estáticas — Full', 'PDF de hasta 30 diapositivas.', '', badge('Daniela')+badge('Pedro'), dARS('pres_est_full'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pres_est_full')});
+  makeRow(body, 'Presentaciones Editables — Básico', 'Canva/PowerPoint editable de 5–10 slides.', '', badge('Daniela')+badge('Pedro'), dARS('pres_ed_basico'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pres_ed_basico')});
+  makeRow(body, 'Presentaciones Editables — Medio', 'Canva/PowerPoint editable de 10–20 slides.', '', badge('Daniela')+badge('Pedro'), dARS('pres_ed_medio'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pres_ed_medio')});
+  makeRow(body, 'Presentaciones Editables — Full', 'Canva/PowerPoint editable de hasta 30 slides.', '', badge('Daniela')+badge('Pedro'), dARS('pres_ed_full'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pres_ed_full')});
+  makeRow(body, 'Diseño de Landing Page / One Page', 'Diseño UI visual (sin programación), wireframe + layout.', '15 días hábiles', badge('Daniela')+badge('Pedro'), dARS('landing'), pedAmCosto('puntual_branding'), {'Daniela': dARS('landing')});
+  makeRow(body, 'Diseño Editorial', 'Catálogo, eBook o menú (4 a 12 páginas).', '15 días hábiles', badge('Daniela')+badge('Pedro'), dARS('editorial'), pedAmCosto('puntual_branding'), {'Daniela': dARS('editorial')});
+  makeRow(body, 'Newsletter — Plantillas de mail', 'Diseño de plantillas de email marketing (sin programación).', '10 días hábiles', badge('Daniela')+badge('Pedro'), dARS('news_1'), pedAmCosto('puntual_branding'), {'Daniela': dARS('news_1')});
+
+  // ── FOTOGRAFÍA ────────────────────────────────────────────────────────────
+  body = makeSection(container, 'FOTOGRAFÍA', 6, 'srv-foto');
+  makeRow(body, 'Sesión Fotográfica de Producto — Pack Básico', '10 fotos editadas, fondo blanco o escenografía, 2 estilos, 1hr.', '10 días hábiles',
+    badge('Pedro'), pedPk('foto_producto','basico'), 0, {'Pedro': pedPk('foto_producto','basico')});
+  makeRow(body, 'Sesión Fotográfica de Producto — Pack Medio', '20 fotos editadas, 2hrs de producción, 2 estilos.', '15 días hábiles',
+    badge('Pedro'), pedPk('foto_producto','medio'), 0, {'Pedro': pedPk('foto_producto','medio')});
+  makeRow(body, 'Sesión Fotográfica de Producto — Pack Full', '30 fotos editadas, 2hrs de producción, 2 estilos.', '15 días hábiles',
+    badge('Pedro'), pedPk('foto_producto','full'), 0, {'Pedro': pedPk('foto_producto','full')});
+  makeRow(body, 'Sesión Fotográfica de Marca / Equipo — Básico', '8 fotos, 1 locación, 1 vestuario, 1hr.', '15 días hábiles',
+    badge('Pedro'), pedPk('foto_marca_equipo','basico'), 0, {'Pedro': pedPk('foto_marca_equipo','basico')});
+  makeRow(body, 'Sesión Fotográfica de Marca / Equipo — Medio', '12 fotos, 1 locación, 2 vestuarios, 2hrs.', '15 días hábiles',
+    badge('Pedro'), pedPk('foto_marca_equipo','medio'), 0, {'Pedro': pedPk('foto_marca_equipo','medio')});
+  makeRow(body, 'Sesión Fotográfica de Marca / Equipo — Full', '20 fotos, 1 locación, 2 vestuarios, 2hrs.', '',
+    badge('Pedro'), pedPk('foto_marca_equipo','full'), 0, {'Pedro': pedPk('foto_marca_equipo','full')});
+
+  // ── PRODUCCIÓN AUDIOVISUAL ────────────────────────────────────────────────
+  // makeReelsRow: muestra dos variantes en la misma fila (solo edición / cámara+edición)
+  function makeReelsRow(body, name, desc, vicKey, oriEdKey, oriCamKey, pedroARS) {
+    const vicVal   = v(vicKey);
+    const oriEd    = oriPk('nuevo_solo_edicion',  oriEdKey);
+    const oriCam   = oriPk('nuevo_camara_edicion', oriCamKey);
+    const pedVal   = pedroARS || 0;
+    const totalEd  = vicVal + oriEd  + pedVal;
+    const totalCam = vicVal + oriCam + pedVal;
+    const hasPedro = pedVal > 0;
+
+    function variant(label, oriVal, total) {
+      const oriLine  = oriVal > 0
+        ? `<span style="color:#7aa2ff">Orianna</span> <span style="color:var(--muted)">$${Math.round(oriVal).toLocaleString('es-AR')}</span>`
+        : `<span style="color:var(--muted)">Orianna: pendiente</span>`;
+      const vicLine  = vicVal > 0
+        ? `<span style="color:var(--lime)">Victoria</span> <span style="color:var(--muted)">$${Math.round(vicVal).toLocaleString('es-AR')}</span>`
+        : '';
+      const pedLine  = hasPedro
+        ? `<span style="color:#f0ede8">Pedro</span> <span style="color:var(--muted)">$${Math.round(pedVal).toLocaleString('es-AR')}</span>`
+        : `<span style="color:var(--muted)">Pedro: pendiente</span>`;
+      const parts = [vicLine, oriLine, pedLine].filter(Boolean);
+      const chipTotal = total > 0
+        ? `<span class="chip chip-ars-only">$ ${Math.round(total).toLocaleString('es-AR')} ARS</span>${fxRate ? `<span class="chip chip-pack">U$S ${(total/fxRate).toLocaleString('es-AR',{minimumFractionDigits:2})}</span>` : ''}`
+        : `<span class="chip chip-pending">Sin costos cargados</span>`;
+      return `
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-top:1px solid rgba(255,255,255,.05)">
+          <div style="font-size:11px;color:var(--muted);padding-top:3px;min-width:130px">
+            <span style="font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.3)">${label}</span>
+          </div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+            ${chipTotal}
+            <div style="font-size:10px;display:flex;flex-wrap:wrap;gap:5px;justify-content:flex-end">${parts.join('<span style="color:var(--border)"> · </span>')}</div>
+          </div>
+        </div>`;
+    }
+
+    const row = document.createElement('div');
+    row.className = 'service-row';
+    row.style.cssText = 'flex-direction:column;align-items:stretch;gap:0';
+    row.innerHTML = `
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;padding-bottom:4px">
+        <span>${name}</span>
+        ${badge('Victoria')}${badge('Orianna')}${badge('Pedro')}
+      </div>
+      ${desc ? `<div class="service-desc" style="margin-bottom:4px">${desc}</div>` : ''}
+      ${variant('Solo edición', oriEd, totalEd)}
+      ${variant('Cámara + edición', oriCam, totalCam)}
+    `;
+    body.appendChild(row);
+  }
+
+  body = makeSection(container, 'PRODUCCIÓN AUDIOVISUAL — REELS / VIDEO', 10, 'srv-av');
+  const pedReels = pedAmCosto('puntual_redes');
+
+  makeReelsRow(body, 'Reels — Pack Inicial (x1)',   '1 reel/mes.',  'reels_ideas_x1',  'x1',  'x1',  pedReels);
+  makeReelsRow(body, 'Reels — Pack Básico (x4)',    '4 reels/mes.', 'reels_ideas_x4',  'x4',  'x4',  pedReels);
+  makeReelsRow(body, 'Reels — Pack Avanzado (x8)',  '8 reels/mes.', 'reels_ideas_x8',  'x8',  'x8',  pedReels);
+  makeReelsRow(body, 'Reels — Pack Premium (x12)',  '12 reels/mes.','reels_ideas_x12', 'x12', 'x12', pedReels);
+  makeReelsRow(body, 'Reels — Pack Ultra (x16)',    '16 reels/mes.','reels_ideas_x12', 'x16', 'x16', pedReels);
+  makeReelsRow(body, 'Reels — Pack Máximo (x20)',   '20 reels/mes.','reels_ideas_x12', 'x20', 'x20', pedReels);
+
+  // Otros audiovisuales (Pedro ejecuta)
+  body = makeSection(container, 'PRODUCCIÓN AUDIOVISUAL — OTROS', 4, 'srv-av-otros');
+  makeRow(body, 'Video Institucional / Spot Comercial', 'Concepto, guion, preproducción, producción ejecutiva, edición y posproducción. Entrega Full HD.', '',
+    badge('Pedro'), ped('puntual_video_institucional'), 0, {'Pedro': ped('puntual_video_institucional')});
+  makeRow(body, 'Cobertura Audiovisual de Eventos', 'Cobertura en vivo, montaje narrativo, video principal + piezas cortas para redes.', '',
+    badge('Pedro'), pedPk('puntual_cobertura_eventos','h1'), 0, {'Pedro': pedPk('puntual_cobertura_eventos','h1')});
+  makeRow(body, 'Producción de Contenido para Publicidad Digital', 'Concepto, estrategia, rodaje y edición optimizada para Instagram/TikTok/YouTube Shorts.', '',
+    badge('Pedro')+badge('Victoria'), ped('puntual_publicidad_digital'), pedAmCosto('puntual_redes'), {'Pedro': ped('puntual_publicidad_digital'), 'Victoria': v('meta_ads_respaldo')});
+  makeRow(body, 'Entrevistas / Testimoniales', 'Guion, estructura, rodaje profesional, edición y posproducción.', '',
+    badge('Pedro'), ped('puntual_entrevistas'), 0, {'Pedro': ped('puntual_entrevistas')});
+
+  // ── GESTIÓN DE REDES ──────────────────────────────────────────────────────
+  body = makeSection(container, 'GESTIÓN Y ESTRATEGIA DE REDES SOCIALES', 10, 'srv-redes');
+  makeRow(body, 'Plan de Contenidos Estratégico', 'Diagnóstico, definición estratégica, ejes temáticos, guía visual y planificación del primer mes.', '10–15 días hábiles',
+    badge('Victoria')+badge('Pedro'), v('plan_contenidos'), pedAmCosto('puntual_redes'), {'Victoria': v('plan_contenidos')});
+  makeRow(body, 'Community Pack (diseño + redacción)', '12 piezas diseñadas + copys + hashtags + guía de publicación mensual.', '7 días hábiles',
+    badge('Victoria')+badge('Daniela')+badge('Pedro'), v('community_pack') + dARS('pack_medio'), pedAmCosto('puntual_redes'), {'Victoria': v('community_pack'), 'Daniela': dARS('pack_medio')});
+  makeRow(body, 'Consultoría de Estrategia Digital (1 sesión)', 'Diagnóstico previo + sesión 1:1 de 90 minutos + plan de acción 30 días.', '',
+    badge('Victoria')+badge('Pedro'), v('consultoria'), pedAmCosto('puntual_redes'), {'Victoria': v('consultoria')});
+  makeRow(body, 'Auditoría de Marca Digital', 'Análisis de perfil, contenido, métricas, competencia y coherencia de marca.', '7–10 días hábiles',
+    badge('Victoria')+badge('Pedro'), v('auditoria'), pedAmCosto('puntual_redes'), {'Victoria': v('auditoria')});
+  makeRow(body, 'Calendario de Campañas Promocionales', 'Calendario anual de fechas clave + ideas de contenido + guía de anticipación.', '3 días hábiles',
+    badge('Victoria')+badge('Pedro'), v('calendario_campanas'), pedAmCosto('puntual_redes'), {'Victoria': v('calendario_campanas')});
+  // makeGestionRow: muestra dos variantes (Orianna solo edición / cámara+edición)
+  function makeGestionRow(body, name, desc, vicKey, danKey, oriEdKey, oriCamKey, paulaKey, pedroARS) {
+    const vicVal  = v(vicKey);
+    const danVal  = dARS(danKey);
+    const oriEd   = oriPk('nuevo_solo_edicion',  oriEdKey);
+    const oriCam  = oriPk('nuevo_camara_edicion', oriCamKey);
+    const paulaVal= pp(paulaKey);
+    const pedVal  = pedroARS || 0;
+    const base    = vicVal + danVal + paulaVal + pedVal;
+    const totalEd = base + oriEd;
+    const totalCam= base + oriCam;
+
+    function variant(label, oriVal, total) {
+      const parts = [];
+      if (vicVal  > 0) parts.push(`<span style="color:var(--lime)">Victoria</span> <span style="color:var(--muted)">$${Math.round(vicVal).toLocaleString('es-AR')}</span>`);
+      if (danVal  > 0) parts.push(`<span style="color:var(--orange)">Daniela</span> <span style="color:var(--muted)">$${Math.round(danVal).toLocaleString('es-AR')}</span>`);
+      parts.push(oriVal > 0
+        ? `<span style="color:#7aa2ff">Orianna</span> <span style="color:var(--muted)">$${Math.round(oriVal).toLocaleString('es-AR')}</span>`
+        : `<span style="color:var(--muted)">Orianna: pendiente</span>`);
+      if (paulaVal> 0) parts.push(`<span style="color:#c084fc">Paula</span> <span style="color:var(--muted)">$${Math.round(paulaVal).toLocaleString('es-AR')}</span>`);
+      parts.push(pedVal > 0
+        ? `<span style="color:#f0ede8">Pedro</span> <span style="color:var(--muted)">$${Math.round(pedVal).toLocaleString('es-AR')}</span>`
+        : `<span style="color:var(--muted)">Pedro: pendiente</span>`);
+      const chipTotal = total > 0
+        ? `<span class="chip chip-ars-only">$ ${Math.round(total).toLocaleString('es-AR')} ARS</span>${fxRate ? `<span class="chip chip-pack">U$S ${(total/fxRate).toLocaleString('es-AR',{minimumFractionDigits:2})}</span><span class="chip chip-pack" style="opacity:.7;font-size:10px">U$S ${(total/fxRate*1.2).toLocaleString('es-AR',{minimumFractionDigits:2})} (+20%)</span>` : ''}`
+        : `<span class="chip chip-pending">Sin costos cargados</span>`;
+      return `
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-top:1px solid rgba(255,255,255,.05)">
+          <div style="font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.3);padding-top:4px;min-width:130px">${label}</div>
+          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
+            ${chipTotal}
+            <div style="font-size:10px;display:flex;flex-wrap:wrap;gap:5px;justify-content:flex-end">${parts.join('<span style="color:var(--border)"> · </span>')}</div>
+          </div>
+        </div>`;
+    }
+
+    const row = document.createElement('div');
+    row.className = 'service-row';
+    row.style.cssText = 'flex-direction:column;align-items:stretch;gap:0';
+    row.innerHTML = `
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;padding-bottom:4px">
+        <span>${name}</span>
+        ${badge('Victoria')}${badge('Daniela')}${badge('Orianna')}${badge('Paula')}${badge('Pedro')}
+      </div>
+      ${desc ? `<div class="service-desc" style="margin-bottom:4px">${desc}</div>` : ''}
+      <div class="service-time" style="margin-bottom:4px">⏱ Mensual</div>
+      ${variant('Orianna — solo edición', oriEd, totalEd)}
+      ${variant('Orianna — cámara + edición', oriCam, totalCam)}
+    `;
+    body.appendChild(row);
+  }
+
+  const pedGestion = pedAmCosto('puntual_redes');
+  makeGestionRow(body, 'Gestión Integral — Pack Inicial (x4)',  '4 publicaciones/mes. Onboarding estratégico, planificación, briefs para Daniela y copys para Paula.',  'gestion_integral_x4',  'pack_basico',   'x4',  'x4',  'pack_inicial', pedGestion);
+  makeGestionRow(body, 'Gestión Integral — Pack Básico (x8)',   '8 publicaciones — 4 Instagram + 4 TikTok.',  'gestion_integral_x8',  'pack_medio',    'x8',  'x8',  'pack_basico',  pedGestion);
+  makeGestionRow(body, 'Gestión Integral — Pack Avanzado (x12)','12 publicaciones — 8 Instagram + 4 TikTok.', 'gestion_integral_x12', 'pack_full',     'x12', 'x12', 'pack_avanzado',pedGestion);
+  makeGestionRow(body, 'Gestión Integral — Pack Premium (x16)', '16 publicaciones — 12 Instagram + 4 TikTok.','gestion_integral_x16', 'pack_ultimate', 'x16', 'x16', 'pack_premium', pedGestion);
+  makeGestionRow(body, 'Gestión Integral — Pack Ultra (x20)',   '20 publicaciones — 16 Instagram + 4 TikTok.','gestion_integral_x20', 'pack_ultra',    'x20', 'x20', 'pack_ultra',   pedGestion);
+
+  // ── META ADS Y EMAIL MARKETING ────────────────────────────────────────────
+  body = makeSection(container, 'META ADS Y EMAIL MARKETING', 7, 'srv-pauta');
+  makeRow(body, 'Meta Ads — Setup Avanzado de Campaña', 'Configuración completa: estructura, segmentaciones, objetivos y píxel de Meta.', '5–7 días hábiles',
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_setup') + v('meta_ads_respaldo'), pedAmCosto('puntual_redes'), {'Paula': pp('meta_ads_setup'), 'Victoria': v('meta_ads_respaldo')});
+  makeRow(body, 'Meta Ads — Gestión de Performance', 'Monitoreo, optimización, A/B testing e informe mensual.', 'Mensual',
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_gestion') + v('meta_ads_respaldo'), pedAmCosto('puntual_redes'), {'Paula': pp('meta_ads_gestion'), 'Victoria': v('meta_ads_respaldo')});
+  makeRow(body, 'Meta Ads — Gestión de Escalado', 'Escalado vertical y horizontal, expansión de audiencias para cuentas con historial probado.', 'Mensual',
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_escalado') + v('meta_ads_respaldo'), pedAmCosto('puntual_redes'), {'Paula': pp('meta_ads_escalado'), 'Victoria': v('meta_ads_respaldo')});
+  makeRow(body, 'Meta Ads — Auditoría de Cuenta Publicitaria', 'Diagnóstico de estructura, creatividades y eficiencia. Informe con recomendaciones.', '',
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_auditoria') + v('meta_ads_respaldo'), pedAmCosto('puntual_redes'), {'Paula': pp('meta_ads_auditoria'), 'Victoria': v('meta_ads_respaldo')});
+  makeRow(body, 'Email Marketing — Setup Básico', 'Configuración de plataforma: listas, formularios, SPF/DKIM y plantilla base.', '5–7 días hábiles',
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('email_setup') + v('email_mkt_respaldo'), pedAmCosto('puntual_redes'), {'Paula': pp('email_setup'), 'Victoria': v('email_mkt_respaldo')});
+  makeRow(body, 'Email Marketing — Gestión Mensual', 'Planificación, redacción, diseño, envío y monitoreo con informe mensual.', 'Mensual',
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('email_gestion') + v('email_mkt_respaldo'), pedAmCosto('puntual_redes'), {'Paula': pp('email_gestion'), 'Victoria': v('email_mkt_respaldo')});
+  makeRow(body, 'Email Marketing — Secuencia Automatizada', 'Flujo automático activado por acción del usuario.', '7–10 días hábiles',
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('email_secuencia') + v('email_mkt_respaldo'), pedAmCosto('puntual_redes'), {'Paula': pp('email_secuencia'), 'Victoria': v('email_mkt_respaldo')});
+
+  // ── FORMACIÓN ─────────────────────────────────────────────────────────────
+  body = makeSection(container, 'FORMACIÓN Y CAPACITACIÓN', 6, 'srv-formacion');
+  makeRow(body, 'Curso Básico de Fotografía — Grupal', '3 sesiones (presencial + campo + online). Hasta 6 estudiantes.', '3 sesiones de 2hs',
+    badge('Pedro'), pedCourse('curso_fotografia_basico','grupal'), 0, {'Pedro': pedCourse('curso_fotografia_basico','grupal')});
+  makeRow(body, 'Curso Básico de Fotografía — Particular', '3 sesiones individuales con Pedro.', '3 sesiones de 2hs',
+    badge('Pedro'), pedCourse('curso_fotografia_basico','particular'), 0, {'Pedro': pedCourse('curso_fotografia_basico','particular')});
+  makeRow(body, 'Curso de Contenido Audiovisual — Grupal', '3 sesiones: estrategia, producción y edición. Hasta 8 estudiantes.', '3 sesiones de 2hs',
+    badge('Pedro'), pedCourse('curso_contenido_audiovisual','grupal'), 0, {'Pedro': pedCourse('curso_contenido_audiovisual','grupal')});
+  makeRow(body, 'Curso de Contenido Audiovisual — Particular', '3 sesiones individuales con Pedro.', '3 sesiones de 2hs',
+    badge('Pedro'), pedCourse('curso_contenido_audiovisual','particular'), 0, {'Pedro': pedCourse('curso_contenido_audiovisual','particular')});
+  makeRow(body, 'Mentoría 1:1 — Sesión Única (60 min)', 'Devolución puntual sobre portfolio, feed, proyecto o estrategia.', '60 minutos',
+    badge('Pedro'), pedPk('mentoria_1on1','sesion_unica'), 0, {'Pedro': pedPk('mentoria_1on1','sesion_unica')});
+  makeRow(body, 'Mentoría 1:1 — Pack 4 sesiones (mensual)', 'Un mes de acompañamiento semanal con hoja de ruta.', '4 semanas',
+    badge('Pedro'), pedPk('mentoria_1on1','pack4'), 0, {'Pedro': pedPk('mentoria_1on1','pack4')});
+}
+
+
+// ── STATS ──────────────────────────────────────────────────────────────────
+function updateStats() {
+  // Daniela
+  const dPrices = danielaData ? (danielaData.prices || {}) : {};
+  const dAll = DANIELA_SECTIONS.flatMap(s => s.services);
+  const dFilled = dAll.filter(svc => dPrices[svc.id] && dPrices[svc.id] > 0).length;
+  const dPct = dAll.length ? Math.round(dFilled / dAll.length * 100) : 0;
+  document.getElementById('statDanielaPct').textContent = dPct + '%';
+  document.getElementById('statDanielaCount').textContent = `${dFilled} de ${dAll.length} servicios`;
+  document.getElementById('fillDaniela').style.width = dPct + '%';
+  document.getElementById('pctDaniela').textContent = dPct + '%';
+  document.getElementById('badgeDaniela').textContent = dFilled;
+
+  // Victoria
+  const vPrices = victoriaData ? (victoriaData.prices || {}) : {};
+  const vAll = VICTORIA_SECTIONS.flatMap(s => s.services);
+  const vFilled = vAll.filter(svc => vPrices[svc.id] && vPrices[svc.id] > 0).length;
+  const vPct = vAll.length ? Math.round(vFilled / vAll.length * 100) : 0;
+  document.getElementById('statVictoriaPct').textContent = vPct + '%';
+  document.getElementById('statVictoriaCount').textContent = `${vFilled} de ${vAll.length} servicios`;
+  document.getElementById('fillVictoria').style.width = vPct + '%';
+  document.getElementById('pctVictoria').textContent = vPct + '%';
+  document.getElementById('badgeVictoria').textContent = vFilled;
+
+  // Orianna — packPrices ANIDADO { serviceId: { pk: precio } }
+  const oPackPrices = oriannaData ? (oriannaData.packPrices || {}) : {};
+  let oFilled = 0, oTotal = 0;
+  ORIANNA_SECTIONS.forEach(section => {
+    section.services.forEach(svc => {
+      const svcPacks = oPackPrices[svc.id] || {};
+      (svc.packs || []).forEach(pk => {
+        oTotal++;
+        if ((svcPacks[pk] || 0) > 0) oFilled++;
+      });
+    });
+  });
+  const oPct = oTotal ? Math.round(oFilled / oTotal * 100) : 0;
+  document.getElementById('statOriannaPct').textContent = oPct + '%';
+  document.getElementById('statOriannaCount').textContent = `${oFilled} de ${oTotal} packs`;
+  document.getElementById('fillOrianna').style.width = oPct + '%';
+  document.getElementById('pctOrianna').textContent = oPct + '%';
+  document.getElementById('badgeOrianna').textContent = oFilled;
+
+  // Paula
+  const pPrices = paulaData ? (paulaData.prices || {}) : {};
+  const pPackPrices = paulaData ? (paulaData.packPrices || {}) : {};
+  let pFilled = 0, pTotal = 0;
+  PAULA_SECTIONS.forEach(section => {
+    if (section.hasPacks) {
+      section.packServices.forEach(id => { pTotal++; if ((pPackPrices[id] || 0) > 0) pFilled++; });
+    }
+    section.services.forEach(svc => {
+      pTotal++;
+      if ((pPrices[svc.id] || pPackPrices[svc.id] || 0) > 0) pFilled++;
+    });
+  });
+  const pPct = pTotal ? Math.round(pFilled / pTotal * 100) : 0;
+  document.getElementById('statPaulaPct').textContent = pPct + '%';
+  document.getElementById('statPaulaCount').textContent = `${pFilled} de ${pTotal} servicios`;
+  document.getElementById('fillPaula').style.width = pPct + '%';
+  document.getElementById('pctPaula').textContent = pPct + '%';
+  document.getElementById('badgePaula').textContent = pFilled;
+
+  // Pedro — pendiente integración directa, muestra estado del panel
+  // Pedro stat se actualiza desde renderPedro()
+  if (!pedroData) {
+    document.getElementById('statPedroPct').textContent = '—';
+    document.getElementById('statPedroCount').textContent = 'sin datos';
+    document.getElementById('fillPedro').style.width = '0%';
+    document.getElementById('pctPedro').textContent = '—';
+    document.getElementById('badgePedro').textContent = '—';
+  }
+
+  // Última actualización
+  const dates = [];
+  if (danielaData?._modifiedTime)  dates.push({ label: 'Daniela',  d: new Date(danielaData._modifiedTime) });
+  if (victoriaData?._modifiedTime) dates.push({ label: 'Victoria', d: new Date(victoriaData._modifiedTime) });
+  if (oriannaData?._modifiedTime)  dates.push({ label: 'Orianna',  d: new Date(oriannaData._modifiedTime) });
+  if (paulaData?._modifiedTime)    dates.push({ label: 'Paula',    d: new Date(paulaData._modifiedTime) });
+  if (pedroData?._modifiedTime)    dates.push({ label: 'Pedro',    d: new Date(pedroData._modifiedTime) });
+  if (dates.length) {
+    dates.sort((a,b) => b.d - a.d);
+    const latest = dates[0];
+    document.getElementById('statLastUpdate').textContent = latest.d.toLocaleDateString('es-AR', {day:'2-digit',month:'2-digit',year:'numeric'});
+    document.getElementById('statLastUpdateSub').textContent = `${latest.label} · ${latest.d.toLocaleTimeString('es-AR', {hour:'2-digit',minute:'2-digit'})}`;
+  }
+}
+
+// ── TABS ──────────────────────────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById('tab-' + name).classList.add('active');
+}
+
+// ── TOGGLE SECTION ──────────────────────────────────────────────────────────
+function toggleSection(header) {
+  header.classList.toggle('open');
+  const body = header.nextElementSibling;
+  body.classList.toggle('open');
+}
+
+// ── TOAST ──────────────────────────────────────────────────────────────────
+let toastTimer;
+function showToast(msg, type) {
+  const t = document.getElementById('toast');
+  const dot = document.getElementById('toastDot');
+  document.getElementById('toastMsg').textContent = msg;
+  dot.style.background = type === 'ok' ? 'var(--lime)' : type === 'error' ? 'var(--red)' : 'var(--orange)';
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3000);
+}
+</script>
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+</body>
+</html>
