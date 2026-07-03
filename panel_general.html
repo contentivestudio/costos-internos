@@ -1630,53 +1630,26 @@ function renderServicios() {
   makePedroPackRow(body, 'Sesión Fotográfica de Eventos — por horas', 'Todas las fotos de la jornada, sin tope de entregables.', 'fotografia_catalogo', 'foto_eventos_horas');
 
   // ── PRODUCCIÓN AUDIOVISUAL ────────────────────────────────────────────────
-  // makeReelsRow: Reels/Shorts son ejecución de Orianna — Pedro no interviene (no vive en pedro.html)
-  function makeReelsRow(body, name, desc, vicKey, oriEdKey, oriCamKey) {
-    const vicVal   = v(vicKey);
-    const oriEd    = oriPk('nuevo_solo_edicion',  oriEdKey);
-    const oriCam   = oriPk('nuevo_camara_edicion', oriCamKey);
-    const totalEd  = vicVal + oriEd;
-    const totalCam = vicVal + oriCam;
+  // Se divide en 3 servicios independientes por pack:
+  //  1) Solo edición        → Orianna + Pedro (sin Victoria)
+  //  2) Cámara + Edición    → Orianna + Pedro (sin Victoria)
+  //  3) Ideas + Cámara + Edición → Victoria + Orianna + Pedro
+  // Los 3 tabulan a Pedro en Redes — Nivel Liviano.
+  function makeReelsRow(body, packLabel, desc, vicKey, oriEdKey, oriCamKey) {
+    const vicVal = v(vicKey);
+    const oriEd  = oriPk('nuevo_solo_edicion',  oriEdKey);
+    const oriCam = oriPk('nuevo_camara_edicion', oriCamKey);
+    const pedVal = pedAM('puntual_redes_liviano');
 
-    function variant(label, oriVal, total) {
-      const oriLine  = oriVal > 0
-        ? `<span style="color:#7aa2ff">Orianna</span> <span style="color:var(--muted)">$${Math.round(oriVal).toLocaleString('es-AR')}</span>`
-        : `<span style="color:var(--muted)">Orianna: pendiente</span>`;
-      const vicLine  = vicVal > 0
-        ? `<span style="color:var(--lime)">Victoria</span> <span style="color:var(--muted)">$${Math.round(vicVal).toLocaleString('es-AR')}</span>`
-        : '';
-      const parts = [vicLine, oriLine].filter(Boolean);
-      const chipTotal = total > 0
-        ? `<span class="chip chip-ars-only">$ ${Math.round(total).toLocaleString('es-AR')} ARS</span>${fxRate ? `<span class="chip chip-pack">U$S ${(total/fxRate).toLocaleString('es-AR',{minimumFractionDigits:2})}</span>` : ''}`
-        : `<span class="chip chip-pending">Sin costos cargados</span>`;
-      return `
-        <div style="display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-top:1px solid rgba(255,255,255,.05)">
-          <div style="font-size:11px;color:var(--muted);padding-top:3px;min-width:130px">
-            <span style="font-size:10px;letter-spacing:.05em;text-transform:uppercase;color:rgba(255,255,255,.3)">${label}</span>
-          </div>
-          <div style="display:flex;flex-direction:column;align-items:flex-end;gap:3px">
-            ${chipTotal}
-            <div style="font-size:10px;display:flex;flex-wrap:wrap;gap:5px;justify-content:flex-end">${parts.join('<span style="color:var(--border)"> · </span>')}</div>
-          </div>
-        </div>`;
-    }
-
-    const row = document.createElement('div');
-    row.className = 'service-row';
-    row.style.cssText = 'flex-direction:column;align-items:stretch;gap:0';
-    row.innerHTML = `
-      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;padding-bottom:4px">
-        <span>${name}</span>
-        ${badge('Victoria')}${badge('Orianna')}
-      </div>
-      ${desc ? `<div class="service-desc" style="margin-bottom:4px">${desc}</div>` : ''}
-      ${variant('Solo edición', oriEd, totalEd)}
-      ${variant('Cámara + edición', oriCam, totalCam)}
-    `;
-    body.appendChild(row);
+    makeRow(body, `${packLabel} — Solo edición`, desc, '',
+      badge('Orianna')+badge('Pedro'), oriEd, pedVal, {'Orianna': oriEd});
+    makeRow(body, `${packLabel} — Cámara + Edición`, desc, '',
+      badge('Orianna')+badge('Pedro'), oriCam, pedVal, {'Orianna': oriCam});
+    makeRow(body, `${packLabel} — Ideas + Cámara + Edición`, desc, '',
+      badge('Victoria')+badge('Orianna')+badge('Pedro'), vicVal + oriCam, pedVal, {'Victoria': vicVal, 'Orianna': oriCam});
   }
 
-  body = makeSection(container, 'PRODUCCIÓN AUDIOVISUAL — REELS / VIDEO (Orianna)', 6, 'srv-av');
+  body = makeSection(container, 'PRODUCCIÓN AUDIOVISUAL — REELS / VIDEO (Orianna)', 18, 'srv-av');
   makeReelsRow(body, 'Reels — Pack Inicial (x1)',   '1 reel/mes.',  'reels_ideas_x1',  'x1',  'x1');
   makeReelsRow(body, 'Reels — Pack Básico (x4)',    '4 reels/mes.', 'reels_ideas_x4',  'x4',  'x4');
   makeReelsRow(body, 'Reels — Pack Avanzado (x8)',  '8 reels/mes.', 'reels_ideas_x8',  'x8',  'x8');
