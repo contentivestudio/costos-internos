@@ -325,6 +325,10 @@
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M23 4v6h-6"/><path d="M1 20v-6h6"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10"/><path d="M20.49 15a9 9 0 0 1-14.85 3.36L1 14"/></svg>
         Actualizar
       </button>
+      <button class="btn-refresh" id="snapshotBtn" onclick="saveMonthlySnapshot()" title="Descarga un JSON con los datos actuales de las 5 apps, con fecha, para guardar como histórico">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+        Snapshot mensual
+      </button>
       <div class="user-chip">
         <img class="user-avatar" id="userAvatar" src="" alt="">
         <span id="userName">Pedro</span>
@@ -339,6 +343,8 @@
     <span class="fx-val" id="fxRateDisplay">Cargando...</span>
     <span id="fxTime"></span>
   </div>
+
+  <div id="integrityBanner" style="display:none;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.3);border-radius:10px;padding:10px 14px;margin:10px 20px 0;font-size:12px;color:var(--orange,#F5A623)"></div>
 
   <!-- STATS -->
   <div class="stats-row">
@@ -963,7 +969,66 @@ async function readFromScript(scriptUrl, pin) {
   } catch(e) { return null; }
 }
 
-// ── LOAD ALL ──────────────────────────────────────────────────────────────
+// ── SNAPSHOT MENSUAL ────────────────────────────────────────────────────────
+// Descarga un JSON con los 5 datasets + fecha. No escribe a Drive directamente:
+// el scope OAuth actual es 'drive.readonly' — escribir requeriría ampliar el
+// scope y volver a loguearse. Más simple y sin tocar el login: descarga local,
+// y de ahí Pedro lo sube a la carpeta de Drive (30 segundos, cero riesgo).
+function saveMonthlySnapshot() {
+  const now = new Date();
+  const stamp = now.toISOString().slice(0,10); // YYYY-MM-DD
+  const snapshot = {
+    fecha: stamp,
+    fxRate: fxRate,
+    daniela: danielaData,
+    victoria: victoriaData,
+    orianna: oriannaData,
+    paula: paulaData,
+    pedro: pedroData
+  };
+  const blob = new Blob([JSON.stringify(snapshot, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `snapshot_costos_${stamp}.json`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+  showToast(`Snapshot ${stamp} descargado — subilo a la carpeta de Costos en Drive`, 'ok');
+}
+
+// ── CHEQUEO DE INTEGRIDAD DE CATÁLOGO ──────────────────────────────────────
+// Compara los IDs que panel_general espera leer (según DANIELA_SECTIONS /
+// VICTORIA_SECTIONS) contra los IDs realmente presentes en el JSON cargado.
+// Si Daniela o Victoria renombran/borran un ID en su app sin avisar, ese precio
+// queda "huérfano" — cargado en el JSON pero invisible en el panel. Esto lo detecta.
+function checkCatalogIntegrity() {
+  const banner = document.getElementById('integrityBanner');
+  if (!banner) return;
+  const issues = [];
+
+  if (danielaData && danielaData.prices) {
+    const knownIds = new Set(DANIELA_SECTIONS.flatMap(s => s.services.map(sv => sv.id)));
+    const orphans = Object.keys(danielaData.prices).filter(id => !knownIds.has(id) && (danielaData.prices[id] || 0) > 0);
+    if (orphans.length) issues.push(`Daniela: ${orphans.length} precio(s) cargado(s) con ID que no existe en el catálogo del panel (${orphans.join(', ')}) — no se están mostrando.`);
+  }
+  if (victoriaData && victoriaData.prices) {
+    const knownIds = new Set(VICTORIA_SECTIONS.flatMap(s => s.services.map(sv => sv.id)));
+    const orphans = Object.keys(victoriaData.prices).filter(id => !knownIds.has(id) && (victoriaData.prices[id] || 0) > 0);
+    if (orphans.length) issues.push(`Victoria: ${orphans.length} precio(s) cargado(s) con ID que no existe en el catálogo del panel (${orphans.join(', ')}) — no se están mostrando.`);
+  }
+
+  if (issues.length) {
+    banner.style.display = 'block';
+    banner.innerHTML = `⚠ Posible desajuste de catálogo:<br>${issues.map(i => `· ${i}`).join('<br>')}`;
+  } else {
+    banner.style.display = 'none';
+    banner.innerHTML = '';
+  }
+}
+
+
 async function loadAllFiles() {
   // Reset loaders
   ['Daniela','Victoria','Orianna','Paula','Pedro'].forEach(name => {
@@ -996,6 +1061,7 @@ async function loadAllFiles() {
   renderPedro();
   renderServicios();
   updateStats();
+  checkCatalogIntegrity();
 }
 
 // ── RENDER DANIELA ──────────────────────────────────────────────────────────
