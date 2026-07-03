@@ -570,8 +570,15 @@ function getCostMarginCosto(id,pk) { return (costMargin[id]&&costMargin[id][pk]!
 function getCostMarginVenta(id,pk) { return Math.ceil(getCostMarginCosto(id,pk)/(1-COST_MARGIN_RATE)); }
 function onCostMarginInput(id,pk,input) {
   if(!costMargin[id]) costMargin[id]={};
-  costMargin[id][pk]=parseFloat(input.value)||0;
-  renderServices(); updateGlobalProgress(); scheduleSave();
+  const val=parseFloat(input.value)||0;
+  costMargin[id][pk]=val;
+  input.classList.toggle('has-value',val>0);
+  const venta=getCostMarginVenta(id,pk);
+  const ventaEl=document.querySelector(`[data-cm-venta="${id}-${pk}"]`);
+  if(ventaEl) ventaEl.textContent=fmt(venta);
+  const usdEl=document.querySelector(`[data-cm-usd="${id}-${pk}"]`);
+  if(usdEl) usdEl.textContent=`${fmtUSD(venta)||''} · ${fmtUSDIntl(venta)||''}`;
+  updateGlobalProgress(); scheduleSave();
 }
 function getAmTotalHoras(id) { const h=getAmHours(id); let t=h.briefing+h.supervision+h.reuniones+h.presentacion; if(h.tieneAudiovisual)t+=h.rodaje; return t; }
 function getAmCosto(id) { return getAmTotalHoras(id)*tarifaDireccion; }
@@ -823,9 +830,9 @@ function renderMentoriaCard(card,svc) {
           <div><label style="font-size:10px;color:var(--muted)">Sesión (hs)</label><input type="number" step="0.5" class="hours-input" style="width:60px" value="${h.sesion}" oninput="onMentoriaHourChange('${svc.id}','${pack.key}','sesion',this)"></div>
           <div><label style="font-size:10px;color:var(--muted)">Devol. (hs)</label><input type="number" step="0.5" class="hours-input" style="width:60px" value="${h.devolucion}" oninput="onMentoriaHourChange('${svc.id}','${pack.key}','devolucion',this)"></div>
         </div>
-        <div style="margin-top:8px;font-size:11px;color:var(--muted)">Total: <strong style="color:var(--text)">${totalH}hs</strong> · Costo: <strong style="color:var(--text)">${fmt(costo)}</strong></div>
-        <div class="price-big" style="color:var(--lime);font-size:18px;margin-top:4px">${fmt(venta)}</div>
-        <div style="font-size:10px;color:var(--muted)">${fmtUSD(venta)||''} · ${fmtUSDIntl(venta)||''}</div>
+        <div data-mt-summary="${svc.id}-${pack.key}" style="margin-top:8px;font-size:11px;color:var(--muted)">Total: <strong style="color:var(--text)">${totalH}hs</strong> · Costo: <strong style="color:var(--text)">${fmt(costo)}</strong></div>
+        <div class="price-big" data-mt-venta="${svc.id}-${pack.key}" style="color:var(--lime);font-size:18px;margin-top:4px">${fmt(venta)}</div>
+        <div data-mt-usd="${svc.id}-${pack.key}" style="font-size:10px;color:var(--muted)">${fmtUSD(venta)||''} · ${fmtUSDIntl(venta)||''}</div>
       </div>
     `;
   });
@@ -838,7 +845,7 @@ function renderMentoriaCard(card,svc) {
     </div>
     <div style="display:flex;align-items:center;gap:8px;margin:10px 0 4px 0">
       <label style="font-size:11px;color:var(--muted)">Tarifa mentoría ($/h):</label>
-      <input type="number" class="hours-input" style="width:100px" value="${tarifaMentoria}" oninput="onTarifaMentoriaChange(this)">
+      <input type="number" class="hours-input" id="tarifaMentoriaInput" style="width:100px" value="${tarifaMentoria}" oninput="onTarifaMentoriaChange(this)">
     </div>
     <div class="hours-grid" style="grid-template-columns:repeat(auto-fit,minmax(220px,1fr))">${packsHtml}</div>
     <button class="detail-toggle" onclick="toggleDetail('detail-${svc.id}',this)"><span>▼</span> Ver detalle de este servicio</button>
@@ -848,15 +855,27 @@ function renderMentoriaCard(card,svc) {
     </div>
   `;
 }
+function updateMentoriaPack(id,pk) {
+  const totalH=getMentoriaTotalHoras(id,pk);
+  const costo=getMentoriaCostoInterno(id,pk);
+  const venta=getMentoriaVenta(id,pk);
+  const summaryEl=document.querySelector(`[data-mt-summary="${id}-${pk}"]`);
+  if(summaryEl) summaryEl.innerHTML=`Total: <strong style="color:var(--text)">${totalH}hs</strong> · Costo: <strong style="color:var(--text)">${fmt(costo)}</strong>`;
+  const ventaEl=document.querySelector(`[data-mt-venta="${id}-${pk}"]`);
+  if(ventaEl) ventaEl.textContent=fmt(venta);
+  const usdEl=document.querySelector(`[data-mt-usd="${id}-${pk}"]`);
+  if(usdEl) usdEl.textContent=`${fmtUSD(venta)||''} · ${fmtUSDIntl(venta)||''}`;
+}
 function onMentoriaHourChange(id,pk,field,input) {
   if(!mentoriaHours[id]) mentoriaHours[id]={};
   if(!mentoriaHours[id][pk]) mentoriaHours[id][pk]={...MENTORIA_DEFAULT_HOURS[pk]};
   mentoriaHours[id][pk][field]=parseFloat(input.value)||0;
-  renderServices(); updateGlobalProgress(); scheduleSave();
+  updateMentoriaPack(id,pk); updateGlobalProgress(); scheduleSave();
 }
 function onTarifaMentoriaChange(input) {
   tarifaMentoria=parseFloat(input.value)||30000;
-  renderServices(); scheduleSave();
+  ['sesion_unica','pack4','pack8'].forEach(pk=>updateMentoriaPack('mentoria_1on1',pk));
+  scheduleSave();
 }
 
 // ── COST_MARGIN card (costo real editable, venta calculada automática) ────────
@@ -877,8 +896,8 @@ function renderCostMarginCard(card,svc) {
           </div>
         </div>
         <div style="margin-top:8px;font-size:11px;color:var(--muted)">Margen fijo 35%</div>
-        <div class="price-big" style="color:var(--lime);font-size:18px;margin-top:2px">${fmt(venta)}</div>
-        <div style="font-size:10px;color:var(--muted)">${fmtUSD(venta)||''} · ${fmtUSDIntl(venta)||''}</div>
+        <div class="price-big" data-cm-venta="${svc.id}-${pack.key}" style="color:var(--lime);font-size:18px;margin-top:2px">${fmt(venta)}</div>
+        <div data-cm-usd="${svc.id}-${pack.key}" style="font-size:10px;color:var(--muted)">${fmtUSD(venta)||''} · ${fmtUSDIntl(venta)||''}</div>
       </div>
     `;
   });
