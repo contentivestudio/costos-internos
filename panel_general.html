@@ -1467,8 +1467,9 @@ function renderServicios() {
     const breakdownFull = breakdown ? { ...breakdown } : {};
     if (hasPedro) breakdownFull['Pedro'] = pedroVal;
     const lines = Object.entries(breakdownFull)
-      .filter(([,v]) => v > 0)
-      .map(([k,v]) => `<span style="color:${CC[k]||'var(--muted)'}">${k}</span> <span style="color:var(--muted)">$${Math.round(v).toLocaleString('es-AR')}</span>`);
+      .map(([k,v]) => v > 0
+        ? `<span style="color:${CC[k]||'var(--muted)'}">${k}</span> <span style="color:var(--muted)">$${Math.round(v).toLocaleString('es-AR')}</span>`
+        : `<span style="color:${CC[k]||'var(--muted)'}">${k}</span> <span style="color:var(--muted)">pendiente</span>`);
     if (lines.length) {
       breakdownHtml = `<div style="font-size:10px;margin-top:3px;display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end">${lines.join('<span style="color:var(--border)"> · </span>')}</div>`;
     }
