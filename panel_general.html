@@ -1642,15 +1642,43 @@ function renderServicios() {
     const oriCam = oriPk('nuevo_camara_edicion', oriCamKey);
     const pedVal = pedAM('puntual_redes_liviano');
 
-    makeRow(body, `${packLabel} — Solo edición`, desc, '',
-      badge('Orianna')+badge('Pedro'), oriEd, pedVal, {'Orianna': oriEd});
-    makeRow(body, `${packLabel} — Cámara + Edición`, desc, '',
-      badge('Orianna')+badge('Pedro'), oriCam, pedVal, {'Orianna': oriCam});
-    makeRow(body, `${packLabel} — Ideas + Cámara + Edición`, desc, '',
-      badge('Victoria')+badge('Orianna')+badge('Pedro'), vicVal + oriCam, pedVal, {'Victoria': vicVal, 'Orianna': oriCam});
+    function subLine(totalARS, breakdownPairs) {
+      const lines = breakdownPairs
+        .map(([k,val]) => val > 0
+          ? `<span style="color:${CC[k]||'var(--muted)'}">${k}</span> <span style="color:var(--muted)">$${Math.round(val).toLocaleString('es-AR')}</span>`
+          : `<span style="color:${CC[k]||'var(--muted)'}">${k}</span> <span style="color:var(--muted)">pendiente</span>`)
+        .join('<span style="color:var(--border)"> · </span>');
+      return `<div style="display:flex;flex-direction:column;align-items:flex-end;gap:2px">${priceChips(totalARS)}<div style="font-size:10px;display:flex;gap:5px">${lines}</div></div>`;
+    }
+
+    const row = document.createElement('div');
+    row.className = 'service-row';
+    row.style.cssText = 'flex-direction:column;align-items:stretch;gap:4px';
+    row.innerHTML = `
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">
+        <span>${packLabel}</span>
+      </div>
+      ${desc ? `<div class="service-desc">${desc}</div>` : ''}
+      <div class="pack-row">
+        <div class="pack-label">Solo edición ${badge('Orianna')}${badge('Pedro')}</div>
+        ${subLine(oriEd + pedVal, [['Orianna', oriEd], ['Pedro', pedVal]])}
+      </div>
+      <div class="pack-row">
+        <div class="pack-label">Cámara + Edición ${badge('Orianna')}${badge('Pedro')}</div>
+        ${subLine(oriCam + pedVal, [['Orianna', oriCam], ['Pedro', pedVal]])}
+      </div>
+      <div class="pack-row">
+        <div class="pack-label">Ideas + Cámara + Edición ${badge('Victoria')}${badge('Orianna')}${badge('Pedro')}</div>
+        ${subLine(vicVal + oriCam + pedVal, [['Victoria', vicVal], ['Orianna', oriCam], ['Pedro', pedVal]])}
+      </div>
+    `;
+    row.dataset.srvText = (packLabel + ' ' + (desc||'')).toLowerCase();
+    row.dataset.srvResp = 'Daniela,Victoria,Orianna,Paula,Pedro'.split(',').filter(n => ['Victoria','Orianna','Pedro'].includes(n)).join(',');
+    row.dataset.srvPending = (oriEd === 0 || oriCam === 0) ? '1' : '0';
+    body.appendChild(row);
   }
 
-  body = makeSection(container, 'PRODUCCIÓN AUDIOVISUAL — REELS / VIDEO (Orianna)', 18, 'srv-av');
+  body = makeSection(container, 'PRODUCCIÓN AUDIOVISUAL — REELS / VIDEO (Orianna)', 6, 'srv-av');
   makeReelsRow(body, 'Reels — Pack Inicial (x1)',   '1 reel/mes.',  'reels_ideas_x1',  'x1',  'x1');
   makeReelsRow(body, 'Reels — Pack Básico (x4)',    '4 reels/mes.', 'reels_ideas_x4',  'x4',  'x4');
   makeReelsRow(body, 'Reels — Pack Avanzado (x8)',  '8 reels/mes.', 'reels_ideas_x8',  'x8',  'x8');
