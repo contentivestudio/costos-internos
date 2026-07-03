@@ -494,6 +494,132 @@ const PAULA_PIN = '0711';
 const PEDRO_SCRIPT = 'https://script.google.com/macros/s/AKfycbxXrP_rQtJo-8nE8r5JMlrSlVH7WBw9NOYAhh4--PhjatbArJMiMDCeHXX8gGFGpaADYw/exec';
 const PEDRO_PIN = '2510';
 
+// ── PEDRO: CATÁLOGO MAESTRO — mirror de SECTIONS en pedro.html ──────────────
+// Única fuente de verdad para tab Pedro y para Servicios Consolidado.
+// Si se agrega/edita un servicio en pedro.html, replicar acá.
+const PEDRO_AM_DEFAULT = { briefing:1.5, rodaje:2.5, supervision:2, reuniones:1, presentacion:1.5, tieneAudiovisual:true };
+const PEDRO_AM_OVERRIDES = {
+  puntual_branding_simple:   { briefing:0.5, rodaje:0,   supervision:0.5, reuniones:0.5, presentacion:0.5, tieneAudiovisual:false },
+  puntual_branding_medio:    { briefing:1,   rodaje:0,   supervision:1.5, reuniones:1,   presentacion:1,   tieneAudiovisual:false },
+  puntual_branding_complejo: { briefing:1.5, rodaje:2.5, supervision:2.5, reuniones:1,   presentacion:1.5, tieneAudiovisual:true  },
+  puntual_redes_liviano:     { briefing:1,   rodaje:0,   supervision:1,   reuniones:0.5, presentacion:0.5, tieneAudiovisual:false },
+  puntual_redes_medio:       { briefing:2,   rodaje:0,   supervision:2,   reuniones:1,   presentacion:2,   tieneAudiovisual:false },
+  puntual_redes_completo:    { briefing:3,   rodaje:2.5, supervision:2,   reuniones:2,   presentacion:2,   tieneAudiovisual:true  },
+  tiendanube_gestion_mensual:{ briefing:1,   rodaje:2,   supervision:0.5, reuniones:0,   presentacion:0.5, tieneAudiovisual:true  }
+};
+const PEDRO_MENTORIA_DEFAULT = {
+  sesion_unica: { prep:0.5, sesion:1, devolucion:0.5 },
+  pack4:        { prep:1,   sesion:4, devolucion:1   },
+  pack8:        { prep:1.5, sesion:8, devolucion:1.5 }
+};
+const PEDRO_COST_MARGIN_DEFAULTS = {
+  curso_fotografia_basico:        { grupal:225000, particular:225000 },
+  curso_contenido_audiovisual:    { grupal:225000, particular:225000 },
+  curso_capacitacion_corporativa: { medio_dia:270000, jornada_completa:390000 }
+};
+const PEDRO_MARGIN_RATE = 0.35;
+
+const PEDRO_CATALOG = [
+  { id:'direccion', name:'Dirección & Account Management — Cuentas Actuales', type:'am',
+    note:'Costo de dirección en las cuentas mensuales activas.',
+    services:[
+      { id:'am_donna',     name:'Panadería Venezolana Donna', desc:'Briefing, supervisión, reuniones, presentación y rodaje si aplica.' },
+      { id:'am_tecnotips', name:'TecnoTips',                  desc:'Briefing, supervisión, reuniones, presentación y rodaje si aplica.' },
+      { id:'am_seklou',    name:'Seklou',                     desc:'Briefing, supervisión, reuniones, presentación y rodaje si aplica.' },
+    ]},
+  { id:'puntual_branding_sec', name:'Branding, Identidad Visual & Diseño Gráfico — Proyectos Puntuales', type:'am_puntual',
+    note:'Nivel Simple / Medio / Complejo según el proyecto puntual de Branding o Diseño.',
+    services:[
+      { id:'puntual_branding_simple',   name:'Branding/Diseño — Nivel Simple',   desc:'Papelería · Tarjetas · Volante · Brochure · Banner · Newsletter · Presentaciones Básico · ajustes puntuales. Sin rodaje.' },
+      { id:'puntual_branding_medio',    name:'Branding/Diseño — Nivel Medio',    desc:'Kit Identidad Digital · Packs mensuales Básico/Medio · Pack Historias · Campaña Estacional · Packaging · Editorial · Landing. Sin rodaje.' },
+      { id:'puntual_branding_complejo', name:'Branding/Diseño — Nivel Complejo', desc:'Identidad Corporativa Simple/Prof · Branding Book · Merchandising (con sesión de fotos) · proyectos con rodaje propio.' },
+    ]},
+  { id:'tiendanube_dev', name:'Tienda Nube & Desarrollo', type:'catalog',
+    services:[
+      { id:'tiendanube_armado',         name:'Armado de Tienda desde Cero', desc:'Setup técnico + diseño + carga inicial de hasta 15 productos.', packs:[{key:'armado',label:'Armado Completo'}] },
+      { id:'tiendanube_diseno_visual',  name:'Diseño Visual de Tienda',     desc:'Banners, portada e identidad sobre tienda ya armada.',           packs:[{key:'diseno',label:'Diseño Visual'}] },
+      { id:'tiendanube_gestion_mensual',name:'Gestión Mensual',             desc:'Carga y mantenimiento mensual, sin colaboradora asignada.', type:'am' },
+    ]},
+  { id:'puntual_redes_sec', name:'Gestión y Estrategia de Redes Sociales — Proyectos Puntuales', type:'am_puntual',
+    note:'Nivel Liviano / Medio / Completo según el bloque de redes.',
+    services:[
+      { id:'puntual_redes_liviano',  name:'Redes — Nivel Liviano',  desc:'Consultoría (1 sesión) · Auditoría de Marca · Email Marketing Setup/Secuencia puntual. Sin rodaje.' },
+      { id:'puntual_redes_medio',    name:'Redes — Nivel Medio',    desc:'Plan de Contenidos · Community Pack · Calendario de Campañas.' },
+      { id:'puntual_redes_completo', name:'Redes — Nivel Completo', desc:'Gestión Integral · Meta Ads cuenta nueva · Email Marketing con gestión mensual. Incluye rodaje.' },
+    ]},
+  { id:'fotografia_catalogo', name:'Fotografía — Catálogo de Servicios', type:'catalog',
+    note:'Pedro ejecuta personalmente. Locación adicional = $40.000 default si no se cargó otro valor.',
+    services:[
+      { id:'foto_producto',           name:'Sesión Fotográfica de Producto',              desc:'Por cantidad de entregables.', packs:[{key:'basico',label:'Pack Básico'},{key:'medio',label:'Pack Medio'},{key:'full',label:'Pack Full'},{key:'locacion_adicional',label:'Locación Adicional'}] },
+      { id:'foto_marca_equipo',       name:'Sesión de Marca / Equipo / Particulares',     desc:'Retratos profesionales.', packs:[{key:'basico',label:'Pack Básico'},{key:'medio',label:'Pack Medio'},{key:'full',label:'Pack Full'},{key:'locacion_adicional',label:'Locación Adicional'}] },
+      { id:'foto_marcas_horas',       name:'Sesión para Marcas (por horas)',              desc:'Todas las fotos de la jornada, editadas en HD.', packs:[{key:'h1',label:'1hr'},{key:'h2',label:'2hrs'},{key:'h4',label:'4hrs'},{key:'express',label:'Adicional Express 72hs',unit:'percent'},{key:'locacion_adicional',label:'Locación Adicional'}] },
+      { id:'foto_eventos_entregables',name:'Sesión de Eventos — por entregables',         desc:'Cantidad de fotos según horas de cobertura.', packs:[{key:'h1',label:'Hasta 1hr'},{key:'h2',label:'Hasta 2hrs'},{key:'h4',label:'Hasta 4hrs'},{key:'h6',label:'Hasta 6hrs'},{key:'locacion_adicional',label:'Locación Adicional'}] },
+      { id:'foto_eventos_horas',      name:'Sesión de Eventos — por horas',               desc:'Todas las fotos de la jornada, sin tope.', packs:[{key:'h1',label:'Hasta 1hr'},{key:'h2',label:'Hasta 2hrs'},{key:'h4',label:'Hasta 4hrs'},{key:'h6',label:'Hasta 6hrs'},{key:'locacion_adicional',label:'Locación Adicional'}] },
+    ]},
+  { id:'puntual_audiovisual_sec', name:'Producción Audiovisual — Foto y Video (Pedro ejecuta)', type:'catalog',
+    note:'Reels/Shorts son de Orianna y no viven en esta app — no llevan costo de Pedro.',
+    services:[
+      { id:'puntual_video_institucional', name:'Video Institucional / Spot Comercial',    desc:'Concepto, guion, rodaje y edición. Precio por video.', packs:[{key:'media_jornada',label:'Media Jornada'},{key:'jornada_completa',label:'Jornada Completa'}] },
+      { id:'puntual_cobertura_eventos',   name:'Cobertura Audiovisual de Eventos',        desc:'Por tramo de horas.', packs:[{key:'h1',label:'Hasta 1hr'},{key:'h2',label:'Hasta 2hrs'},{key:'h4',label:'Hasta 4hrs'},{key:'h6',label:'Hasta 6hrs'}] },
+      { id:'puntual_publicidad_digital',  name:'Producción para Publicidad Digital',      desc:'Por horas. Entregable: highlight optimizado por plataforma.', packs:[{key:'h1',label:'Hasta 1hr'},{key:'h2',label:'Hasta 2hrs'},{key:'h4',label:'Hasta 4hrs'},{key:'h6',label:'Hasta 6hrs'}] },
+      { id:'puntual_entrevistas',         name:'Entrevistas / Testimoniales',             desc:'Precio por entrevista/testimonial según duración.', packs:[{key:'nivel1',label:'Nivel 1 (1hr)'},{key:'nivel2',label:'Nivel 2 (2hrs)'}] },
+      { id:'puntual_tutoriales',          name:'Videos Tutoriales / Clases Grabadas',     desc:'Por cantidad de videos/clases.', packs:[{key:'x1',label:'1 video/clase'},{key:'x3',label:'3 videos/clases'},{key:'x5',label:'5 videos/clases'}] },
+    ]},
+  { id:'bodas', name:'Fotografía de Bodas', type:'hourly_wedding',
+    services:[
+      { id:'boda_civil', name:'Cobertura de Boda / 15 Años — Evento Único', desc:'Exclusivo bodas y 15 años. Tarifa por hora, 2da hora en adelante -25%.' },
+    ]},
+  { id:'mentoria', name:'Mentoría Individual 1:1 con Pedro', type:'mentoria_hours',
+    services:[
+      { id:'mentoria_1on1', name:'Mentoría Individual', desc:'Acompañamiento directo y personalizado.', packs:[{key:'sesion_unica',label:'Sesión Única (60 min)'},{key:'pack4',label:'Pack 4 sesiones'},{key:'pack8',label:'Pack 8 sesiones'}] },
+    ]},
+  { id:'cursos', name:'Contentive Academy — Cursos que Dictás', type:'cost_margin',
+    note:'Costo de producción real + margen fijo 35% automático.',
+    services:[
+      { id:'curso_fotografia_basico',         name:'Curso Básico de Fotografía',                 desc:'3 sesiones.', packs:[{key:'grupal',label:'Grupal'},{key:'particular',label:'Particular'}] },
+      { id:'curso_contenido_audiovisual',     name:'Curso de Creación de Contenido Audiovisual', desc:'3 sesiones.', packs:[{key:'grupal',label:'Grupal'},{key:'particular',label:'Particular'}] },
+      { id:'curso_capacitacion_corporativa',  name:'Capacitaciones Corporativas (a medida)',     desc:'Programa a medida para equipos.', packs:[{key:'medio_dia',label:'Medio Día'},{key:'jornada_completa',label:'Jornada Completa'}] },
+    ]},
+];
+
+// ── PEDRO: FUNCIONES DE COSTO UNIFICADAS (tab Pedro + Servicios) ────────────
+function pedGetAmHours(id) {
+  const p = pedroData || {};
+  return { ...PEDRO_AM_DEFAULT, ...(PEDRO_AM_OVERRIDES[id]||{}), ...((p.amHours||{})[id]||{}) };
+}
+function pedGetAmCosto(id) {
+  const p = pedroData || {};
+  const tarifa = p.tarifaDireccion || 9000;
+  const h = pedGetAmHours(id);
+  let t = h.briefing + h.supervision + h.reuniones + h.presentacion;
+  if (h.tieneAudiovisual) t += h.rodaje;
+  return t * tarifa;
+}
+function pedGetPack(id, pk) {
+  const p = pedroData || {};
+  const v = ((p.packPrices||{})[id]||{})[pk] || 0;
+  if (!v && pk === 'locacion_adicional') return 40000;
+  return v;
+}
+function pedGetWeddingTarifa(id) {
+  const p = pedroData || {};
+  return ((p.weddingConfig||{})[id]||{}).tarifaHora || 0;
+}
+function pedGetMentoriaVenta(id, pk) {
+  const p = pedroData || {};
+  const def = PEDRO_MENTORIA_DEFAULT[pk] || {prep:0,sesion:0,devolucion:0};
+  const h = { ...def, ...(((p.mentoriaHours||{})[id]||{})[pk]||{}) };
+  const totalH = h.prep + h.sesion + h.devolucion;
+  const tarifaM = p.tarifaMentoria || 30000;
+  return Math.ceil((totalH * tarifaM) / (1 - PEDRO_MARGIN_RATE));
+}
+function pedGetCostMarginVenta(id, pk) {
+  const p = pedroData || {};
+  const costo = ((p.costMargin||{})[id]||{})[pk];
+  const c = (costo !== undefined) ? costo : ((PEDRO_COST_MARGIN_DEFAULTS[id]||{})[pk] || 0);
+  return c ? Math.ceil(c / (1 - PEDRO_MARGIN_RATE)) : 0;
+}
+
 // ── CATÁLOGO DANIELA ──────────────────────────────────────────────────────
 const DANIELA_SECTIONS = [
   {
@@ -594,55 +720,53 @@ const VICTORIA_SECTIONS = [
 ];
 
 // ── CATÁLOGO ORIANNA ──────────────────────────────────────────────────────
-// Espejo exacto de orianna.html — mismos IDs, mismos packs (sin x10, ella no lo tiene).
-// group: 'actuales' | 'nuevas' — usado por renderOrianna() para los encabezados de grupo.
 const ORIANNA_SECTIONS = [
   {
-    id: 'donna_camara', name: 'Panadería Venezolana Donna — Cámara + Edición', group: 'actuales',
+    id: 'donna_camara', name: 'Panadería Venezolana Donna — Cámara + Edición',
     services: [
       { id: 'donna_camara_edicion', name: 'Producción + Edición de Reels — Donna',
         desc: 'Grabación y edición completa de los reels mensuales de Donna. Cámara y montaje — el estudio aporta la idea y el guion.',
-        packs: ['x5','x8'] }
+        packs: ['x1','x4','x8','x10','x12'] }
     ]
   },
   {
-    id: 'donna_edicion', name: 'Panadería Venezolana Donna — Solo Edición', group: 'actuales',
+    id: 'donna_edicion', name: 'Panadería Venezolana Donna — Solo Edición',
     services: [
       { id: 'donna_solo_edicion', name: 'Edición de Reels — Donna',
         desc: 'Edición completa del material grabado. No incluye rodaje.',
-        packs: ['x5','x8'] }
+        packs: ['x1','x4','x8','x10','x12'] }
     ]
   },
   {
-    id: 'seklou', name: 'Seklou — Solo Edición', group: 'actuales',
+    id: 'seklou', name: 'Seklou — Solo Edición',
     services: [
       { id: 'seklou_edicion', name: 'Edición de Reels — Seklou',
         desc: 'Edición completa del material grabado por otra persona. No incluye rodaje.',
-        packs: ['x8'] }
+        packs: ['x1','x4','x8','x10','x12'] }
     ]
   },
   {
-    id: 'tecnotips', name: 'TecnoTips — Solo Edición', group: 'actuales',
+    id: 'tecnotips', name: 'TecnoTips — Solo Edición',
     services: [
       { id: 'tecnotips_edicion', name: 'Edición de Reels — TecnoTips',
         desc: 'Edición completa del material grabado por otra persona. No incluye rodaje.',
-        packs: ['x8'] }
+        packs: ['x1','x4','x8','x10','x12'] }
     ]
   },
   {
-    id: 'nuevos_camara', name: 'Cuentas Nuevas — Grabar + Editar', group: 'nuevas',
+    id: 'nuevos_camara', name: 'Cuentas Nuevas — Grabar + Editar',
     services: [
       { id: 'nuevo_camara_edicion', name: 'Producción + Edición de Reels',
         desc: 'Grabación y edición completa. Todos los packs del estudio.',
-        packs: ['x1','x4','x8','x12','x16','x20'] }
+        packs: ['x1','x4','x8','x10','x12'] }
     ]
   },
   {
-    id: 'nuevos_edicion', name: 'Cuentas Nuevas — Solo Editar', group: 'nuevas',
+    id: 'nuevos_edicion', name: 'Cuentas Nuevas — Solo Editar',
     services: [
       { id: 'nuevo_solo_edicion', name: 'Edición de Reels',
         desc: 'Edición completa del material grabado por otra persona. Todos los packs del estudio.',
-        packs: ['x1','x4','x8','x12','x16','x20'] }
+        packs: ['x1','x4','x8','x10','x12'] }
     ]
   }
 ];
@@ -991,18 +1115,7 @@ function renderOrianna() {
   const packPrices = oriannaData.packPrices || {};
   container.innerHTML = '';
 
-  let lastGroup = null;
-  const groupLabels = { actuales: 'Clientes actuales', nuevas: 'Cuentas nuevas' };
-
   ORIANNA_SECTIONS.forEach(section => {
-    if (section.group && section.group !== lastGroup) {
-      lastGroup = section.group;
-      const groupHeader = document.createElement('div');
-      groupHeader.style.cssText = 'font-family:"Syne",sans-serif;font-size:11px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--orange);margin:20px 0 4px;padding:0 4px;';
-      groupHeader.textContent = groupLabels[section.group] || section.group;
-      container.appendChild(groupHeader);
-    }
-
     const svc = section.services[0];
     const packs = svc.packs || [];
     const svcPacks = packPrices[svc.id] || {};
@@ -1159,242 +1272,110 @@ function renderPedro() {
     return;
   }
 
-  const prices      = pedroData.prices      || {};
-  const packPrices  = pedroData.packPrices   || {};
-  const coursePrices= pedroData.coursePrices || {};
-  const amHours     = pedroData.amHours      || {};
-  const avTarifas   = pedroData.avTarifas    || {};
-  const weddingCfg  = pedroData.weddingConfig|| {};
-  const tarifaDir   = pedroData.tarifaDireccion || 9000;
   container.innerHTML = '';
-
-  // ── Helpers ────────────────────────────────────────────────────────────────
-  const AM_DEF = { briefing:1.5, rodaje:2.5, supervision:2, reuniones:1, presentacion:1.5, tieneAudiovisual:true };
-  const ACT_LABELS = { briefing:'Briefing', rodaje:'Presencia en rodaje', supervision:'Supervisión / aprobación', reuniones:'Reuniones con cliente', presentacion:'Presentación mensual' };
-  const PACK_LABELS = {
-    basico:'Pack Básico', medio:'Pack Medio', full:'Pack Full',
-    h1:'Hasta 1hr', h2:'Hasta 2hrs', h4:'Hasta 4hrs', h6:'Hasta 6hrs', express:'Adicional Express 72hs',
-    x1:'1 video/clase', x3:'3 videos/clases', x5:'5 videos/clases',
-    sesion_unica:'Sesión Única (60 min)', pack4:'Pack 4 sesiones', pack8:'Pack 8 sesiones',
-    grupal:'Grupal', particular:'Particular'
-  };
-  const fmt = v => `$ ${Math.round(v).toLocaleString('es-AR')} ARS`;
-  const fmtU = v => fxRate ? `U$S ${(v/fxRate).toLocaleString('es-AR',{minimumFractionDigits:2})}` : '';
-  const fmtU20 = v => fxRate ? `U$S ${(v/fxRate*1.2).toLocaleString('es-AR',{minimumFractionDigits:2})} (+20%)` : '';
-
+  const fmt   = v => `$ ${Math.round(v).toLocaleString('es-AR')} ARS`;
+  const fmtU  = v => fxRate ? `U$S ${(v/fxRate).toLocaleString('es-AR',{minimumFractionDigits:2})}` : '';
+  const fmtU20= v => fxRate ? `U$S ${(v/fxRate*1.2).toLocaleString('es-AR',{minimumFractionDigits:2})} (+20%)` : '';
   function chips(ars) {
     if (!ars) return `<span class="chip chip-pending">Sin cargar</span>`;
     return `<span class="chip chip-ars-only">${fmt(ars)}</span>${fxRate?`<span class="chip chip-pack">${fmtU(ars)}</span><span class="chip chip-pack" style="opacity:.7;font-size:10px">${fmtU20(ars)}</span>`:''}`;
   }
 
-  function getAmCosto(id) {
-    const h = { ...AM_DEF, ...(amHours[id] || {}) };
-    let t = h.briefing + h.supervision + h.reuniones + h.presentacion;
-    if (h.tieneAudiovisual) t += h.rodaje;
-    return t * tarifaDir;
-  }
+  let totalFilled = 0, totalServices = 0;
 
-  function makeSection(title, note, count) {
+  PEDRO_CATALOG.forEach(section => {
     const block = document.createElement('div');
     block.className = 'section-block';
-    const bodyId = `body-ped-${title.replace(/[^a-z0-9]/gi,'_')}`;
+    const bodyId = `body-ped-${section.id}`;
     block.innerHTML = `
       <div class="section-header open" onclick="toggleSection(this)">
         <div class="section-header-left">
           <div class="section-indicator"></div>
-          <span class="section-name">${title}</span>
+          <span class="section-name">${section.name}</span>
         </div>
-        <div class="section-meta"><span class="section-count">${count} servicio${count!==1?'s':''}</span><span class="chevron">▲</span></div>
+        <div class="section-meta"><span class="section-count">${section.services.length} servicio${section.services.length!==1?'s':''}</span><span class="chevron">▲</span></div>
       </div>
       <div class="section-body open" id="${bodyId}">
-        ${note ? `<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:10px 14px;margin:8px 0 4px;font-size:11px;color:var(--muted);line-height:1.5">${note}</div>` : ''}
+        ${section.note ? `<div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.07);border-radius:8px;padding:10px 14px;margin:8px 0 4px;font-size:11px;color:var(--muted);line-height:1.5">${section.note}</div>` : ''}
       </div>`;
     container.appendChild(block);
-    return block.querySelector(`#${bodyId}`);
-  }
+    const body = block.querySelector(`#${bodyId}`);
 
-  function addRow(body, name, desc, chipsHtml) {
-    const row = document.createElement('div');
-    row.className = 'service-row';
-    row.innerHTML = `
-      <div class="service-name-col" style="flex:1">
-        <div>${name}</div>
-        ${desc ? `<div class="service-desc">${desc}</div>` : ''}
-      </div>
-      <div class="price-chips" style="flex-direction:column;align-items:flex-end;gap:4px">${chipsHtml}</div>`;
-    body.appendChild(row);
-  }
+    section.services.forEach(svc => {
+      const type = svc.type || section.type;
+      const row = document.createElement('div');
+      row.className = 'service-row';
 
-  function addPackRows(body, name, desc, id, packs) {
-    const row = document.createElement('div');
-    row.className = 'service-row';
-    row.style.cssText = 'flex-direction:column;align-items:flex-start;gap:6px';
-    let packsHtml = packs.map(pk => {
-      const val = (packPrices[id] || {})[pk] || 0;
-      return `<div class="pack-row">
-        <div class="pack-label">${PACK_LABELS[pk] || pk}</div>
-        <div class="pack-chips">${chips(val||null)}</div>
-      </div>`;
-    }).join('');
-    row.innerHTML = `
-      <div class="service-name-col" style="margin-bottom:2px">
-        <div>${name}</div>
-        ${desc ? `<div class="service-desc">${desc}</div>` : ''}
-      </div>
-      ${packsHtml}`;
-    body.appendChild(row);
-  }
+      if (type === 'am' || type === 'am_puntual') {
+        const costo = pedGetAmCosto(svc.id);
+        totalServices++; if (costo > 0) totalFilled++;
+        const h = pedGetAmHours(svc.id);
+        const totalHoras = h.briefing + h.supervision + h.reuniones + h.presentacion + (h.tieneAudiovisual ? h.rodaje : 0);
+        row.style.cssText = 'flex-direction:column;align-items:flex-start;gap:4px';
+        row.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%">
+            <div class="service-name-col">
+              <div>${svc.name}</div>
+              ${svc.desc ? `<div class="service-desc">${svc.desc}</div>` : ''}
+              <div class="service-time" style="margin-top:4px">${totalHoras}hs ${type==='am_puntual'?'por proyecto':'mensual'} · $${(pedroData.tarifaDireccion||9000).toLocaleString('es-AR')}/hora</div>
+            </div>
+            <div class="price-chips" style="flex-direction:column;align-items:flex-end;gap:4px">${chips(costo||null)}</div>
+          </div>`;
 
-  function addAmRow(body, id, name, desc, isPuntual) {
-    const h = { ...AM_DEF, ...(amHours[id] || {}) };
-    const costo = getAmCosto(id);
-    const totalHoras = h.briefing + h.supervision + h.reuniones + h.presentacion + (h.tieneAudiovisual ? h.rodaje : 0);
-    const actHtml = Object.keys(ACT_LABELS).map(key => {
-      const disabled = key === 'rodaje' && !h.tieneAudiovisual;
-      const val = disabled ? 0 : h[key] * tarifaDir;
-      return `<div class="pack-row">
-        <div class="pack-label">${ACT_LABELS[key]}${disabled?' <span style="opacity:.4">(no aplica)</span>':''}</div>
-        <div class="pack-chips">
-          <span class="chip chip-pending" style="min-width:40px;text-align:center">${h[key]}hs</span>
-          ${!disabled ? `<span class="chip chip-ars-only">${fmt(val)}</span>` : ''}
-        </div>
-      </div>`;
-    }).join('');
-    const row = document.createElement('div');
-    row.className = 'service-row';
-    row.style.cssText = 'flex-direction:column;align-items:flex-start;gap:6px';
-    row.innerHTML = `
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;width:100%">
-        <div class="service-name-col">
-          <div>${name}</div>
-          ${desc ? `<div class="service-desc">${desc}</div>` : ''}
-          <div class="service-time" style="margin-top:4px">${totalHoras}hs ${isPuntual?'por proyecto':'mensual'} · $${tarifaDir.toLocaleString('es-AR')}/hora</div>
-        </div>
-        <div class="price-chips" style="flex-direction:column;align-items:flex-end;gap:4px">${chips(costo||null)}</div>
-      </div>
-      ${actHtml}`;
-    body.appendChild(row);
-  }
+      } else if (type === 'catalog') {
+        const packsReq = (svc.packs||[]).filter(p => p.unit!=='percent' && p.key!=='locacion_adicional');
+        const filledCount = packsReq.filter(p => pedGetPack(svc.id, p.key) > 0).length;
+        totalServices++; if (packsReq.length && filledCount === packsReq.length) totalFilled++;
+        row.style.cssText = 'flex-direction:column;align-items:flex-start;gap:6px';
+        const packsHtml = (svc.packs||[]).map(pk => {
+          const val = pedGetPack(svc.id, pk.key);
+          const isPct = pk.unit === 'percent';
+          return `<div class="pack-row">
+            <div class="pack-label">${pk.label}</div>
+            <div class="pack-chips">${isPct ? (val ? `<span class="chip chip-pack">${val}%</span>` : `<span class="chip chip-pending">Sin cargar</span>`) : chips(val||null)}</div>
+          </div>`;
+        }).join('');
+        row.innerHTML = `
+          <div class="service-name-col" style="margin-bottom:2px">
+            <div>${svc.name} <span style="font-size:10px;color:var(--muted)">${filledCount}/${packsReq.length} packs</span></div>
+            ${svc.desc ? `<div class="service-desc">${svc.desc}</div>` : ''}
+          </div>
+          ${packsHtml}`;
 
-  let totalFilled = 0, totalServices = 0;
-  function count(filled) { totalServices++; if(filled) totalFilled++; }
+      } else if (type === 'hourly_wedding') {
+        const tarifa = pedGetWeddingTarifa(svc.id);
+        totalServices++; if (tarifa > 0) totalFilled++;
+        row.style.cssText = 'flex-direction:column;align-items:flex-start;gap:6px';
+        row.innerHTML = `
+          <div class="service-name-col"><div>${svc.name}</div>${svc.desc ? `<div class="service-desc">${svc.desc}</div>` : ''}</div>
+          <div class="pack-row"><div class="pack-label">1ra hora</div><div class="pack-chips">${chips(tarifa||null)}</div></div>
+          <div class="pack-row"><div class="pack-label">2da hora en adelante (-25%)</div><div class="pack-chips">${chips(tarifa?Math.round(tarifa*0.75):null)}</div></div>`;
 
-  // ── 1. DIRECCIÓN & ACCOUNT MANAGEMENT ─────────────────────────────────────
-  let body = makeSection('DIRECCIÓN & ACCOUNT MANAGEMENT — Cuentas Actuales',
-    'Tu costo de dirección en las cuentas mensuales activas. Las horas son editables en pedro.html.', 3);
-  [
-    { id:'am_donna',    name:'Panadería Venezolana Donna', desc:'Briefing, supervisión, aprobación, reuniones y presentación de resultados.' },
-    { id:'am_tecnotips',name:'TecnoTips',                 desc:'Briefing, supervisión, aprobación, reuniones y presentación de resultados.' },
-    { id:'am_seklou',   name:'Seklou',                    desc:'Briefing, supervisión, aprobación, reuniones y presentación de resultados.' },
-  ].forEach(s => { count(getAmCosto(s.id)>0); addAmRow(body, s.id, s.name, s.desc, false); });
+      } else if (type === 'mentoria_hours') {
+        const packs = svc.packs || [];
+        const filledCount = packs.filter(pk => pedGetMentoriaVenta(svc.id, pk.key) > 0).length;
+        totalServices++; if (packs.length && filledCount === packs.length) totalFilled++;
+        row.style.cssText = 'flex-direction:column;align-items:flex-start;gap:6px';
+        const packsHtml = packs.map(pk => `<div class="pack-row"><div class="pack-label">${pk.label}</div><div class="pack-chips">${chips(pedGetMentoriaVenta(svc.id,pk.key)||null)}</div></div>`).join('');
+        row.innerHTML = `
+          <div class="service-name-col" style="margin-bottom:2px"><div>${svc.name}</div>${svc.desc ? `<div class="service-desc">${svc.desc}</div>` : ''}</div>
+          ${packsHtml}`;
 
-  // ── 2. BRANDING & DISEÑO (puntual) ────────────────────────────────────────
-  body = makeSection('BRANDING, IDENTIDAD VISUAL & DISEÑO GRÁFICO — Proyectos Puntuales',
-    'Tu participación en proyectos puntuales de branding o diseño. Mismo modelo de horas que la dirección mensual, aplicado una sola vez al proyecto.', 1);
-  count(getAmCosto('puntual_branding')>0);
-  addAmRow(body, 'puntual_branding', 'Branding, Identidad Visual & Diseño Gráfico',
-    'Contacto comercial, cierre de venta, briefing, análisis y supervisión del proyecto.', true);
+      } else if (type === 'cost_margin') {
+        const packs = svc.packs || [];
+        const filledCount = packs.filter(pk => pedGetCostMarginVenta(svc.id, pk.key) > 0).length;
+        totalServices++; if (packs.length && filledCount === packs.length) totalFilled++;
+        row.style.cssText = 'flex-direction:column;align-items:flex-start;gap:6px';
+        const packsHtml = packs.map(pk => `<div class="pack-row"><div class="pack-label">${pk.label}</div><div class="pack-chips">${chips(pedGetCostMarginVenta(svc.id,pk.key)||null)}</div></div>`).join('');
+        row.innerHTML = `
+          <div class="service-name-col" style="margin-bottom:2px"><div>${svc.name}</div>${svc.desc ? `<div class="service-desc">${svc.desc}</div>` : ''}</div>
+          ${packsHtml}`;
+      }
 
-  // ── 3. FOTOGRAFÍA ──────────────────────────────────────────────────────────
-  body = makeSection('FOTOGRAFÍA — Catálogo de Servicios', 'Pedro ejecuta personalmente todas estas sesiones.', 5);
-  [
-    { id:'foto_producto',           name:'Sesión Fotográfica de Producto',              desc:'Por cantidad de entregables. Fondo blanco o escenografía, 2 estilos.',          packs:['basico','medio','full'] },
-    { id:'foto_marca_equipo',       name:'Sesión Fotográfica de Marca / Equipo',        desc:'Retratos profesionales en exteriores o estudio.',                              packs:['basico','medio','full'] },
-    { id:'foto_marcas_horas',       name:'Sesión Fotográfica para Marcas (por horas)',  desc:'Se entregan todas las fotos tomadas en la jornada, editadas en HD.',            packs:['h1','h2','h4','express'] },
-    { id:'foto_eventos_entregables',name:'Fotografía de Eventos — por entregables',     desc:'Cantidad de fotografías editadas según horas de cobertura.',                    packs:['h1','h2','h4','h6'] },
-    { id:'foto_eventos_horas',      name:'Fotografía de Eventos — por horas',           desc:'Se entregan todas las fotos tomadas en la jornada, editadas en HD.',            packs:['h1','h2','h4','h6'] },
-  ].forEach(s => {
-    const hasSome = s.packs.some(pk => (packPrices[s.id]||{})[pk] > 0);
-    count(hasSome); addPackRows(body, s.name, s.desc, s.id, s.packs);
+      body.appendChild(row);
+    });
   });
 
-  // ── 4. AUDIOVISUAL (Pedro ejecuta) ────────────────────────────────────────
-  body = makeSection('PRODUCCIÓN AUDIOVISUAL — Pedro ejecuta',
-    'Pedro ejecuta personalmente cámara y edición. La producción de Reels/Shorts de cuentas activas es de Orianna.', 5);
-  [
-    { id:'puntual_video_institucional', name:'Video Institucional / Spot Comercial',          desc:'Concepto, guion, preproducción, rodaje y edición. Precio por video.',   isSimple:true },
-    { id:'puntual_cobertura_eventos',   name:'Cobertura Audiovisual de Eventos',              desc:'Cobertura en vivo, montaje narrativo, video principal + piezas cortas.', packs:['h1','h2','h4','h6'] },
-    { id:'puntual_publicidad_digital',  name:'Producción de Contenido para Publicidad Digital',desc:'Concepto, estrategia, rodaje y edición por horas.',                    packs:['h1','h2','h4','h6'] },
-    { id:'puntual_entrevistas',         name:'Entrevistas / Testimoniales',                   desc:'Guion, rodaje profesional, edición y posproducción. Precio por pieza.', isSimple:true },
-    { id:'puntual_tutoriales',          name:'Videos Tutoriales / Clases Grabadas',           desc:'Por cantidad de videos/clases grabadas.',                              packs:['x1','x3','x5'] },
-  ].forEach(s => {
-    if (s.isSimple) {
-      const val = prices[s.id] || 0;
-      count(val > 0); addRow(body, s.name, s.desc, chips(val||null));
-    } else {
-      const hasSome = s.packs.some(pk => (packPrices[s.id]||{})[pk] > 0);
-      count(hasSome); addPackRows(body, s.name, s.desc, s.id, s.packs);
-    }
-  });
-
-  // ── 5. AUDIOVISUAL TRANSITORIO (tarifa decreciente) ───────────────────────
-  body = makeSection('AUDIOVISUAL PARA MARCAS — Cobertura Transitoria',
-    'Usar solo si cubrís temporalmente un rol audiovisual vacante (Seklou / TecnoTips). 1ra hora y horas siguientes editables en pedro.html.', 1);
-  const av1 = avTarifas?.hora1 || 0;
-  const av2 = avTarifas?.hora2 || 0;
-  count(av1 > 0);
-  const avRow = document.createElement('div');
-  avRow.className = 'service-row';
-  avRow.style.cssText = 'flex-direction:column;align-items:flex-start;gap:6px';
-  avRow.innerHTML = `
-    <div class="service-name-col"><div>Foto + Video — Entrega Completa</div>
-      <div class="service-desc">Cobertura transitoria de producción audiovisual completa mientras el rol de Filmmaker sigue vacante.</div>
-    </div>
-    <div class="pack-row"><div class="pack-label">1ra hora</div><div class="pack-chips">${chips(av1||null)}</div></div>
-    <div class="pack-row"><div class="pack-label">2da hora en adelante</div><div class="pack-chips">${chips(av2||null)}</div></div>`;
-  body.appendChild(avRow);
-
-  // ── 6. REDES SOCIALES (puntual) ───────────────────────────────────────────
-  body = makeSection('GESTIÓN Y ESTRATEGIA DE REDES SOCIALES — Proyectos Puntuales',
-    'Todo el bloque de redes: planes, community pack, consultoría, auditoría, calendario, gestión integral, Meta Ads y Email Marketing. Tu carga de horas es mayor que en Branding.', 1);
-  count(getAmCosto('puntual_redes')>0);
-  addAmRow(body, 'puntual_redes', 'Gestión y Estrategia de Redes Sociales (todo el bloque)',
-    'Plan de contenidos, community pack, consultoría, auditoría, calendario, gestión integral, Meta Ads y Email Marketing. Validás la estrategia de Victoria contra los objetivos del cliente, armás y das las presentaciones.', true);
-
-  // ── 7. FOTOGRAFÍA DE BODAS ────────────────────────────────────────────────
-  body = makeSection('FOTOGRAFÍA DE BODAS', 'Servicio personal de Pedro como prestador independiente.', 1);
-  const weddingTarifa = weddingCfg?.tarifaHora || 0;
-  const weddingHoras  = weddingCfg?.horas || 0;
-  const weddingTotal  = weddingTarifa * weddingHoras;
-  count(weddingTarifa > 0);
-  addRow(body, 'Cobertura de Boda — Evento Único',
-    `Tarifa por hora editable en pedro.html.${weddingTarifa ? ` · $${weddingTarifa.toLocaleString('es-AR')}/hora` : ''}`,
-    weddingTarifa ? chips(weddingTarifa) + `<span style="font-size:10px;color:var(--muted);margin-top:2px">tarifa/hora · total varía por duración</span>` : chips(null));
-
-  // ── 8. MENTORÍA ───────────────────────────────────────────────────────────
-  body = makeSection('MENTORÍA INDIVIDUAL 1:1', '', 1);
-  const hasMen = ['sesion_unica','pack4','pack8'].some(pk => (packPrices['mentoria_1on1']||{})[pk] > 0);
-  count(hasMen);
-  addPackRows(body, 'Mentoría Individual 1:1',
-    'Acompañamiento directo para fotógrafos, creadores de contenido y emprendedores creativos.',
-    'mentoria_1on1', ['sesion_unica','pack4','pack8']);
-
-  // ── 9. CURSOS ─────────────────────────────────────────────────────────────
-  body = makeSection('CONTENTIVE ACADEMY — Cursos', '', 3);
-  [
-    { id:'curso_fotografia_basico',      name:'Curso Básico de Fotografía',             desc:'3 sesiones (2 presenciales + 1 online). Hasta 6 estudiantes en grupal.' },
-    { id:'curso_contenido_audiovisual',  name:'Curso de Creación de Contenido Audiovisual', desc:'3 sesiones: estrategia, producción y edición.' },
-    { id:'curso_capacitacion_corporativa',name:'Capacitaciones Corporativas (a medida)', desc:'Programa a medida para equipos de empresas.' },
-  ].forEach(s => {
-    const cp = coursePrices[s.id] || {};
-    const hasSome = (cp.grupal||0) > 0 || (cp.particular||0) > 0 || (cp.unico||0) > 0;
-    count(hasSome);
-    const row = document.createElement('div');
-    row.className = 'service-row';
-    row.style.cssText = 'flex-direction:column;align-items:flex-start;gap:6px';
-    const packs = [];
-    if (cp.grupal)     packs.push({ label:'Grupal',     val:cp.grupal });
-    if (cp.particular) packs.push({ label:'Particular', val:cp.particular });
-    if (cp.unico)      packs.push({ label:'Precio',     val:cp.unico });
-    row.innerHTML = `
-      <div class="service-name-col"><div>${s.name}</div><div class="service-desc">${s.desc}</div></div>
-      ${hasSome
-        ? packs.map(p => `<div class="pack-row"><div class="pack-label">${p.label}</div><div class="pack-chips">${chips(p.val)}</div></div>`).join('')
-        : `<div class="pack-row"><div class="pack-chips">${chips(null)}</div></div>`}`;
-    body.appendChild(row);
-  });
-
-  // ── Stats ─────────────────────────────────────────────────────────────────
   const pct = totalServices ? Math.round(totalFilled / totalServices * 100) : 0;
   document.getElementById('statPedroPct').textContent = pct + '%';
   document.getElementById('statPedroCount').textContent = `${totalFilled} de ${totalServices} servicios`;
@@ -1410,7 +1391,7 @@ function renderServicios() {
 
   const intro = document.createElement('div');
   intro.className = 'services-intro';
-  intro.textContent = 'Catálogo completo del estudio. Cada servicio muestra el costo interno total en ARS, USD y USD +20% (mercado exterior), sumando a todas las colaboradoras responsables.';
+  intro.textContent = 'Catálogo completo del estudio. Cada servicio muestra el costo interno total en ARS, USD y USD +20% (mercado exterior), sumando a todas las colaboradoras responsables — incluido Pedro, según el nivel de complejidad que él mismo cargó en pedro.html.';
   container.appendChild(intro);
 
   // Helpers para leer precios de cada app
@@ -1419,28 +1400,19 @@ function renderServicios() {
   const Ovp = (oriannaData?.packPrices || {});  // anidado {svcId:{pk:val}}
   const Ppr = (paulaData?.prices   || {});
   const Ppp = (paulaData?.packPrices || {});
-  const Ped  = (pedroData?.prices   || {});
-  const PedPack = (pedroData?.packPrices || {});
-  const PedCourse = (pedroData?.coursePrices || {});
 
   // Convierte USD (Daniela) → ARS
   const dARS  = (id) => (D[id] || 0) * (fxRate || 0);
   // ARS directo
   const v     = (id) => V[id] || 0;
   const pp    = (id) => Ppr[id] || Ppp[id] || 0;
-  const ped   = (id) => Ped[id] || 0;
-  const pedPk = (id, pk) => (PedPack[id] || {})[pk] || 0;
-  // Costo puntual de Pedro: amHours[id] * tarifaDireccion (igual que pedro.html)
-  const AM_DEFAULT = { briefing:1.5, rodaje:2.5, supervision:2, reuniones:1, presentacion:1.5, tieneAudiovisual:true };
-  const pedTarifa  = pedroData?.tarifaDireccion || 9000;
-  const pedAmCosto = (id) => {
-    const h = { ...AM_DEFAULT, ...(pedroData?.amHours?.[id] || {}) };
-    let total = h.briefing + h.supervision + h.reuniones + h.presentacion;
-    if (h.tieneAudiovisual) total += h.rodaje;
-    return total * pedTarifa;
-  };
   const oriPk = (id, pk) => (Ovp[id] || {})[pk] || 0;
-  const pedCourse = (id, key) => (PedCourse[id] || {})[key] || 0;
+
+  // Costo de Pedro — usa las mismas funciones que el tab Pedro (pedGetAmCosto, pedGetPack, etc.)
+  const pedAM  = (id)      => pedGetAmCosto(id);
+  const pedPk  = (id, pk)  => pedGetPack(id, pk);
+  const pedMen = (id, pk)  => pedGetMentoriaVenta(id, pk);
+  const pedCM  = (id, pk)  => pedGetCostMarginVenta(id, pk);
 
   // Formatea chips de precio
   function priceChips(totalARS) {
@@ -1465,10 +1437,8 @@ function renderServicios() {
     row.className = 'service-row';
     const hasPedro = collabBadges && collabBadges.includes('>Pedro<');
     const pedroVal = (hasPedro && pedroARS > 0) ? pedroARS : 0;
-    // Total real = colaboradoras + Pedro
     const grandTotal = (totalARS || 0) + pedroVal;
 
-    // Desglose por colaboradora (incluye Pedro si tiene valor)
     let breakdownHtml = '';
     const breakdownFull = breakdown ? { ...breakdown } : {};
     if (hasPedro) breakdownFull['Pedro'] = pedroVal;
@@ -1479,7 +1449,6 @@ function renderServicios() {
       breakdownHtml = `<div style="font-size:10px;margin-top:3px;display:flex;flex-wrap:wrap;gap:6px;justify-content:flex-end">${lines.join('<span style="color:var(--border)"> · </span>')}</div>`;
     }
 
-    // Aviso si Pedro no cargó sus horas
     const pedroWarning = (hasPedro && pedroVal === 0)
       ? `<div style="font-size:10px;color:var(--muted);margin-top:2px">+ Pedro: pendiente en pedro.html</div>`
       : '';
@@ -1497,6 +1466,30 @@ function renderServicios() {
         ${breakdownHtml}
         ${pedroWarning}
       </div>
+    `;
+    body.appendChild(row);
+  }
+
+  // Fila multi-pack para servicios de Pedro con varios tramos (fotografía por horas, video, etc.)
+  function makePedroPackRow(body, name, desc, catId, svcId, extraBadges, extraTotal) {
+    const section = PEDRO_CATALOG.find(s => s.id === catId);
+    const svc = section && section.services.find(s => s.id === svcId);
+    if (!svc) return;
+    const row = document.createElement('div');
+    row.className = 'service-row';
+    row.style.cssText = 'flex-direction:column;align-items:stretch;gap:4px';
+    const packsHtml = (svc.packs || []).filter(p => p.key !== 'locacion_adicional' && p.unit !== 'percent').map(pk => {
+      const pedVal = pedGetPack(svcId, pk.key);
+      const total = pedVal + (extraTotal || 0);
+      return `<div class="pack-row"><div class="pack-label">${pk.label}</div><div class="pack-chips">${priceChips(total)}</div></div>`;
+    }).join('');
+    row.innerHTML = `
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">
+        <span>${name}</span>${badge('Pedro')}${extraBadges || ''}
+      </div>
+      ${desc ? `<div class="service-desc">${desc}</div>` : ''}
+      ${packsHtml}
+      <div style="font-size:10px;color:var(--muted)">Locación adicional: ${priceChips(pedGetPack(svcId,'locacion_adicional'))}</div>
     `;
     body.appendChild(row);
   }
@@ -1524,31 +1517,30 @@ function renderServicios() {
   // ── BRANDING E IDENTIDAD VISUAL ──────────────────────────────────────────
   let body = makeSection(container, 'BRANDING E IDENTIDAD VISUAL', 6, 'srv-branding');
   makeRow(body, 'Identidad Corporativa Simple', 'Briefing, 3 propuestas, logotipo, manual básico y entregables técnicos.', '2–3 semanas hábiles',
-    badge('Daniela')+badge('Victoria')+badge('Pedro'), dARS('id_simple') + v('plan_contenidos'), pedAmCosto('puntual_branding'), {'Daniela': dARS('id_simple'), 'Victoria': v('plan_contenidos')});
+    badge('Daniela')+badge('Victoria')+badge('Pedro'), dARS('id_simple') + v('plan_contenidos'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('id_simple'), 'Victoria': v('plan_contenidos')});
   makeRow(body, 'Identidad Corporativa Profesional', 'Sistema visual completo: logotipo con variantes, paleta HEX/CMYK/Pantone, sistema tipográfico y manual.', '3–4 semanas hábiles',
-    badge('Daniela')+badge('Victoria')+badge('Pedro'), dARS('id_prof') + v('plan_contenidos'), pedAmCosto('puntual_branding'), {'Daniela': dARS('id_prof'), 'Victoria': v('plan_contenidos')});
+    badge('Daniela')+badge('Victoria')+badge('Pedro'), dARS('id_prof') + v('plan_contenidos'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('id_prof'), 'Victoria': v('plan_contenidos')});
   makeRow(body, 'Branding Book', 'Sistema visual, universo de marca, aplicaciones, soportes y Etapa 10 comunicación verbal.', '4–6 semanas hábiles',
-    badge('Daniela')+badge('Victoria')+badge('Pedro'), dARS('branding_book') + v('branding_book_etapa10'), pedAmCosto('puntual_branding'), {'Daniela': dARS('branding_book'), 'Victoria': v('branding_book_etapa10')});
+    badge('Daniela')+badge('Victoria')+badge('Pedro'), dARS('branding_book') + v('branding_book_etapa10'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('branding_book'), 'Victoria': v('branding_book_etapa10')});
   makeRow(body, 'Kit de Identidad Digital', '8 plantillas de feed + 16 historias + 6 portadas destacadas, editables en Canva/AI/PSD.', '5–7 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('id_simple'), pedAmCosto('puntual_branding'), {'Daniela': dARS('id_simple')});
+    badge('Daniela')+badge('Pedro'), dARS('id_simple'), pedAM('puntual_branding_medio'), {'Daniela': dARS('id_simple')});
   makeRow(body, 'Papelería Corporativa', 'Tarjeta, membrete, sobre, carpeta, hoja A4 editable y firma de mail HTML.', '3–5 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('papeleria'), pedAmCosto('puntual_branding'), {'Daniela': dARS('papeleria')});
+    badge('Daniela')+badge('Pedro'), dARS('papeleria'), pedAM('puntual_branding_simple'), {'Daniela': dARS('papeleria')});
   makeRow(body, 'Merchandising Corporativo', 'Diseño de aplicación sobre productos físicos con mockup 3D y archivos para producción.', '4–5 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('merch'), pedAmCosto('puntual_branding'), {'Daniela': dARS('merch')});
+    badge('Daniela')+badge('Pedro'), dARS('merch'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('merch')});
 
   // ── PACKS DE PIEZAS GRÁFICAS MENSUALES ───────────────────────────────────
   body = makeSection(container, 'DISEÑO GRÁFICO — PACKS MENSUALES', 8, 'srv-packs');
-  // Pack x4
   makeRow(body, 'Pack Básico — x4 piezas/mes', '4 piezas estáticas + 16 días de historias interdiarias + portadas destacadas (máx. 6).', '10 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('pack_basico'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pack_basico')});
+    badge('Daniela')+badge('Pedro'), dARS('pack_basico'), pedAM('puntual_branding_medio'), {'Daniela': dARS('pack_basico')});
   makeRow(body, 'Pack Medio — x8 piezas/mes', '8 piezas + 16 días de historias interdiarias + portadas (máx. 6).', '10 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('pack_medio'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pack_medio')});
+    badge('Daniela')+badge('Pedro'), dARS('pack_medio'), pedAM('puntual_branding_medio'), {'Daniela': dARS('pack_medio')});
   makeRow(body, 'Pack Full — x12 piezas/mes', '12 piezas (incluye carruseles) + 16 días de historias + portadas (máx. 8).', '10 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('pack_full'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pack_full')});
+    badge('Daniela')+badge('Pedro'), dARS('pack_full'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('pack_full')});
   makeRow(body, 'Pack Ultimate — x16 piezas/mes', '16 piezas (carruseles hasta 6 slides) + 31 días de historias + portadas (máx. 10).', '10 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('pack_ultimate'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pack_ultimate')});
+    badge('Daniela')+badge('Pedro'), dARS('pack_ultimate'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('pack_ultimate')});
   makeRow(body, 'Pack Ultra — x20 piezas/mes', '20 piezas (carruseles) + 31 días de historias.', '10 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('pack_ultra'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pack_ultra')});
+    badge('Daniela')+badge('Pedro'), dARS('pack_ultra'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('pack_ultra')});
   makeRow(body, 'Add-on: Pack de Historias — Básico (x8 días)', '8 días de historias (frecuencia 2 semanales). 1 o 2 artes por día.', '10 días hábiles',
     badge('Daniela'), dARS('historias_basico'));
   makeRow(body, 'Add-on: Pack de Historias — Medio (x12 días)', '12 días de historias (frecuencia 3 semanales).', '10 días hábiles',
@@ -1558,21 +1550,30 @@ function renderServicios() {
 
   // ── OTROS SERVICIOS DE DISEÑO ─────────────────────────────────────────────
   body = makeSection(container, 'DISEÑO GRÁFICO — OTROS SERVICIOS', 12, 'srv-diseno-otros');
-  makeRow(body, 'Campaña Estacional — Pack Básico', '1 concepto base + 4 piezas adaptadas.', '', badge('Daniela')+badge('Pedro'), dARS('camp_basico'), pedAmCosto('puntual_branding'), {'Daniela': dARS('camp_basico')});
-  makeRow(body, 'Campaña Estacional — Pack Full', '1 concepto base + 8 piezas adaptadas.', '', badge('Daniela')+badge('Pedro'), dARS('camp_full'), pedAmCosto('puntual_branding'), {'Daniela': dARS('camp_full')});
-  makeRow(body, 'Diseño de Packaging / Etiquetas', '1 línea de producto + 2 adaptaciones + mockup 3D.', '10 días hábiles', badge('Daniela')+badge('Pedro'), dARS('packaging'), pedAmCosto('puntual_branding'), {'Daniela': dARS('packaging')});
-  makeRow(body, 'Presentaciones Estáticas — Básico', 'PDF de 5–10 diapositivas.', '', badge('Daniela')+badge('Pedro'), dARS('pres_est_basico'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pres_est_basico')});
-  makeRow(body, 'Presentaciones Estáticas — Medio', 'PDF de 10–20 diapositivas.', '', badge('Daniela')+badge('Pedro'), dARS('pres_est_medio'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pres_est_medio')});
-  makeRow(body, 'Presentaciones Estáticas — Full', 'PDF de hasta 30 diapositivas.', '', badge('Daniela')+badge('Pedro'), dARS('pres_est_full'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pres_est_full')});
-  makeRow(body, 'Presentaciones Editables — Básico', 'Canva/PowerPoint editable de 5–10 slides.', '', badge('Daniela')+badge('Pedro'), dARS('pres_ed_basico'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pres_ed_basico')});
-  makeRow(body, 'Presentaciones Editables — Medio', 'Canva/PowerPoint editable de 10–20 slides.', '', badge('Daniela')+badge('Pedro'), dARS('pres_ed_medio'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pres_ed_medio')});
-  makeRow(body, 'Presentaciones Editables — Full', 'Canva/PowerPoint editable de hasta 30 slides.', '', badge('Daniela')+badge('Pedro'), dARS('pres_ed_full'), pedAmCosto('puntual_branding'), {'Daniela': dARS('pres_ed_full')});
-  makeRow(body, 'Diseño de Landing Page / One Page', 'Diseño UI visual (sin programación), wireframe + layout.', '15 días hábiles', badge('Daniela')+badge('Pedro'), dARS('landing'), pedAmCosto('puntual_branding'), {'Daniela': dARS('landing')});
-  makeRow(body, 'Diseño Editorial', 'Catálogo, eBook o menú (4 a 12 páginas).', '15 días hábiles', badge('Daniela')+badge('Pedro'), dARS('editorial'), pedAmCosto('puntual_branding'), {'Daniela': dARS('editorial')});
-  makeRow(body, 'Newsletter — Plantillas de mail', 'Diseño de plantillas de email marketing (sin programación).', '10 días hábiles', badge('Daniela')+badge('Pedro'), dARS('news_1'), pedAmCosto('puntual_branding'), {'Daniela': dARS('news_1')});
+  makeRow(body, 'Campaña Estacional — Pack Básico', '1 concepto base + 4 piezas adaptadas.', '', badge('Daniela')+badge('Pedro'), dARS('camp_basico'), pedAM('puntual_branding_medio'), {'Daniela': dARS('camp_basico')});
+  makeRow(body, 'Campaña Estacional — Pack Full', '1 concepto base + 8 piezas adaptadas.', '', badge('Daniela')+badge('Pedro'), dARS('camp_full'), pedAM('puntual_branding_medio'), {'Daniela': dARS('camp_full')});
+  makeRow(body, 'Diseño de Packaging / Etiquetas', '1 línea de producto + 2 adaptaciones + mockup 3D.', '10 días hábiles', badge('Daniela')+badge('Pedro'), dARS('packaging'), pedAM('puntual_branding_medio'), {'Daniela': dARS('packaging')});
+  makeRow(body, 'Presentaciones Estáticas — Básico', 'PDF de 5–10 diapositivas.', '', badge('Daniela')+badge('Pedro'), dARS('pres_est_basico'), pedAM('puntual_branding_simple'), {'Daniela': dARS('pres_est_basico')});
+  makeRow(body, 'Presentaciones Estáticas — Medio', 'PDF de 10–20 diapositivas.', '', badge('Daniela')+badge('Pedro'), dARS('pres_est_medio'), pedAM('puntual_branding_medio'), {'Daniela': dARS('pres_est_medio')});
+  makeRow(body, 'Presentaciones Estáticas — Full', 'PDF de hasta 30 diapositivas.', '', badge('Daniela')+badge('Pedro'), dARS('pres_est_full'), pedAM('puntual_branding_medio'), {'Daniela': dARS('pres_est_full')});
+  makeRow(body, 'Presentaciones Editables — Básico', 'Canva/PowerPoint editable de 5–10 slides.', '', badge('Daniela')+badge('Pedro'), dARS('pres_ed_basico'), pedAM('puntual_branding_simple'), {'Daniela': dARS('pres_ed_basico')});
+  makeRow(body, 'Presentaciones Editables — Medio', 'Canva/PowerPoint editable de 10–20 slides.', '', badge('Daniela')+badge('Pedro'), dARS('pres_ed_medio'), pedAM('puntual_branding_medio'), {'Daniela': dARS('pres_ed_medio')});
+  makeRow(body, 'Presentaciones Editables — Full', 'Canva/PowerPoint editable de hasta 30 slides.', '', badge('Daniela')+badge('Pedro'), dARS('pres_ed_full'), pedAM('puntual_branding_medio'), {'Daniela': dARS('pres_ed_full')});
+  makeRow(body, 'Diseño de Landing Page / One Page', 'Diseño UI visual (sin programación), wireframe + layout.', '15 días hábiles', badge('Daniela')+badge('Pedro'), dARS('landing'), pedAM('puntual_branding_medio'), {'Daniela': dARS('landing')});
+  makeRow(body, 'Diseño Editorial', 'Catálogo, eBook o menú (4 a 12 páginas).', '15 días hábiles', badge('Daniela')+badge('Pedro'), dARS('editorial'), pedAM('puntual_branding_medio'), {'Daniela': dARS('editorial')});
+  makeRow(body, 'Newsletter — Plantillas de mail', 'Diseño de plantillas de email marketing (sin programación).', '10 días hábiles', badge('Daniela')+badge('Pedro'), dARS('news_1'), pedAM('puntual_branding_simple'), {'Daniela': dARS('news_1')});
+
+  // ── TIENDA NUBE & DESARROLLO (Pedro ejecuta, sin colaboradora) ────────────
+  body = makeSection(container, 'TIENDA NUBE & DESARROLLO', 3, 'srv-tiendanube');
+  makeRow(body, 'Armado de Tienda desde Cero', 'Setup técnico (dominio, medios de pago, envíos) + diseño de tienda + carga inicial de hasta 15 productos.', '',
+    badge('Pedro'), pedPk('tiendanube_armado','armado'), 0, {'Pedro': pedPk('tiendanube_armado','armado')});
+  makeRow(body, 'Diseño Visual de Tienda', 'Banners, portada e identidad visual sobre una tienda ya armada (sin setup técnico).', '',
+    badge('Pedro'), pedPk('tiendanube_diseno_visual','diseno'), 0, {'Pedro': pedPk('tiendanube_diseno_visual','diseno')});
+  makeRow(body, 'Tienda Nube — Gestión Mensual', 'Carga y mantenimiento mensual de tienda ya armada. Pedro ejecuta todo, sin colaboradora asignada.', 'Mensual',
+    badge('Pedro'), pedAM('tiendanube_gestion_mensual'), 0, {'Pedro': pedAM('tiendanube_gestion_mensual')});
 
   // ── FOTOGRAFÍA ────────────────────────────────────────────────────────────
-  body = makeSection(container, 'FOTOGRAFÍA', 6, 'srv-foto');
+  body = makeSection(container, 'FOTOGRAFÍA', 5, 'srv-foto');
   makeRow(body, 'Sesión Fotográfica de Producto — Pack Básico', '10 fotos editadas, fondo blanco o escenografía, 2 estilos, 1hr.', '10 días hábiles',
     badge('Pedro'), pedPk('foto_producto','basico'), 0, {'Pedro': pedPk('foto_producto','basico')});
   makeRow(body, 'Sesión Fotográfica de Producto — Pack Medio', '20 fotos editadas, 2hrs de producción, 2 estilos.', '15 días hábiles',
@@ -1585,17 +1586,18 @@ function renderServicios() {
     badge('Pedro'), pedPk('foto_marca_equipo','medio'), 0, {'Pedro': pedPk('foto_marca_equipo','medio')});
   makeRow(body, 'Sesión Fotográfica de Marca / Equipo — Full', '20 fotos, 1 locación, 2 vestuarios, 2hrs.', '',
     badge('Pedro'), pedPk('foto_marca_equipo','full'), 0, {'Pedro': pedPk('foto_marca_equipo','full')});
+  makePedroPackRow(body, 'Sesión Fotográfica para Marcas — por horas', 'Se entregan todas las fotos de la jornada, editadas en HD. Adicional Express 72hs: +30% sobre el pack elegido (cargar manual).', 'fotografia_catalogo', 'foto_marcas_horas');
+  makePedroPackRow(body, 'Sesión Fotográfica de Eventos — por entregables', 'Cantidad de fotos editadas según horas de cobertura (corporativo, lanzamientos, cumpleaños — no bodas/15).', 'fotografia_catalogo', 'foto_eventos_entregables');
+  makePedroPackRow(body, 'Sesión Fotográfica de Eventos — por horas', 'Todas las fotos de la jornada, sin tope de entregables.', 'fotografia_catalogo', 'foto_eventos_horas');
 
   // ── PRODUCCIÓN AUDIOVISUAL ────────────────────────────────────────────────
-  // makeReelsRow: muestra dos variantes en la misma fila (solo edición / cámara+edición)
-  function makeReelsRow(body, name, desc, vicKey, oriEdKey, oriCamKey, pedroARS) {
+  // makeReelsRow: Reels/Shorts son ejecución de Orianna — Pedro no interviene (no vive en pedro.html)
+  function makeReelsRow(body, name, desc, vicKey, oriEdKey, oriCamKey) {
     const vicVal   = v(vicKey);
     const oriEd    = oriPk('nuevo_solo_edicion',  oriEdKey);
     const oriCam   = oriPk('nuevo_camara_edicion', oriCamKey);
-    const pedVal   = pedroARS || 0;
-    const totalEd  = vicVal + oriEd  + pedVal;
-    const totalCam = vicVal + oriCam + pedVal;
-    const hasPedro = pedVal > 0;
+    const totalEd  = vicVal + oriEd;
+    const totalCam = vicVal + oriCam;
 
     function variant(label, oriVal, total) {
       const oriLine  = oriVal > 0
@@ -1604,10 +1606,7 @@ function renderServicios() {
       const vicLine  = vicVal > 0
         ? `<span style="color:var(--lime)">Victoria</span> <span style="color:var(--muted)">$${Math.round(vicVal).toLocaleString('es-AR')}</span>`
         : '';
-      const pedLine  = hasPedro
-        ? `<span style="color:#f0ede8">Pedro</span> <span style="color:var(--muted)">$${Math.round(pedVal).toLocaleString('es-AR')}</span>`
-        : `<span style="color:var(--muted)">Pedro: pendiente</span>`;
-      const parts = [vicLine, oriLine, pedLine].filter(Boolean);
+      const parts = [vicLine, oriLine].filter(Boolean);
       const chipTotal = total > 0
         ? `<span class="chip chip-ars-only">$ ${Math.round(total).toLocaleString('es-AR')} ARS</span>${fxRate ? `<span class="chip chip-pack">U$S ${(total/fxRate).toLocaleString('es-AR',{minimumFractionDigits:2})}</span>` : ''}`
         : `<span class="chip chip-pending">Sin costos cargados</span>`;
@@ -1629,7 +1628,7 @@ function renderServicios() {
     row.innerHTML = `
       <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px;padding-bottom:4px">
         <span>${name}</span>
-        ${badge('Victoria')}${badge('Orianna')}${badge('Pedro')}
+        ${badge('Victoria')}${badge('Orianna')}
       </div>
       ${desc ? `<div class="service-desc" style="margin-bottom:4px">${desc}</div>` : ''}
       ${variant('Solo edición', oriEd, totalEd)}
@@ -1638,39 +1637,35 @@ function renderServicios() {
     body.appendChild(row);
   }
 
-  body = makeSection(container, 'PRODUCCIÓN AUDIOVISUAL — REELS / VIDEO', 10, 'srv-av');
-  const pedReels = pedAmCosto('puntual_redes');
+  body = makeSection(container, 'PRODUCCIÓN AUDIOVISUAL — REELS / VIDEO (Orianna)', 6, 'srv-av');
+  makeReelsRow(body, 'Reels — Pack Inicial (x1)',   '1 reel/mes.',  'reels_ideas_x1',  'x1',  'x1');
+  makeReelsRow(body, 'Reels — Pack Básico (x4)',    '4 reels/mes.', 'reels_ideas_x4',  'x4',  'x4');
+  makeReelsRow(body, 'Reels — Pack Avanzado (x8)',  '8 reels/mes.', 'reels_ideas_x8',  'x8',  'x8');
+  makeReelsRow(body, 'Reels — Pack Premium (x12)',  '12 reels/mes.','reels_ideas_x12', 'x12', 'x12');
+  makeReelsRow(body, 'Reels — Pack Ultra (x16)',    '16 reels/mes.','reels_ideas_x12', 'x16', 'x16');
+  makeReelsRow(body, 'Reels — Pack Máximo (x20)',   '20 reels/mes.','reels_ideas_x12', 'x20', 'x20');
 
-  makeReelsRow(body, 'Reels — Pack Inicial (x1)',   '1 reel/mes.',  'reels_ideas_x1',  'x1',  'x1',  pedReels);
-  makeReelsRow(body, 'Reels — Pack Básico (x4)',    '4 reels/mes.', 'reels_ideas_x4',  'x4',  'x4',  pedReels);
-  makeReelsRow(body, 'Reels — Pack Avanzado (x8)',  '8 reels/mes.', 'reels_ideas_x8',  'x8',  'x8',  pedReels);
-  makeReelsRow(body, 'Reels — Pack Premium (x12)',  '12 reels/mes.','reels_ideas_x12', 'x12', 'x12', pedReels);
-  makeReelsRow(body, 'Reels — Pack Ultra (x16)',    '16 reels/mes.','reels_ideas_x12', 'x16', 'x16', pedReels);
-  makeReelsRow(body, 'Reels — Pack Máximo (x20)',   '20 reels/mes.','reels_ideas_x12', 'x20', 'x20', pedReels);
-
-  // Otros audiovisuales (Pedro ejecuta)
-  body = makeSection(container, 'PRODUCCIÓN AUDIOVISUAL — OTROS', 4, 'srv-av-otros');
-  makeRow(body, 'Video Institucional / Spot Comercial', 'Concepto, guion, preproducción, producción ejecutiva, edición y posproducción. Entrega Full HD.', '',
-    badge('Pedro'), ped('puntual_video_institucional'), 0, {'Pedro': ped('puntual_video_institucional')});
-  makeRow(body, 'Cobertura Audiovisual de Eventos', 'Cobertura en vivo, montaje narrativo, video principal + piezas cortas para redes.', '',
-    badge('Pedro'), pedPk('puntual_cobertura_eventos','h1'), 0, {'Pedro': pedPk('puntual_cobertura_eventos','h1')});
-  makeRow(body, 'Producción de Contenido para Publicidad Digital', 'Concepto, estrategia, rodaje y edición optimizada para Instagram/TikTok/YouTube Shorts.', '',
-    badge('Pedro')+badge('Victoria'), ped('puntual_publicidad_digital'), pedAmCosto('puntual_redes'), {'Pedro': ped('puntual_publicidad_digital'), 'Victoria': v('meta_ads_respaldo')});
-  makeRow(body, 'Entrevistas / Testimoniales', 'Guion, estructura, rodaje profesional, edición y posproducción.', '',
-    badge('Pedro'), ped('puntual_entrevistas'), 0, {'Pedro': ped('puntual_entrevistas')});
+  // Otros audiovisuales (Pedro ejecuta personalmente — cámara y edición)
+  body = makeSection(container, 'PRODUCCIÓN AUDIOVISUAL — OTROS (Pedro ejecuta)', 5, 'srv-av-otros');
+  makePedroPackRow(body, 'Video Institucional / Spot Comercial', 'Concepto, guion, preproducción, rodaje y edición. Precio por video.', 'puntual_audiovisual_sec', 'puntual_video_institucional');
+  makePedroPackRow(body, 'Cobertura Audiovisual de Eventos', 'Cobertura en vivo, montaje narrativo, video principal + piezas cortas para redes.', 'puntual_audiovisual_sec', 'puntual_cobertura_eventos');
+  makePedroPackRow(body, 'Producción de Contenido para Publicidad Digital', 'Concepto, estrategia, rodaje y edición optimizada para Instagram/TikTok/YouTube Shorts. Puente con Paula para campañas.', 'puntual_audiovisual_sec', 'puntual_publicidad_digital');
+  makePedroPackRow(body, 'Entrevistas / Testimoniales', 'Guion, estructura, rodaje profesional, edición y posproducción.', 'puntual_audiovisual_sec', 'puntual_entrevistas');
+  makePedroPackRow(body, 'Videos Tutoriales / Clases Grabadas', 'Guion didáctico, rodaje y edición con gráficos de apoyo.', 'puntual_audiovisual_sec', 'puntual_tutoriales');
 
   // ── GESTIÓN DE REDES ──────────────────────────────────────────────────────
   body = makeSection(container, 'GESTIÓN Y ESTRATEGIA DE REDES SOCIALES', 10, 'srv-redes');
   makeRow(body, 'Plan de Contenidos Estratégico', 'Diagnóstico, definición estratégica, ejes temáticos, guía visual y planificación del primer mes.', '10–15 días hábiles',
-    badge('Victoria')+badge('Pedro'), v('plan_contenidos'), pedAmCosto('puntual_redes'), {'Victoria': v('plan_contenidos')});
+    badge('Victoria')+badge('Pedro'), v('plan_contenidos'), pedAM('puntual_redes_medio'), {'Victoria': v('plan_contenidos')});
   makeRow(body, 'Community Pack (diseño + redacción)', '12 piezas diseñadas + copys + hashtags + guía de publicación mensual.', '7 días hábiles',
-    badge('Victoria')+badge('Daniela')+badge('Pedro'), v('community_pack') + dARS('pack_medio'), pedAmCosto('puntual_redes'), {'Victoria': v('community_pack'), 'Daniela': dARS('pack_medio')});
+    badge('Victoria')+badge('Daniela')+badge('Pedro'), v('community_pack') + dARS('pack_medio'), pedAM('puntual_redes_medio'), {'Victoria': v('community_pack'), 'Daniela': dARS('pack_medio')});
   makeRow(body, 'Consultoría de Estrategia Digital (1 sesión)', 'Diagnóstico previo + sesión 1:1 de 90 minutos + plan de acción 30 días.', '',
-    badge('Victoria')+badge('Pedro'), v('consultoria'), pedAmCosto('puntual_redes'), {'Victoria': v('consultoria')});
+    badge('Victoria')+badge('Pedro'), v('consultoria'), pedAM('puntual_redes_liviano'), {'Victoria': v('consultoria')});
   makeRow(body, 'Auditoría de Marca Digital', 'Análisis de perfil, contenido, métricas, competencia y coherencia de marca.', '7–10 días hábiles',
-    badge('Victoria')+badge('Pedro'), v('auditoria'), pedAmCosto('puntual_redes'), {'Victoria': v('auditoria')});
+    badge('Victoria')+badge('Pedro'), v('auditoria'), pedAM('puntual_redes_liviano'), {'Victoria': v('auditoria')});
   makeRow(body, 'Calendario de Campañas Promocionales', 'Calendario anual de fechas clave + ideas de contenido + guía de anticipación.', '3 días hábiles',
-    badge('Victoria')+badge('Pedro'), v('calendario_campanas'), pedAmCosto('puntual_redes'), {'Victoria': v('calendario_campanas')});
+    badge('Victoria')+badge('Pedro'), v('calendario_campanas'), pedAM('puntual_redes_medio'), {'Victoria': v('calendario_campanas')});
+
   // makeGestionRow: muestra dos variantes (Orianna solo edición / cámara+edición)
   function makeGestionRow(body, name, desc, vicKey, danKey, oriEdKey, oriCamKey, paulaKey, pedroARS) {
     const vicVal  = v(vicKey);
@@ -1723,7 +1718,7 @@ function renderServicios() {
     body.appendChild(row);
   }
 
-  const pedGestion = pedAmCosto('puntual_redes');
+  const pedGestion = pedAM('puntual_redes_completo');
   makeGestionRow(body, 'Gestión Integral — Pack Inicial (x4)',  '4 publicaciones/mes. Onboarding estratégico, planificación, briefs para Daniela y copys para Paula.',  'gestion_integral_x4',  'pack_basico',   'x4',  'x4',  'pack_inicial', pedGestion);
   makeGestionRow(body, 'Gestión Integral — Pack Básico (x8)',   '8 publicaciones — 4 Instagram + 4 TikTok.',  'gestion_integral_x8',  'pack_medio',    'x8',  'x8',  'pack_basico',  pedGestion);
   makeGestionRow(body, 'Gestión Integral — Pack Avanzado (x12)','12 publicaciones — 8 Instagram + 4 TikTok.', 'gestion_integral_x12', 'pack_full',     'x12', 'x12', 'pack_avanzado',pedGestion);
@@ -1733,36 +1728,50 @@ function renderServicios() {
   // ── META ADS Y EMAIL MARKETING ────────────────────────────────────────────
   body = makeSection(container, 'META ADS Y EMAIL MARKETING', 7, 'srv-pauta');
   makeRow(body, 'Meta Ads — Setup Avanzado de Campaña', 'Configuración completa: estructura, segmentaciones, objetivos y píxel de Meta.', '5–7 días hábiles',
-    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_setup') + v('meta_ads_respaldo'), pedAmCosto('puntual_redes'), {'Paula': pp('meta_ads_setup'), 'Victoria': v('meta_ads_respaldo')});
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_setup') + v('meta_ads_respaldo'), pedAM('puntual_redes_completo'), {'Paula': pp('meta_ads_setup'), 'Victoria': v('meta_ads_respaldo')});
   makeRow(body, 'Meta Ads — Gestión de Performance', 'Monitoreo, optimización, A/B testing e informe mensual.', 'Mensual',
-    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_gestion') + v('meta_ads_respaldo'), pedAmCosto('puntual_redes'), {'Paula': pp('meta_ads_gestion'), 'Victoria': v('meta_ads_respaldo')});
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_gestion') + v('meta_ads_respaldo'), pedAM('puntual_redes_completo'), {'Paula': pp('meta_ads_gestion'), 'Victoria': v('meta_ads_respaldo')});
   makeRow(body, 'Meta Ads — Gestión de Escalado', 'Escalado vertical y horizontal, expansión de audiencias para cuentas con historial probado.', 'Mensual',
-    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_escalado') + v('meta_ads_respaldo'), pedAmCosto('puntual_redes'), {'Paula': pp('meta_ads_escalado'), 'Victoria': v('meta_ads_respaldo')});
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_escalado') + v('meta_ads_respaldo'), pedAM('puntual_redes_completo'), {'Paula': pp('meta_ads_escalado'), 'Victoria': v('meta_ads_respaldo')});
   makeRow(body, 'Meta Ads — Auditoría de Cuenta Publicitaria', 'Diagnóstico de estructura, creatividades y eficiencia. Informe con recomendaciones.', '',
-    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_auditoria') + v('meta_ads_respaldo'), pedAmCosto('puntual_redes'), {'Paula': pp('meta_ads_auditoria'), 'Victoria': v('meta_ads_respaldo')});
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_auditoria') + v('meta_ads_respaldo'), pedAM('puntual_redes_liviano'), {'Paula': pp('meta_ads_auditoria'), 'Victoria': v('meta_ads_respaldo')});
   makeRow(body, 'Email Marketing — Setup Básico', 'Configuración de plataforma: listas, formularios, SPF/DKIM y plantilla base.', '5–7 días hábiles',
-    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('email_setup') + v('email_mkt_respaldo'), pedAmCosto('puntual_redes'), {'Paula': pp('email_setup'), 'Victoria': v('email_mkt_respaldo')});
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('email_setup') + v('email_mkt_respaldo'), pedAM('puntual_redes_liviano'), {'Paula': pp('email_setup'), 'Victoria': v('email_mkt_respaldo')});
   makeRow(body, 'Email Marketing — Gestión Mensual', 'Planificación, redacción, diseño, envío y monitoreo con informe mensual.', 'Mensual',
-    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('email_gestion') + v('email_mkt_respaldo'), pedAmCosto('puntual_redes'), {'Paula': pp('email_gestion'), 'Victoria': v('email_mkt_respaldo')});
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('email_gestion') + v('email_mkt_respaldo'), pedAM('puntual_redes_completo'), {'Paula': pp('email_gestion'), 'Victoria': v('email_mkt_respaldo')});
   makeRow(body, 'Email Marketing — Secuencia Automatizada', 'Flujo automático activado por acción del usuario.', '7–10 días hábiles',
-    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('email_secuencia') + v('email_mkt_respaldo'), pedAmCosto('puntual_redes'), {'Paula': pp('email_secuencia'), 'Victoria': v('email_mkt_respaldo')});
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('email_secuencia') + v('email_mkt_respaldo'), pedAM('puntual_redes_liviano'), {'Paula': pp('email_secuencia'), 'Victoria': v('email_mkt_respaldo')});
 
   // ── FORMACIÓN ─────────────────────────────────────────────────────────────
   body = makeSection(container, 'FORMACIÓN Y CAPACITACIÓN', 6, 'srv-formacion');
-  makeRow(body, 'Curso Básico de Fotografía — Grupal', '3 sesiones (presencial + campo + online). Hasta 6 estudiantes.', '3 sesiones de 2hs',
-    badge('Pedro'), pedCourse('curso_fotografia_basico','grupal'), 0, {'Pedro': pedCourse('curso_fotografia_basico','grupal')});
-  makeRow(body, 'Curso Básico de Fotografía — Particular', '3 sesiones individuales con Pedro.', '3 sesiones de 2hs',
-    badge('Pedro'), pedCourse('curso_fotografia_basico','particular'), 0, {'Pedro': pedCourse('curso_fotografia_basico','particular')});
-  makeRow(body, 'Curso de Contenido Audiovisual — Grupal', '3 sesiones: estrategia, producción y edición. Hasta 8 estudiantes.', '3 sesiones de 2hs',
-    badge('Pedro'), pedCourse('curso_contenido_audiovisual','grupal'), 0, {'Pedro': pedCourse('curso_contenido_audiovisual','grupal')});
-  makeRow(body, 'Curso de Contenido Audiovisual — Particular', '3 sesiones individuales con Pedro.', '3 sesiones de 2hs',
-    badge('Pedro'), pedCourse('curso_contenido_audiovisual','particular'), 0, {'Pedro': pedCourse('curso_contenido_audiovisual','particular')});
-  makeRow(body, 'Mentoría 1:1 — Sesión Única (60 min)', 'Devolución puntual sobre portfolio, feed, proyecto o estrategia.', '60 minutos',
-    badge('Pedro'), pedPk('mentoria_1on1','sesion_unica'), 0, {'Pedro': pedPk('mentoria_1on1','sesion_unica')});
-  makeRow(body, 'Mentoría 1:1 — Pack 4 sesiones (mensual)', 'Un mes de acompañamiento semanal con hoja de ruta.', '4 semanas',
-    badge('Pedro'), pedPk('mentoria_1on1','pack4'), 0, {'Pedro': pedPk('mentoria_1on1','pack4')});
-}
+  makeRow(body, 'Curso Básico de Fotografía — Grupal', '3 sesiones (presencial + campo + online). Costo real + margen 35%.', '3 sesiones de 2hs',
+    badge('Pedro'), pedCM('curso_fotografia_basico','grupal'), 0, {'Pedro': pedCM('curso_fotografia_basico','grupal')});
+  makeRow(body, 'Curso Básico de Fotografía — Particular', '3 sesiones individuales con Pedro. Costo real + margen 35%.', '3 sesiones de 2hs',
+    badge('Pedro'), pedCM('curso_fotografia_basico','particular'), 0, {'Pedro': pedCM('curso_fotografia_basico','particular')});
+  makeRow(body, 'Curso de Contenido Audiovisual — Grupal', '3 sesiones: estrategia, producción y edición. Costo real + margen 35%.', '3 sesiones de 2hs',
+    badge('Pedro'), pedCM('curso_contenido_audiovisual','grupal'), 0, {'Pedro': pedCM('curso_contenido_audiovisual','grupal')});
+  makeRow(body, 'Curso de Contenido Audiovisual — Particular', '3 sesiones individuales con Pedro. Costo real + margen 35%.', '3 sesiones de 2hs',
+    badge('Pedro'), pedCM('curso_contenido_audiovisual','particular'), 0, {'Pedro': pedCM('curso_contenido_audiovisual','particular')});
+  makeRow(body, 'Capacitaciones Corporativas — Medio Día', 'Programa a medida, 4hs de dictado. Costo real + margen 35%.', '',
+    badge('Pedro'), pedCM('curso_capacitacion_corporativa','medio_dia'), 0, {'Pedro': pedCM('curso_capacitacion_corporativa','medio_dia')});
+  makeRow(body, 'Capacitaciones Corporativas — Jornada Completa', 'Programa a medida, 8hs de dictado. Costo real + margen 35%.', '',
+    badge('Pedro'), pedCM('curso_capacitacion_corporativa','jornada_completa'), 0, {'Pedro': pedCM('curso_capacitacion_corporativa','jornada_completa')});
 
+  // ── MENTORÍA ──────────────────────────────────────────────────────────────
+  body = makeSection(container, 'MENTORÍA INDIVIDUAL 1:1', 3, 'srv-mentoria');
+  makeRow(body, 'Mentoría 1:1 — Sesión Única (60 min)', 'Devolución puntual sobre portfolio, feed, proyecto o estrategia.', '60 minutos',
+    badge('Pedro'), pedMen('mentoria_1on1','sesion_unica'), 0, {'Pedro': pedMen('mentoria_1on1','sesion_unica')});
+  makeRow(body, 'Mentoría 1:1 — Pack 4 sesiones (mensual)', 'Un mes de acompañamiento semanal con hoja de ruta.', '4 semanas',
+    badge('Pedro'), pedMen('mentoria_1on1','pack4'), 0, {'Pedro': pedMen('mentoria_1on1','pack4')});
+  makeRow(body, 'Mentoría 1:1 — Pack 8 sesiones (bimestral)', 'Dos meses de acompañamiento semanal con hoja de ruta.', '8 semanas',
+    badge('Pedro'), pedMen('mentoria_1on1','pack8'), 0, {'Pedro': pedMen('mentoria_1on1','pack8')});
+
+  // ── BODAS / 15 AÑOS (servicio personal de Pedro, sin equipo de Contentive) ─
+  body = makeSection(container, 'FOTOGRAFÍA DE BODAS / 15 AÑOS', 1, 'srv-bodas');
+  const wTarifa = pedGetWeddingTarifa('boda_civil');
+  makeRow(body, 'Cobertura de Boda / 15 Años — Evento Único', `Tarifa por hora, servicio personal de Pedro (sin equipo de Contentive).${wTarifa ? ` 1ra hora $${wTarifa.toLocaleString('es-AR')} · 2da hora+ -25%` : ''}`, '',
+    badge('Pedro'), wTarifa, 0, {'Pedro': wTarifa});
+}
 
 // ── STATS ──────────────────────────────────────────────────────────────────
 function updateStats() {
