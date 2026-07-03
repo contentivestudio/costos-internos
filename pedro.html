@@ -377,6 +377,9 @@ const AM_HOURS_OVERRIDES = {
   tiendanube_gestion_mensual: { briefing:1, rodaje:2, supervision:0.5, reuniones:0, presentacion:0.5, tieneAudiovisual:true }
 };
 const ACTIVITY_LABELS = { briefing:'Briefing mensual', rodaje:'Presencia en rodaje', supervision:'Supervisión / aprobación', reuniones:'Reuniones con cliente', presentacion:'Presentación mensual' };
+const ACTIVITY_LABELS_OVERRIDES = {
+  tiendanube_gestion_mensual: { briefing:'Novedades y promos del mes', rodaje:'Carga y actualización de productos', supervision:'Control de stock y precios', presentacion:'Reporte breve al cliente' }
+};
 
 // ─── PIN ─────────────────────────────────────────────────────────────────────
 function pinPress(d) { if(pinBuffer.length>=4)return; pinBuffer+=d; updatePinDots(); if(pinBuffer.length===4)setTimeout(checkPin,120); }
@@ -611,7 +614,14 @@ function isServiceFilled(section,s) {
 function countFilledInSection(sec) { return sec.services.filter(s=>isServiceFilled(sec,s)).length; }
 function updateGlobalProgress() {
   let filled=0,total=0;
-  SECTIONS.forEach(sec=>{total+=sec.services.length;filled+=countFilledInSection(sec);});
+  SECTIONS.forEach(sec=>{
+    const f=countFilledInSection(sec), t=sec.services.length;
+    filled+=f; total+=t;
+    const countEl=document.getElementById('count-'+sec.id);
+    if(countEl) countEl.textContent=f+' / '+t;
+    const indEl=document.getElementById('ind-'+sec.id);
+    if(indEl) indEl.className='section-indicator '+(f===0?'':f===t?'complete':'partial');
+  });
   const pct=total?Math.round(filled/total*100):0;
   document.getElementById('globalFill').style.width=pct+'%';
   document.getElementById('globalPct').textContent=pct+'%';
@@ -677,12 +687,13 @@ function renderAmCard(card,svc,isPuntual) {
   const totalLabel=isPuntual?'Costo total Dirección (proyecto único)':'Costo total Dirección';
   const periodLabel=isPuntual?'una vez por proyecto':'mensual';
 
+  const labels={...ACTIVITY_LABELS,...(ACTIVITY_LABELS_OVERRIDES[svc.id]||{})};
   let hoursHtml='';
   Object.keys(ACTIVITY_LABELS).forEach(key=>{
     const isRodaje=key==='rodaje', disabled=isRodaje&&!h.tieneAudiovisual;
     hoursHtml+=`
       <div class="hours-item">
-        <div class="hours-item-label">${ACTIVITY_LABELS[key]}</div>
+        <div class="hours-item-label">${labels[key]}</div>
         <div class="hours-item-row">
           <input type="number" step="0.5" class="hours-input" value="${h[key]}" ${disabled?'disabled':''}
             data-hours-input="${svc.id}-${key}"
