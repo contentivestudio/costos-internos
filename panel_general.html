@@ -619,6 +619,21 @@ function pedGetCostMarginVenta(id, pk) {
   const c = (costo !== undefined) ? costo : ((PEDRO_COST_MARGIN_DEFAULTS[id]||{})[pk] || 0);
   return c ? Math.ceil(c / (1 - PEDRO_MARGIN_RATE)) : 0;
 }
+// Versión "costo de producción" (sin margen aplicado) — para vista interna de Pedro en Servicios Consolidado
+function pedGetCostMarginCosto(id, pk) {
+  const p = pedroData || {};
+  const costo = ((p.costMargin||{})[id]||{})[pk];
+  const c = (costo !== undefined) ? costo : ((PEDRO_COST_MARGIN_DEFAULTS[id]||{})[pk] || 0);
+  return c || 0;
+}
+function pedGetMentoriaCosto(id, pk) {
+  const p = pedroData || {};
+  const def = PEDRO_MENTORIA_DEFAULT[pk] || {prep:0,sesion:0,devolucion:0};
+  const h = { ...def, ...(((p.mentoriaHours||{})[id]||{})[pk]||{}) };
+  const totalH = h.prep + h.sesion + h.devolucion;
+  const tarifaM = p.tarifaMentoria || 30000;
+  return totalH * tarifaM;
+}
 
 // ── CATÁLOGO DANIELA ──────────────────────────────────────────────────────
 const DANIELA_SECTIONS = [
@@ -1390,6 +1405,19 @@ function renderServicios() {
   intro.textContent = 'Catálogo completo del estudio. Cada servicio muestra el costo interno total en ARS, USD y USD +20% (mercado exterior), sumando a todas las colaboradoras responsables — incluido Pedro, según el nivel de complejidad que él mismo cargó en pedro.html.';
   container.appendChild(intro);
 
+  // ── BARRA DE BÚSQUEDA Y FILTROS ──────────────────────────────────────────
+  const filterBar = document.createElement('div');
+  filterBar.style.cssText = 'display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin:10px 0 16px;position:sticky;top:0;background:var(--bg,#0e0e0e);padding:8px 0;z-index:5';
+  const respNames = ['Daniela','Victoria','Orianna','Paula','Pedro'];
+  filterBar.innerHTML = `
+    <input id="srvSearchInput" type="text" placeholder="Buscar servicio..." autocomplete="off"
+      style="flex:1;min-width:180px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:8px;padding:8px 12px;color:var(--text,#f0ede8);font-size:13px;outline:none">
+    ${respNames.map(n => `<button type="button" class="srv-resp-btn" data-resp="${n}" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:5px 12px;font-size:11px;letter-spacing:.04em;color:${{Daniela:'var(--orange)',Victoria:'var(--lime)',Orianna:'#7aa2ff',Paula:'#c084fc',Pedro:'#f0ede8'}[n]};cursor:pointer">${n}</button>`).join('')}
+    <button type="button" id="srvPendingBtn" style="background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:5px 12px;font-size:11px;letter-spacing:.04em;color:var(--muted);cursor:pointer">Solo pendientes</button>
+    <button type="button" id="srvClearBtn" style="background:transparent;border:1px solid rgba(255,255,255,.12);border-radius:20px;padding:5px 12px;font-size:11px;color:var(--muted);cursor:pointer">Limpiar</button>
+  `;
+  container.appendChild(filterBar);
+
   // Helpers para leer precios de cada app
   const D  = (danielaData?.prices  || {});
   const V  = (victoriaData?.prices || {});
@@ -1407,8 +1435,8 @@ function renderServicios() {
   // Costo de Pedro — usa las mismas funciones que el tab Pedro (pedGetAmCosto, pedGetPack, etc.)
   const pedAM  = (id)      => pedGetAmCosto(id);
   const pedPk  = (id, pk)  => pedGetPack(id, pk);
-  const pedMen = (id, pk)  => pedGetMentoriaVenta(id, pk);
-  const pedCM  = (id, pk)  => pedGetCostMarginVenta(id, pk);
+  const pedMen = (id, pk)  => pedGetMentoriaCosto(id, pk);
+  const pedCM  = (id, pk)  => pedGetCostMarginCosto(id, pk);
 
   // Formatea chips de precio
   function priceChips(totalARS) {
@@ -1463,6 +1491,9 @@ function renderServicios() {
         ${pedroWarning}
       </div>
     `;
+    row.dataset.srvText = (name + ' ' + (desc||'')).toLowerCase();
+    row.dataset.srvResp = ['Daniela','Victoria','Orianna','Paula','Pedro'].filter(n => (collabBadges||'').includes('>'+n+'<')).join(',');
+    row.dataset.srvPending = (grandTotal === 0) ? '1' : '0';
     body.appendChild(row);
   }
 
@@ -1487,6 +1518,9 @@ function renderServicios() {
       ${packsHtml}
       <div style="font-size:10px;color:var(--muted)">Locación adicional: ${priceChips(pedGetPack(svcId,'locacion_adicional'))}</div>
     `;
+    row.dataset.srvText = (name + ' ' + (desc||'')).toLowerCase();
+    row.dataset.srvResp = ['Daniela','Victoria','Orianna','Paula','Pedro'].filter(n => `${badge('Pedro')}${extraBadges||''}`.includes('>'+n+'<')).join(',');
+    row.dataset.srvPending = '0';
     body.appendChild(row);
   }
 
@@ -1513,9 +1547,9 @@ function renderServicios() {
   // ── BRANDING E IDENTIDAD VISUAL ──────────────────────────────────────────
   let body = makeSection(container, 'BRANDING E IDENTIDAD VISUAL', 6, 'srv-branding');
   makeRow(body, 'Identidad Corporativa Simple', 'Briefing, 3 propuestas, logotipo, manual básico y entregables técnicos.', '2–3 semanas hábiles',
-    badge('Daniela')+badge('Victoria')+badge('Pedro'), dARS('id_simple') + v('plan_contenidos'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('id_simple'), 'Victoria': v('plan_contenidos')});
+    badge('Daniela')+badge('Pedro'), dARS('id_simple'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('id_simple')});
   makeRow(body, 'Identidad Corporativa Profesional', 'Sistema visual completo: logotipo con variantes, paleta HEX/CMYK/Pantone, sistema tipográfico y manual.', '3–4 semanas hábiles',
-    badge('Daniela')+badge('Victoria')+badge('Pedro'), dARS('id_prof') + v('plan_contenidos'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('id_prof'), 'Victoria': v('plan_contenidos')});
+    badge('Daniela')+badge('Pedro'), dARS('id_prof'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('id_prof')});
   makeRow(body, 'Branding Book', 'Sistema visual, universo de marca, aplicaciones, soportes y Etapa 10 comunicación verbal.', '4–6 semanas hábiles',
     badge('Daniela')+badge('Victoria')+badge('Pedro'), dARS('branding_book') + v('branding_book_etapa10'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('branding_book'), 'Victoria': v('branding_book_etapa10')});
   makeRow(body, 'Kit de Identidad Digital', '8 plantillas de feed + 16 historias + 6 portadas destacadas, editables en Canva/AI/PSD.', '5–7 días hábiles',
@@ -1526,7 +1560,7 @@ function renderServicios() {
     badge('Daniela')+badge('Pedro'), dARS('merch'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('merch')});
 
   // ── PACKS DE PIEZAS GRÁFICAS MENSUALES ───────────────────────────────────
-  body = makeSection(container, 'DISEÑO GRÁFICO — PACKS MENSUALES', 8, 'srv-packs');
+  body = makeSection(container, 'DISEÑO GRÁFICO — PACKS MENSUALES', 11, 'srv-packs');
   makeRow(body, 'Pack Básico — x4 piezas/mes', '4 piezas estáticas + 16 días de historias interdiarias + portadas destacadas (máx. 6).', '10 días hábiles',
     badge('Daniela')+badge('Pedro'), dARS('pack_basico'), pedAM('puntual_branding_medio'), {'Daniela': dARS('pack_basico')});
   makeRow(body, 'Pack Medio — x8 piezas/mes', '8 piezas + 16 días de historias interdiarias + portadas (máx. 6).', '10 días hábiles',
@@ -1538,15 +1572,24 @@ function renderServicios() {
   makeRow(body, 'Pack Ultra — x20 piezas/mes', '20 piezas (carruseles) + 31 días de historias.', '10 días hábiles',
     badge('Daniela')+badge('Pedro'), dARS('pack_ultra'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('pack_ultra')});
   makeRow(body, 'Add-on: Pack de Historias — Básico (x8 días)', '8 días de historias (frecuencia 2 semanales). 1 o 2 artes por día.', '10 días hábiles',
-    badge('Daniela'), dARS('historias_basico'));
+    badge('Daniela')+badge('Pedro'), dARS('historias_basico'), pedAM('puntual_branding_simple'), {'Daniela': dARS('historias_basico')});
   makeRow(body, 'Add-on: Pack de Historias — Medio (x12 días)', '12 días de historias (frecuencia 3 semanales).', '10 días hábiles',
-    badge('Daniela'), dARS('historias_medio'));
+    badge('Daniela')+badge('Pedro'), dARS('historias_medio'), pedAM('puntual_branding_simple'), {'Daniela': dARS('historias_medio')});
   makeRow(body, 'Add-on: Pack de Historias — Full (x16 días)', '16 días de historias (frecuencia 4 semanales).', '10 días hábiles',
-    badge('Daniela'), dARS('historias_full'));
+    badge('Daniela')+badge('Pedro'), dARS('historias_full'), pedAM('puntual_branding_simple'), {'Daniela': dARS('historias_full')});
+  makeRow(body, 'Add-on: Pack de Historias — Ultimate (x31 días)', '31 días de historias diarias standalone.', '10 días hábiles',
+    badge('Daniela')+badge('Pedro'), dARS('historias_ultimate'), pedAM('puntual_branding_simple'), {'Daniela': dARS('historias_ultimate')});
+  makeRow(body, 'Add-on: Adaptación a Historias Diarias', '15 días adicionales de historias para cuentas en Pack Básico, Medio o Full que quieren cobertura diaria.', '',
+    badge('Daniela')+badge('Pedro'), dARS('pack_ultimate_historias_addon'), pedAM('puntual_branding_simple'), {'Daniela': dARS('pack_ultimate_historias_addon')});
+  makeRow(body, 'Add-on: Historias Diarias (combinado — todas las áreas)', 'El cliente pide historias todos los días del mes en vez de interdiarias. Suma el ajuste de Daniela (diseño), Victoria (gestión), Paula (community) y Pedro (dirección) cuando aplica sobre un pack activo.', '',
+    badge('Daniela')+badge('Victoria')+badge('Paula')+badge('Pedro'),
+    dARS('pack_ultimate_historias_addon') + v('gestion_integral_historias') + pp('adicional_historias_diarias'),
+    pedAM('puntual_branding_simple'),
+    {'Daniela': dARS('pack_ultimate_historias_addon'), 'Victoria': v('gestion_integral_historias'), 'Paula': pp('adicional_historias_diarias')});
 
   // ── OTROS SERVICIOS DE DISEÑO ─────────────────────────────────────────────
   body = makeSection(container, 'DISEÑO GRÁFICO — OTROS SERVICIOS', 12, 'srv-diseno-otros');
-  makeRow(body, 'Campaña Estacional — Pack Básico', '1 concepto base + 4 piezas adaptadas.', '', badge('Daniela')+badge('Pedro'), dARS('camp_basico'), pedAM('puntual_branding_medio'), {'Daniela': dARS('camp_basico')});
+  makeRow(body, 'Campaña Estacional — Pack Básico', '1 concepto base + 4 piezas adaptadas.', '', badge('Daniela')+badge('Pedro'), dARS('camp_basico'), pedAM('puntual_branding_simple'), {'Daniela': dARS('camp_basico')});
   makeRow(body, 'Campaña Estacional — Pack Full', '1 concepto base + 8 piezas adaptadas.', '', badge('Daniela')+badge('Pedro'), dARS('camp_full'), pedAM('puntual_branding_medio'), {'Daniela': dARS('camp_full')});
   makeRow(body, 'Diseño de Packaging / Etiquetas', '1 línea de producto + 2 adaptaciones + mockup 3D.', '10 días hábiles', badge('Daniela')+badge('Pedro'), dARS('packaging'), pedAM('puntual_branding_medio'), {'Daniela': dARS('packaging')});
   makeRow(body, 'Presentaciones Estáticas — Básico', 'PDF de 5–10 diapositivas.', '', badge('Daniela')+badge('Pedro'), dARS('pres_est_basico'), pedAM('puntual_branding_simple'), {'Daniela': dARS('pres_est_basico')});
@@ -1728,7 +1771,7 @@ function renderServicios() {
   makeRow(body, 'Meta Ads — Gestión de Performance', 'Monitoreo, optimización, A/B testing e informe mensual.', 'Mensual',
     badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_gestion') + v('meta_ads_respaldo'), pedAM('puntual_redes_completo'), {'Paula': pp('meta_ads_gestion'), 'Victoria': v('meta_ads_respaldo')});
   makeRow(body, 'Meta Ads — Gestión de Escalado', 'Escalado vertical y horizontal, expansión de audiencias para cuentas con historial probado.', 'Mensual',
-    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_escalado') + v('meta_ads_respaldo'), pedAM('puntual_redes_completo'), {'Paula': pp('meta_ads_escalado'), 'Victoria': v('meta_ads_respaldo')});
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_escalado') + v('meta_ads_respaldo'), pedAM('puntual_redes_medio'), {'Paula': pp('meta_ads_escalado'), 'Victoria': v('meta_ads_respaldo')});
   makeRow(body, 'Meta Ads — Auditoría de Cuenta Publicitaria', 'Diagnóstico de estructura, creatividades y eficiencia. Informe con recomendaciones.', '',
     badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_auditoria') + v('meta_ads_respaldo'), pedAM('puntual_redes_liviano'), {'Paula': pp('meta_ads_auditoria'), 'Victoria': v('meta_ads_respaldo')});
   makeRow(body, 'Email Marketing — Setup Básico', 'Configuración de plataforma: listas, formularios, SPF/DKIM y plantilla base.', '5–7 días hábiles',
@@ -1740,17 +1783,17 @@ function renderServicios() {
 
   // ── FORMACIÓN ─────────────────────────────────────────────────────────────
   body = makeSection(container, 'FORMACIÓN Y CAPACITACIÓN', 6, 'srv-formacion');
-  makeRow(body, 'Curso Básico de Fotografía — Grupal', '3 sesiones (presencial + campo + online). Costo real + margen 35%.', '3 sesiones de 2hs',
+  makeRow(body, 'Curso Básico de Fotografía — Grupal', '3 sesiones (presencial + campo + online). Costo de producción real.', '3 sesiones de 2hs',
     badge('Pedro'), pedCM('curso_fotografia_basico','grupal'), 0, {'Pedro': pedCM('curso_fotografia_basico','grupal')});
-  makeRow(body, 'Curso Básico de Fotografía — Particular', '3 sesiones individuales con Pedro. Costo real + margen 35%.', '3 sesiones de 2hs',
+  makeRow(body, 'Curso Básico de Fotografía — Particular', '3 sesiones individuales con Pedro. Costo de producción real.', '3 sesiones de 2hs',
     badge('Pedro'), pedCM('curso_fotografia_basico','particular'), 0, {'Pedro': pedCM('curso_fotografia_basico','particular')});
-  makeRow(body, 'Curso de Contenido Audiovisual — Grupal', '3 sesiones: estrategia, producción y edición. Costo real + margen 35%.', '3 sesiones de 2hs',
+  makeRow(body, 'Curso de Contenido Audiovisual — Grupal', '3 sesiones: estrategia, producción y edición. Costo de producción real.', '3 sesiones de 2hs',
     badge('Pedro'), pedCM('curso_contenido_audiovisual','grupal'), 0, {'Pedro': pedCM('curso_contenido_audiovisual','grupal')});
-  makeRow(body, 'Curso de Contenido Audiovisual — Particular', '3 sesiones individuales con Pedro. Costo real + margen 35%.', '3 sesiones de 2hs',
+  makeRow(body, 'Curso de Contenido Audiovisual — Particular', '3 sesiones individuales con Pedro. Costo de producción real.', '3 sesiones de 2hs',
     badge('Pedro'), pedCM('curso_contenido_audiovisual','particular'), 0, {'Pedro': pedCM('curso_contenido_audiovisual','particular')});
-  makeRow(body, 'Capacitaciones Corporativas — Medio Día', 'Programa a medida, 4hs de dictado. Costo real + margen 35%.', '',
+  makeRow(body, 'Capacitaciones Corporativas — Medio Día', 'Programa a medida, 4hs de dictado. Costo de producción real.', '',
     badge('Pedro'), pedCM('curso_capacitacion_corporativa','medio_dia'), 0, {'Pedro': pedCM('curso_capacitacion_corporativa','medio_dia')});
-  makeRow(body, 'Capacitaciones Corporativas — Jornada Completa', 'Programa a medida, 8hs de dictado. Costo real + margen 35%.', '',
+  makeRow(body, 'Capacitaciones Corporativas — Jornada Completa', 'Programa a medida, 8hs de dictado. Costo de producción real.', '',
     badge('Pedro'), pedCM('curso_capacitacion_corporativa','jornada_completa'), 0, {'Pedro': pedCM('curso_capacitacion_corporativa','jornada_completa')});
 
   // ── MENTORÍA ──────────────────────────────────────────────────────────────
@@ -1767,6 +1810,59 @@ function renderServicios() {
   const wTarifa = pedGetWeddingTarifa('boda_civil');
   makeRow(body, 'Cobertura de Boda / 15 Años — Evento Único', `Tarifa por hora, servicio personal de Pedro (sin equipo de Contentive).${wTarifa ? ` 1ra hora $${wTarifa.toLocaleString('es-AR')} · 2da hora+ -25%` : ''}`, '',
     badge('Pedro'), wTarifa, 0, {'Pedro': wTarifa});
+
+  // ── WIRING DE BÚSQUEDA Y FILTROS (no toca lógica de precios/datos) ────────
+  wireServiciosFilters(container);
+}
+
+function wireServiciosFilters(container) {
+  const searchInput = container.querySelector('#srvSearchInput');
+  const respBtns = Array.from(container.querySelectorAll('.srv-resp-btn'));
+  const pendingBtn = container.querySelector('#srvPendingBtn');
+  const clearBtn = container.querySelector('#srvClearBtn');
+  let activeResp = null;
+  let onlyPending = false;
+
+  function applyFilters() {
+    const q = (searchInput.value || '').trim().toLowerCase();
+    container.querySelectorAll('.section-block').forEach(section => {
+      let visibleCount = 0;
+      section.querySelectorAll('.service-row').forEach(row => {
+        const matchesText = !q || (row.dataset.srvText || '').includes(q);
+        const matchesResp = !activeResp || (row.dataset.srvResp || '').split(',').includes(activeResp);
+        const matchesPending = !onlyPending || row.dataset.srvPending === '1';
+        const visible = matchesText && matchesResp && matchesPending;
+        row.style.display = visible ? '' : 'none';
+        if (visible) visibleCount++;
+      });
+      section.style.display = visibleCount > 0 ? '' : 'none';
+    });
+  }
+
+  searchInput.addEventListener('input', applyFilters);
+  respBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const name = btn.dataset.resp;
+      activeResp = (activeResp === name) ? null : name;
+      respBtns.forEach(b => b.style.opacity = (activeResp && b.dataset.resp !== activeResp) ? '.4' : '1');
+      applyFilters();
+    });
+  });
+  pendingBtn.addEventListener('click', () => {
+    onlyPending = !onlyPending;
+    pendingBtn.style.opacity = onlyPending ? '1' : '.6';
+    pendingBtn.style.borderColor = onlyPending ? 'var(--orange, #F5A623)' : 'rgba(255,255,255,.12)';
+    applyFilters();
+  });
+  clearBtn.addEventListener('click', () => {
+    searchInput.value = '';
+    activeResp = null;
+    onlyPending = false;
+    respBtns.forEach(b => b.style.opacity = '1');
+    pendingBtn.style.opacity = '.6';
+    pendingBtn.style.borderColor = 'rgba(255,255,255,.12)';
+    applyFilters();
+  });
 }
 
 // ── STATS ──────────────────────────────────────────────────────────────────
