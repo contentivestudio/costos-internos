@@ -680,18 +680,27 @@ const DANIELA_SECTIONS = [
 // ── CATÁLOGO VICTORIA ──────────────────────────────────────────────────────
 const VICTORIA_SECTIONS = [
   {
+    id: 'branding', name: 'Branding e Identidad Visual',
+    services: [
+      { id: 'branding_book_etapa10', name: 'Branding Book — Etapa 10: Comunicación verbal', desc: 'Solo la etapa de comunicación verbal. El resto del servicio es de Daniela.' }
+    ]
+  },
+  {
     id: 'estrategia', name: 'Gestión y Estrategia de Redes Sociales',
     services: [
-      { id: 'plan_contenidos',      name: 'Plan de Contenidos Estratégico',              desc: 'Diagnóstico de comunicación, definición estratégica y planificación del primer mes.' },
-      { id: 'community_pack',       name: 'Community Pack (diseño + redacción)',          desc: 'Planificación mensual, conceptos narrativos para Daniela y copys completos de las 12 publicaciones.' },
-      { id: 'consultoria',          name: 'Consultoría de Estrategia Digital (1 sesión)', desc: 'Soporte estratégico antes y después de la sesión que conduce Pedro.' },
-      { id: 'auditoria',            name: 'Auditoría de Marca Digital',                  desc: 'Elaboración del informe y tabla de prioridades a partir del insumo que pasa Pedro.' },
-      { id: 'calendario_campanas',  name: 'Calendario de Campañas Promocionales',        desc: 'Relevamiento del rubro, construcción del calendario anual e ideas de contenido por fecha.' },
-      { id: 'gestion_integral_x4',  name: 'Gestión Integral de Redes — Pack Inicial (x4)',  desc: '4 publicaciones/mes. Onboarding estratégico, planificación, briefs para Daniela y copys para Paula.' },
-      { id: 'gestion_integral_x8',  name: 'Gestión Integral de Redes — Pack Básico (x8)',   desc: '8 publicaciones/mes — 4 Instagram + 4 TikTok. 2 semanales por red.' },
-      { id: 'gestion_integral_x12', name: 'Gestión Integral de Redes — Pack Avanzado (x12)',desc: '12 publicaciones/mes — 8 Instagram + 4 TikTok. 3 semanales.' },
-      { id: 'gestion_integral_x16', name: 'Gestión Integral de Redes — Pack Premium (x16)', desc: '16 publicaciones/mes — 12 Instagram + 4 TikTok. 4 semanales.' },
-      { id: 'gestion_integral_x20', name: 'Gestión Integral de Redes — Pack Ultra (x20)',   desc: '20 publicaciones/mes — 16 Instagram + 4 TikTok. 5 semanales.' }
+      { id: 'plan_contenidos',           name: 'Plan de Contenidos Estratégico',                     desc: 'Diagnóstico de comunicación, definición estratégica y planificación del primer mes.' },
+      { id: 'community_pack',            name: 'Community Pack (diseño + redacción)',                 desc: 'Planificación mensual, conceptos narrativos para Daniela y copys completos de las 12 publicaciones.' },
+      { id: 'consultoria',               name: 'Consultoría de Estrategia Digital (1 sesión)',        desc: 'Soporte estratégico antes y después de la sesión que conduce Pedro.' },
+      { id: 'auditoria',                 name: 'Auditoría de Marca Digital',                         desc: 'Elaboración del informe y tabla de prioridades a partir del insumo que pasa Pedro.' },
+      { id: 'calendario_campanas',       name: 'Calendario de Campañas Promocionales',               desc: 'Relevamiento del rubro, construcción del calendario anual e ideas de contenido por fecha.' },
+      { id: 'gestion_integral_x4',       name: 'Gestión Integral de Redes — Pack Inicial (x4)',       desc: '4 publicaciones/mes. Onboarding estratégico, planificación, briefs para Daniela y copys para Paula.' },
+      { id: 'gestion_integral_x8',       name: 'Gestión Integral de Redes — Pack Básico (x8)',        desc: '8 publicaciones/mes — 4 Instagram + 4 TikTok. 2 semanales por red.' },
+      { id: 'gestion_integral_x12',      name: 'Gestión Integral de Redes — Pack Avanzado (x12)',     desc: '12 publicaciones/mes — 8 Instagram + 4 TikTok. 3 semanales.' },
+      { id: 'gestion_integral_x16',      name: 'Gestión Integral de Redes — Pack Premium (x16)',      desc: '16 publicaciones/mes — 12 Instagram + 4 TikTok. 4 semanales.' },
+      { id: 'gestion_integral_x20',      name: 'Gestión Integral de Redes — Pack Ultra (x20)',        desc: '20 publicaciones/mes — 16 Instagram + 4 TikTok. 5 semanales.' },
+      { id: 'gestion_integral_historias',name: 'Add-on: Historias Diarias (Gestión Integral)',        desc: 'Cobertura diaria de historias para cuentas en Pack Inicial, Básico o Avanzado (en x16/x20 ya está incluida).' },
+      { id: 'meta_ads_respaldo',         name: 'Meta Ads — Respaldo estratégico de contenido',        desc: 'La ejecución técnica es de Paula. Rol de Victoria: respaldo estratégico de contenido.' },
+      { id: 'email_mkt_respaldo',        name: 'Email Marketing — Respaldo estratégico de contenido', desc: 'La ejecución técnica es de Paula. Rol de Victoria: respaldo estratégico de contenido.' }
     ]
   },
   {
@@ -702,19 +711,6 @@ const VICTORIA_SECTIONS = [
       { id: 'reels_ideas_x8',  name: 'Reels con ideas — Pack Avanzado (x8)', desc: 'Investigación, 8 conceptos y 8 guiones. Orianna ejecuta producción y edición.' },
       { id: 'reels_ideas_x10', name: 'Reels con ideas — Pack Premium (x10)', desc: 'Investigación, 10 conceptos y 10 guiones. Orianna ejecuta producción y edición.' },
       { id: 'reels_ideas_x12', name: 'Reels con ideas — Pack Ultra (x12)',   desc: 'Investigación, 12 conceptos y 12 guiones. Orianna ejecuta producción y edición.' }
-    ]
-  },
-  {
-    id: 'pauta', name: 'Pauta Digital y Email Marketing — Respaldo Estratégico',
-    services: [
-      { id: 'meta_ads_respaldo',  name: 'Meta Ads — Respaldo estratégico de contenido',    desc: 'La ejecución técnica es de Paula. Rol de Victoria: respaldo estratégico de contenido.' },
-      { id: 'email_mkt_respaldo', name: 'Email Marketing — Respaldo estratégico de contenido', desc: 'La ejecución técnica es de Paula. Rol de Victoria: respaldo estratégico de contenido.' }
-    ]
-  },
-  {
-    id: 'branding', name: 'Branding e Identidad Visual',
-    services: [
-      { id: 'branding_book_etapa10', name: 'Branding Book — Etapa 10: Comunicación verbal', desc: 'Solo la etapa de comunicación verbal. El resto del servicio es de Daniela.' }
     ]
   }
 ];
