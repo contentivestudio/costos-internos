@@ -1665,84 +1665,84 @@ function renderServicios() {
   // ── BRANDING E IDENTIDAD VISUAL ──────────────────────────────────────────
   let body = makeSection(container, 'BRANDING E IDENTIDAD VISUAL', 6, 'srv-branding');
   makeRow(body, 'Identidad Corporativa Simple', 'Briefing, 3 propuestas, logotipo, manual básico y entregables técnicos.', '2–3 semanas hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('id_simple'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('id_simple')});
+    badge('Daniela')+badge('Pedro'), dARS('id_simple'), pedGetAmCosto('puntual_branding_complejo'), {'Daniela': dARS('id_simple')});
   makeRow(body, 'Identidad Corporativa Profesional', 'Sistema visual completo: logotipo con variantes, paleta HEX/CMYK/Pantone, sistema tipográfico y manual.', '3–4 semanas hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('id_prof'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('id_prof')});
+    badge('Daniela')+badge('Pedro'), dARS('id_prof'), pedGetAmCosto('puntual_branding_complejo'), {'Daniela': dARS('id_prof')});
   makeRow(body, 'Branding Book', 'Sistema visual, universo de marca, aplicaciones, soportes y Etapa 10 comunicación verbal.', '4–6 semanas hábiles',
-    badge('Daniela')+badge('Victoria')+badge('Pedro'), dARS('branding_book') + v('branding_book_etapa10'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('branding_book'), 'Victoria': v('branding_book_etapa10')});
+    badge('Daniela')+badge('Victoria')+badge('Pedro'), dARS('branding_book') + v('branding_book_etapa10'), pedGetAmCosto('puntual_branding_complejo'), {'Daniela': dARS('branding_book'), 'Victoria': v('branding_book_etapa10')});
   makeRow(body, 'Kit de Identidad Digital', '8 plantillas de feed + 16 historias + 6 portadas destacadas, editables en Canva/AI/PSD.', '5–7 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('id_simple'), pedAM('puntual_branding_medio'), {'Daniela': dARS('id_simple')});
+    badge('Daniela')+badge('Pedro'), dARS('id_simple'), pedGetAmCosto('puntual_branding_medio'), {'Daniela': dARS('id_simple')});
   makeRow(body, 'Papelería Corporativa', 'Tarjeta, membrete, sobre, carpeta, hoja A4 editable y firma de mail HTML.', '3–5 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('papeleria'), pedAM('puntual_branding_simple'), {'Daniela': dARS('papeleria')});
+    badge('Daniela')+badge('Pedro'), dARS('papeleria'), pedGetAmCosto('puntual_branding_simple'), {'Daniela': dARS('papeleria')});
   makeRow(body, 'Merchandising Corporativo', 'Diseño de aplicación sobre productos físicos con mockup 3D y archivos para producción.', '4–5 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('merch'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('merch')});
+    badge('Daniela')+badge('Pedro'), dARS('merch'), pedGetAmCosto('puntual_branding_complejo'), {'Daniela': dARS('merch')});
 
   // ── PACKS DE PIEZAS GRÁFICAS MENSUALES ───────────────────────────────────
   body = makeSection(container, 'DISEÑO GRÁFICO — PACKS MENSUALES', 11, 'srv-packs');
   makeRow(body, 'Pack Básico — x4 piezas/mes', '4 piezas estáticas + 16 días de historias interdiarias + portadas destacadas (máx. 6).', '10 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('pack_basico'), pedAM('puntual_branding_medio'), {'Daniela': dARS('pack_basico')});
+    badge('Daniela')+badge('Pedro'), dARS('pack_basico'), pedGetAmCosto('puntual_branding_medio'), {'Daniela': dARS('pack_basico')});
   makeRow(body, 'Pack Medio — x8 piezas/mes', '8 piezas + 16 días de historias interdiarias + portadas (máx. 6).', '10 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('pack_medio'), pedAM('puntual_branding_medio'), {'Daniela': dARS('pack_medio')});
+    badge('Daniela')+badge('Pedro'), dARS('pack_medio'), pedGetAmCosto('puntual_branding_medio'), {'Daniela': dARS('pack_medio')});
   makeRow(body, 'Pack Full — x12 piezas/mes', '12 piezas (incluye carruseles) + 16 días de historias + portadas (máx. 8).', '10 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('pack_full'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('pack_full')});
+    badge('Daniela')+badge('Pedro'), dARS('pack_full'), pedGetAmCosto('puntual_branding_complejo'), {'Daniela': dARS('pack_full')});
   makeRow(body, 'Pack Ultimate — x16 piezas/mes', '16 piezas (carruseles hasta 6 slides) + 31 días de historias + portadas (máx. 10).', '10 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('pack_ultimate'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('pack_ultimate')});
+    badge('Daniela')+badge('Pedro'), dARS('pack_ultimate'), pedGetAmCosto('puntual_branding_complejo'), {'Daniela': dARS('pack_ultimate')});
   makeRow(body, 'Pack Ultra — x20 piezas/mes', '20 piezas (carruseles) + 31 días de historias.', '10 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('pack_ultra'), pedAM('puntual_branding_complejo'), {'Daniela': dARS('pack_ultra')});
+    badge('Daniela')+badge('Pedro'), dARS('pack_ultra'), pedGetAmCosto('puntual_branding_complejo'), {'Daniela': dARS('pack_ultra')});
   makeRow(body, 'Add-on: Pack de Historias — Básico (x8 días)', '8 días de historias (frecuencia 2 semanales). 1 o 2 artes por día.', '10 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('historias_basico'), pedAM('puntual_branding_simple'), {'Daniela': dARS('historias_basico')});
+    badge('Daniela')+badge('Pedro'), dARS('historias_basico'), pedGetAmCosto('puntual_branding_simple'), {'Daniela': dARS('historias_basico')});
   makeRow(body, 'Add-on: Pack de Historias — Medio (x12 días)', '12 días de historias (frecuencia 3 semanales).', '10 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('historias_medio'), pedAM('puntual_branding_simple'), {'Daniela': dARS('historias_medio')});
+    badge('Daniela')+badge('Pedro'), dARS('historias_medio'), pedGetAmCosto('puntual_branding_simple'), {'Daniela': dARS('historias_medio')});
   makeRow(body, 'Add-on: Pack de Historias — Full (x16 días)', '16 días de historias (frecuencia 4 semanales).', '10 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('historias_full'), pedAM('puntual_branding_simple'), {'Daniela': dARS('historias_full')});
+    badge('Daniela')+badge('Pedro'), dARS('historias_full'), pedGetAmCosto('puntual_branding_simple'), {'Daniela': dARS('historias_full')});
   makeRow(body, 'Add-on: Pack de Historias — Ultimate (x31 días)', '31 días de historias diarias standalone.', '10 días hábiles',
-    badge('Daniela')+badge('Pedro'), dARS('historias_ultimate'), pedAM('puntual_branding_simple'), {'Daniela': dARS('historias_ultimate')});
+    badge('Daniela')+badge('Pedro'), dARS('historias_ultimate'), pedGetAmCosto('puntual_branding_simple'), {'Daniela': dARS('historias_ultimate')});
   makeRow(body, 'Add-on: Adaptación a Historias Diarias', '15 días adicionales de historias para cuentas en Pack Básico, Medio o Full que quieren cobertura diaria.', '',
-    badge('Daniela')+badge('Pedro'), dARS('pack_ultimate_historias_addon'), pedAM('puntual_branding_simple'), {'Daniela': dARS('pack_ultimate_historias_addon')});
+    badge('Daniela')+badge('Pedro'), dARS('pack_ultimate_historias_addon'), pedGetAmCosto('puntual_branding_simple'), {'Daniela': dARS('pack_ultimate_historias_addon')});
   makeRow(body, 'Add-on: Historias Diarias (combinado — todas las áreas)', 'El cliente pide historias todos los días del mes en vez de interdiarias. Suma el ajuste de Daniela (diseño), Victoria (gestión), Paula (community) y Pedro (dirección) cuando aplica sobre un pack activo.', '',
     badge('Daniela')+badge('Victoria')+badge('Paula')+badge('Pedro'),
     dARS('pack_ultimate_historias_addon') + v('gestion_integral_historias') + pp('adicional_historias_diarias'),
-    pedAM('puntual_branding_simple'),
+    pedGetAmCosto('puntual_branding_simple'),
     {'Daniela': dARS('pack_ultimate_historias_addon'), 'Victoria': v('gestion_integral_historias'), 'Paula': pp('adicional_historias_diarias')});
 
   // ── OTROS SERVICIOS DE DISEÑO ─────────────────────────────────────────────
   body = makeSection(container, 'DISEÑO GRÁFICO — OTROS SERVICIOS', 12, 'srv-diseno-otros');
-  makeRow(body, 'Campaña Estacional — Pack Básico', '1 concepto base + 4 piezas adaptadas.', '', badge('Daniela')+badge('Pedro'), dARS('camp_basico'), pedAM('puntual_branding_simple'), {'Daniela': dARS('camp_basico')});
-  makeRow(body, 'Campaña Estacional — Pack Full', '1 concepto base + 8 piezas adaptadas.', '', badge('Daniela')+badge('Pedro'), dARS('camp_full'), pedAM('puntual_branding_medio'), {'Daniela': dARS('camp_full')});
-  makeRow(body, 'Diseño de Packaging / Etiquetas', '1 línea de producto + 2 adaptaciones + mockup 3D.', '10 días hábiles', badge('Daniela')+badge('Pedro'), dARS('packaging'), pedAM('puntual_branding_medio'), {'Daniela': dARS('packaging')});
-  makeRow(body, 'Presentaciones Estáticas — Básico', 'PDF de 5–10 diapositivas.', '', badge('Daniela')+badge('Pedro'), dARS('pres_est_basico'), pedAM('puntual_branding_simple'), {'Daniela': dARS('pres_est_basico')});
-  makeRow(body, 'Presentaciones Estáticas — Medio', 'PDF de 10–20 diapositivas.', '', badge('Daniela')+badge('Pedro'), dARS('pres_est_medio'), pedAM('puntual_branding_medio'), {'Daniela': dARS('pres_est_medio')});
-  makeRow(body, 'Presentaciones Estáticas — Full', 'PDF de hasta 30 diapositivas.', '', badge('Daniela')+badge('Pedro'), dARS('pres_est_full'), pedAM('puntual_branding_medio'), {'Daniela': dARS('pres_est_full')});
-  makeRow(body, 'Presentaciones Editables — Básico', 'Canva/PowerPoint editable de 5–10 slides.', '', badge('Daniela')+badge('Pedro'), dARS('pres_ed_basico'), pedAM('puntual_branding_simple'), {'Daniela': dARS('pres_ed_basico')});
-  makeRow(body, 'Presentaciones Editables — Medio', 'Canva/PowerPoint editable de 10–20 slides.', '', badge('Daniela')+badge('Pedro'), dARS('pres_ed_medio'), pedAM('puntual_branding_medio'), {'Daniela': dARS('pres_ed_medio')});
-  makeRow(body, 'Presentaciones Editables — Full', 'Canva/PowerPoint editable de hasta 30 slides.', '', badge('Daniela')+badge('Pedro'), dARS('pres_ed_full'), pedAM('puntual_branding_medio'), {'Daniela': dARS('pres_ed_full')});
-  makeRow(body, 'Diseño de Landing Page / One Page', 'Diseño UI visual (sin programación), wireframe + layout.', '15 días hábiles', badge('Daniela')+badge('Pedro'), dARS('landing'), pedAM('puntual_branding_medio'), {'Daniela': dARS('landing')});
-  makeRow(body, 'Diseño Editorial', 'Catálogo, eBook o menú (4 a 12 páginas).', '15 días hábiles', badge('Daniela')+badge('Pedro'), dARS('editorial'), pedAM('puntual_branding_medio'), {'Daniela': dARS('editorial')});
-  makeRow(body, 'Newsletter — Plantillas de mail', 'Diseño de plantillas de email marketing (sin programación).', '10 días hábiles', badge('Daniela')+badge('Pedro'), dARS('news_1'), pedAM('puntual_branding_simple'), {'Daniela': dARS('news_1')});
+  makeRow(body, 'Campaña Estacional — Pack Básico', '1 concepto base + 4 piezas adaptadas.', '', badge('Daniela')+badge('Pedro'), dARS('camp_basico'), pedGetAmCosto('puntual_branding_simple'), {'Daniela': dARS('camp_basico')});
+  makeRow(body, 'Campaña Estacional — Pack Full', '1 concepto base + 8 piezas adaptadas.', '', badge('Daniela')+badge('Pedro'), dARS('camp_full'), pedGetAmCosto('puntual_branding_medio'), {'Daniela': dARS('camp_full')});
+  makeRow(body, 'Diseño de Packaging / Etiquetas', '1 línea de producto + 2 adaptaciones + mockup 3D.', '10 días hábiles', badge('Daniela')+badge('Pedro'), dARS('packaging'), pedGetAmCosto('puntual_branding_medio'), {'Daniela': dARS('packaging')});
+  makeRow(body, 'Presentaciones Estáticas — Básico', 'PDF de 5–10 diapositivas.', '', badge('Daniela')+badge('Pedro'), dARS('pres_est_basico'), pedGetAmCosto('puntual_branding_simple'), {'Daniela': dARS('pres_est_basico')});
+  makeRow(body, 'Presentaciones Estáticas — Medio', 'PDF de 10–20 diapositivas.', '', badge('Daniela')+badge('Pedro'), dARS('pres_est_medio'), pedGetAmCosto('puntual_branding_medio'), {'Daniela': dARS('pres_est_medio')});
+  makeRow(body, 'Presentaciones Estáticas — Full', 'PDF de hasta 30 diapositivas.', '', badge('Daniela')+badge('Pedro'), dARS('pres_est_full'), pedGetAmCosto('puntual_branding_medio'), {'Daniela': dARS('pres_est_full')});
+  makeRow(body, 'Presentaciones Editables — Básico', 'Canva/PowerPoint editable de 5–10 slides.', '', badge('Daniela')+badge('Pedro'), dARS('pres_ed_basico'), pedGetAmCosto('puntual_branding_simple'), {'Daniela': dARS('pres_ed_basico')});
+  makeRow(body, 'Presentaciones Editables — Medio', 'Canva/PowerPoint editable de 10–20 slides.', '', badge('Daniela')+badge('Pedro'), dARS('pres_ed_medio'), pedGetAmCosto('puntual_branding_medio'), {'Daniela': dARS('pres_ed_medio')});
+  makeRow(body, 'Presentaciones Editables — Full', 'Canva/PowerPoint editable de hasta 30 slides.', '', badge('Daniela')+badge('Pedro'), dARS('pres_ed_full'), pedGetAmCosto('puntual_branding_medio'), {'Daniela': dARS('pres_ed_full')});
+  makeRow(body, 'Diseño de Landing Page / One Page', 'Diseño UI visual (sin programación), wireframe + layout.', '15 días hábiles', badge('Daniela')+badge('Pedro'), dARS('landing'), pedGetAmCosto('puntual_branding_medio'), {'Daniela': dARS('landing')});
+  makeRow(body, 'Diseño Editorial', 'Catálogo, eBook o menú (4 a 12 páginas).', '15 días hábiles', badge('Daniela')+badge('Pedro'), dARS('editorial'), pedGetAmCosto('puntual_branding_medio'), {'Daniela': dARS('editorial')});
+  makeRow(body, 'Newsletter — Plantillas de mail', 'Diseño de plantillas de email marketing (sin programación).', '10 días hábiles', badge('Daniela')+badge('Pedro'), dARS('news_1'), pedGetAmCosto('puntual_branding_simple'), {'Daniela': dARS('news_1')});
 
   // ── TIENDA NUBE & DESARROLLO (Pedro ejecuta, sin colaboradora) ────────────
   body = makeSection(container, 'TIENDA NUBE & DESARROLLO', 3, 'srv-tiendanube');
   makeRow(body, 'Armado de Tienda desde Cero', 'Setup técnico (dominio, medios de pago, envíos) + diseño de tienda + carga inicial de hasta 15 productos.', '',
-    badge('Pedro'), pedPk('tiendanube_armado','armado'), 0, {'Pedro': pedPk('tiendanube_armado','armado')});
+    badge('Pedro'), pedGetPack('tiendanube_armado','armado'), 0, {'Pedro': pedGetPack('tiendanube_armado','armado')});
   makeRow(body, 'Diseño Visual de Tienda', 'Banners, portada e identidad visual sobre una tienda ya armada (sin setup técnico).', '',
-    badge('Pedro'), pedPk('tiendanube_diseno_visual','diseno'), 0, {'Pedro': pedPk('tiendanube_diseno_visual','diseno')});
+    badge('Pedro'), pedGetPack('tiendanube_diseno_visual','diseno'), 0, {'Pedro': pedGetPack('tiendanube_diseno_visual','diseno')});
   makeRow(body, 'Tienda Nube — Gestión Mensual', 'Carga y mantenimiento mensual de tienda ya armada. Pedro ejecuta todo, sin colaboradora asignada.', 'Mensual',
-    badge('Pedro'), pedAM('tiendanube_gestion_mensual'), 0, {'Pedro': pedAM('tiendanube_gestion_mensual')});
+    badge('Pedro'), pedGetAmCosto('tiendanube_gestion_mensual'), 0, {'Pedro': pedGetAmCosto('tiendanube_gestion_mensual')});
 
   // ── FOTOGRAFÍA ────────────────────────────────────────────────────────────
   body = makeSection(container, 'FOTOGRAFÍA', 5, 'srv-foto');
   makeRow(body, 'Sesión Fotográfica de Producto — Pack Básico', '10 fotos editadas, fondo blanco o escenografía, 2 estilos, 1hr.', '10 días hábiles',
-    badge('Pedro'), pedPk('foto_producto','basico'), 0, {'Pedro': pedPk('foto_producto','basico')});
+    badge('Pedro'), pedGetPack('foto_producto','basico'), 0, {'Pedro': pedGetPack('foto_producto','basico')});
   makeRow(body, 'Sesión Fotográfica de Producto — Pack Medio', '20 fotos editadas, 2hrs de producción, 2 estilos.', '15 días hábiles',
-    badge('Pedro'), pedPk('foto_producto','medio'), 0, {'Pedro': pedPk('foto_producto','medio')});
+    badge('Pedro'), pedGetPack('foto_producto','medio'), 0, {'Pedro': pedGetPack('foto_producto','medio')});
   makeRow(body, 'Sesión Fotográfica de Producto — Pack Full', '30 fotos editadas, 2hrs de producción, 2 estilos.', '15 días hábiles',
-    badge('Pedro'), pedPk('foto_producto','full'), 0, {'Pedro': pedPk('foto_producto','full')});
+    badge('Pedro'), pedGetPack('foto_producto','full'), 0, {'Pedro': pedGetPack('foto_producto','full')});
   makeRow(body, 'Sesión Fotográfica de Marca / Equipo — Básico', '8 fotos, 1 locación, 1 vestuario, 1hr.', '15 días hábiles',
-    badge('Pedro'), pedPk('foto_marca_equipo','basico'), 0, {'Pedro': pedPk('foto_marca_equipo','basico')});
+    badge('Pedro'), pedGetPack('foto_marca_equipo','basico'), 0, {'Pedro': pedGetPack('foto_marca_equipo','basico')});
   makeRow(body, 'Sesión Fotográfica de Marca / Equipo — Medio', '12 fotos, 1 locación, 2 vestuarios, 2hrs.', '15 días hábiles',
-    badge('Pedro'), pedPk('foto_marca_equipo','medio'), 0, {'Pedro': pedPk('foto_marca_equipo','medio')});
+    badge('Pedro'), pedGetPack('foto_marca_equipo','medio'), 0, {'Pedro': pedGetPack('foto_marca_equipo','medio')});
   makeRow(body, 'Sesión Fotográfica de Marca / Equipo — Full', '20 fotos, 1 locación, 2 vestuarios, 2hrs.', '',
-    badge('Pedro'), pedPk('foto_marca_equipo','full'), 0, {'Pedro': pedPk('foto_marca_equipo','full')});
+    badge('Pedro'), pedGetPack('foto_marca_equipo','full'), 0, {'Pedro': pedGetPack('foto_marca_equipo','full')});
   makePedroPackRow(body, 'Sesión Fotográfica para Marcas — por horas', 'Se entregan todas las fotos de la jornada, editadas en HD. Adicional Express 72hs: +30% sobre el pack elegido (cargar manual).', 'fotografia_catalogo', 'foto_marcas_horas');
   makePedroPackRow(body, 'Sesión Fotográfica de Eventos — por entregables', 'Cantidad de fotos editadas según horas de cobertura (corporativo, lanzamientos, cumpleaños — no bodas/15).', 'fotografia_catalogo', 'foto_eventos_entregables');
   makePedroPackRow(body, 'Sesión Fotográfica de Eventos — por horas', 'Todas las fotos de la jornada, sin tope de entregables.', 'fotografia_catalogo', 'foto_eventos_horas');
@@ -1757,7 +1757,7 @@ function renderServicios() {
     const vicVal = v(vicKey);
     const oriEd  = oriPk('nuevo_solo_edicion',  oriEdKey);
     const oriCam = oriPk('nuevo_camara_edicion', oriCamKey);
-    const pedVal = pedAM('puntual_redes_liviano');
+    const pedVal = pedGetAmCosto('puntual_redes_liviano');
 
     function subLine(totalARS, breakdownPairs) {
       const lines = breakdownPairs
@@ -1814,15 +1814,15 @@ function renderServicios() {
   // ── GESTIÓN DE REDES ──────────────────────────────────────────────────────
   body = makeSection(container, 'GESTIÓN Y ESTRATEGIA DE REDES SOCIALES', 10, 'srv-redes');
   makeRow(body, 'Plan de Contenidos Estratégico', 'Diagnóstico, definición estratégica, ejes temáticos, guía visual y planificación del primer mes.', '10–15 días hábiles',
-    badge('Victoria')+badge('Pedro'), v('plan_contenidos'), pedAM('puntual_redes_medio'), {'Victoria': v('plan_contenidos')});
+    badge('Victoria')+badge('Pedro'), v('plan_contenidos'), pedGetAmCosto('puntual_redes_medio'), {'Victoria': v('plan_contenidos')});
   makeRow(body, 'Community Pack (diseño + redacción)', '12 piezas diseñadas + copys + hashtags + guía de publicación mensual.', '7 días hábiles',
-    badge('Victoria')+badge('Daniela')+badge('Pedro'), v('community_pack') + dARS('pack_medio'), pedAM('puntual_redes_medio'), {'Victoria': v('community_pack'), 'Daniela': dARS('pack_medio')});
+    badge('Victoria')+badge('Daniela')+badge('Pedro'), v('community_pack') + dARS('pack_medio'), pedGetAmCosto('puntual_redes_medio'), {'Victoria': v('community_pack'), 'Daniela': dARS('pack_medio')});
   makeRow(body, 'Consultoría de Estrategia Digital (1 sesión)', 'Diagnóstico previo + sesión 1:1 de 90 minutos + plan de acción 30 días.', '',
-    badge('Victoria')+badge('Pedro'), v('consultoria'), pedAM('puntual_redes_liviano'), {'Victoria': v('consultoria')});
+    badge('Victoria')+badge('Pedro'), v('consultoria'), pedGetAmCosto('puntual_redes_liviano'), {'Victoria': v('consultoria')});
   makeRow(body, 'Auditoría de Marca Digital', 'Análisis de perfil, contenido, métricas, competencia y coherencia de marca.', '7–10 días hábiles',
-    badge('Victoria')+badge('Pedro'), v('auditoria'), pedAM('puntual_redes_liviano'), {'Victoria': v('auditoria')});
+    badge('Victoria')+badge('Pedro'), v('auditoria'), pedGetAmCosto('puntual_redes_liviano'), {'Victoria': v('auditoria')});
   makeRow(body, 'Calendario de Campañas Promocionales', 'Calendario anual de fechas clave + ideas de contenido + guía de anticipación.', '3 días hábiles',
-    badge('Victoria')+badge('Pedro'), v('calendario_campanas'), pedAM('puntual_redes_medio'), {'Victoria': v('calendario_campanas')});
+    badge('Victoria')+badge('Pedro'), v('calendario_campanas'), pedGetAmCosto('puntual_redes_medio'), {'Victoria': v('calendario_campanas')});
 
   // makeGestionRow: muestra dos variantes (Orianna solo edición / cámara+edición)
   function makeGestionRow(body, name, desc, vicKey, danKey, oriEdKey, oriCamKey, paulaKey, pedroARS) {
@@ -1876,7 +1876,7 @@ function renderServicios() {
     body.appendChild(row);
   }
 
-  const pedGestion = pedAM('puntual_redes_completo');
+  const pedGestion = pedGetAmCosto('puntual_redes_completo');
   makeGestionRow(body, 'Gestión Integral — Pack Inicial (x4)',  '4 publicaciones/mes. Onboarding estratégico, planificación, briefs para Daniela y copys para Paula.',  'gestion_integral_x4',  'pack_basico',   'x4',  'x4',  'pack_inicial', pedGestion);
   makeGestionRow(body, 'Gestión Integral — Pack Básico (x8)',   '8 publicaciones — 4 Instagram + 4 TikTok.',  'gestion_integral_x8',  'pack_medio',    'x8',  'x8',  'pack_basico',  pedGestion);
   makeGestionRow(body, 'Gestión Integral — Pack Avanzado (x12)','12 publicaciones — 8 Instagram + 4 TikTok.', 'gestion_integral_x12', 'pack_full',     'x12', 'x12', 'pack_avanzado',pedGestion);
@@ -1886,43 +1886,43 @@ function renderServicios() {
   // ── META ADS Y EMAIL MARKETING ────────────────────────────────────────────
   body = makeSection(container, 'META ADS Y EMAIL MARKETING', 7, 'srv-pauta');
   makeRow(body, 'Meta Ads — Setup Avanzado de Campaña', 'Configuración completa: estructura, segmentaciones, objetivos y píxel de Meta.', '5–7 días hábiles',
-    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_setup') + v('meta_ads_respaldo'), pedAM('puntual_redes_completo'), {'Paula': pp('meta_ads_setup'), 'Victoria': v('meta_ads_respaldo')});
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_setup') + v('meta_ads_respaldo'), pedGetAmCosto('puntual_redes_completo'), {'Paula': pp('meta_ads_setup'), 'Victoria': v('meta_ads_respaldo')});
   makeRow(body, 'Meta Ads — Gestión de Performance', 'Monitoreo, optimización, A/B testing e informe mensual.', 'Mensual',
-    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_gestion') + v('meta_ads_respaldo'), pedAM('puntual_redes_completo'), {'Paula': pp('meta_ads_gestion'), 'Victoria': v('meta_ads_respaldo')});
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_gestion') + v('meta_ads_respaldo'), pedGetAmCosto('puntual_redes_completo'), {'Paula': pp('meta_ads_gestion'), 'Victoria': v('meta_ads_respaldo')});
   makeRow(body, 'Meta Ads — Gestión de Escalado', 'Escalado vertical y horizontal, expansión de audiencias para cuentas con historial probado.', 'Mensual',
-    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_escalado') + v('meta_ads_respaldo'), pedAM('puntual_redes_medio'), {'Paula': pp('meta_ads_escalado'), 'Victoria': v('meta_ads_respaldo')});
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_escalado') + v('meta_ads_respaldo'), pedGetAmCosto('puntual_redes_medio'), {'Paula': pp('meta_ads_escalado'), 'Victoria': v('meta_ads_respaldo')});
   makeRow(body, 'Meta Ads — Auditoría de Cuenta Publicitaria', 'Diagnóstico de estructura, creatividades y eficiencia. Informe con recomendaciones.', '',
-    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_auditoria') + v('meta_ads_respaldo'), pedAM('puntual_redes_liviano'), {'Paula': pp('meta_ads_auditoria'), 'Victoria': v('meta_ads_respaldo')});
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('meta_ads_auditoria') + v('meta_ads_respaldo'), pedGetAmCosto('puntual_redes_liviano'), {'Paula': pp('meta_ads_auditoria'), 'Victoria': v('meta_ads_respaldo')});
   makeRow(body, 'Email Marketing — Setup Básico', 'Configuración de plataforma: listas, formularios, SPF/DKIM y plantilla base.', '5–7 días hábiles',
-    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('email_setup') + v('email_mkt_respaldo'), pedAM('puntual_redes_liviano'), {'Paula': pp('email_setup'), 'Victoria': v('email_mkt_respaldo')});
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('email_setup') + v('email_mkt_respaldo'), pedGetAmCosto('puntual_redes_liviano'), {'Paula': pp('email_setup'), 'Victoria': v('email_mkt_respaldo')});
   makeRow(body, 'Email Marketing — Gestión Mensual', 'Planificación, redacción, diseño, envío y monitoreo con informe mensual.', 'Mensual',
-    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('email_gestion') + v('email_mkt_respaldo'), pedAM('puntual_redes_completo'), {'Paula': pp('email_gestion'), 'Victoria': v('email_mkt_respaldo')});
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('email_gestion') + v('email_mkt_respaldo'), pedGetAmCosto('puntual_redes_completo'), {'Paula': pp('email_gestion'), 'Victoria': v('email_mkt_respaldo')});
   makeRow(body, 'Email Marketing — Secuencia Automatizada', 'Flujo automático activado por acción del usuario.', '7–10 días hábiles',
-    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('email_secuencia') + v('email_mkt_respaldo'), pedAM('puntual_redes_liviano'), {'Paula': pp('email_secuencia'), 'Victoria': v('email_mkt_respaldo')});
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('email_secuencia') + v('email_mkt_respaldo'), pedGetAmCosto('puntual_redes_liviano'), {'Paula': pp('email_secuencia'), 'Victoria': v('email_mkt_respaldo')});
 
   // ── FORMACIÓN ─────────────────────────────────────────────────────────────
   body = makeSection(container, 'FORMACIÓN Y CAPACITACIÓN', 6, 'srv-formacion');
   makeRow(body, 'Curso Básico de Fotografía — Grupal', '3 sesiones (presencial + campo + online). Costo de producción real.', '3 sesiones de 2hs',
-    badge('Pedro'), pedCM('curso_fotografia_basico','grupal'), 0, {'Pedro': pedCM('curso_fotografia_basico','grupal')});
+    badge('Pedro'), pedGetCostMarginCosto('curso_fotografia_basico','grupal'), 0, {'Pedro': pedGetCostMarginCosto('curso_fotografia_basico','grupal')});
   makeRow(body, 'Curso Básico de Fotografía — Particular', '3 sesiones individuales con Pedro. Costo de producción real.', '3 sesiones de 2hs',
-    badge('Pedro'), pedCM('curso_fotografia_basico','particular'), 0, {'Pedro': pedCM('curso_fotografia_basico','particular')});
+    badge('Pedro'), pedGetCostMarginCosto('curso_fotografia_basico','particular'), 0, {'Pedro': pedGetCostMarginCosto('curso_fotografia_basico','particular')});
   makeRow(body, 'Curso de Contenido Audiovisual — Grupal', '3 sesiones: estrategia, producción y edición. Costo de producción real.', '3 sesiones de 2hs',
-    badge('Pedro'), pedCM('curso_contenido_audiovisual','grupal'), 0, {'Pedro': pedCM('curso_contenido_audiovisual','grupal')});
+    badge('Pedro'), pedGetCostMarginCosto('curso_contenido_audiovisual','grupal'), 0, {'Pedro': pedGetCostMarginCosto('curso_contenido_audiovisual','grupal')});
   makeRow(body, 'Curso de Contenido Audiovisual — Particular', '3 sesiones individuales con Pedro. Costo de producción real.', '3 sesiones de 2hs',
-    badge('Pedro'), pedCM('curso_contenido_audiovisual','particular'), 0, {'Pedro': pedCM('curso_contenido_audiovisual','particular')});
+    badge('Pedro'), pedGetCostMarginCosto('curso_contenido_audiovisual','particular'), 0, {'Pedro': pedGetCostMarginCosto('curso_contenido_audiovisual','particular')});
   makeRow(body, 'Capacitaciones Corporativas — Medio Día', 'Programa a medida, 4hs de dictado. Costo de producción real.', '',
-    badge('Pedro'), pedCM('curso_capacitacion_corporativa','medio_dia'), 0, {'Pedro': pedCM('curso_capacitacion_corporativa','medio_dia')});
+    badge('Pedro'), pedGetCostMarginCosto('curso_capacitacion_corporativa','medio_dia'), 0, {'Pedro': pedGetCostMarginCosto('curso_capacitacion_corporativa','medio_dia')});
   makeRow(body, 'Capacitaciones Corporativas — Jornada Completa', 'Programa a medida, 8hs de dictado. Costo de producción real.', '',
-    badge('Pedro'), pedCM('curso_capacitacion_corporativa','jornada_completa'), 0, {'Pedro': pedCM('curso_capacitacion_corporativa','jornada_completa')});
+    badge('Pedro'), pedGetCostMarginCosto('curso_capacitacion_corporativa','jornada_completa'), 0, {'Pedro': pedGetCostMarginCosto('curso_capacitacion_corporativa','jornada_completa')});
 
   // ── MENTORÍA ──────────────────────────────────────────────────────────────
   body = makeSection(container, 'MENTORÍA INDIVIDUAL 1:1', 3, 'srv-mentoria');
   makeRow(body, 'Mentoría 1:1 — Sesión Única (60 min)', 'Devolución puntual sobre portfolio, feed, proyecto o estrategia.', '60 minutos',
-    badge('Pedro'), pedMen('mentoria_1on1','sesion_unica'), 0, {'Pedro': pedMen('mentoria_1on1','sesion_unica')});
+    badge('Pedro'), pedGetMentoriaCosto('mentoria_1on1','sesion_unica'), 0, {'Pedro': pedGetMentoriaCosto('mentoria_1on1','sesion_unica')});
   makeRow(body, 'Mentoría 1:1 — Pack 4 sesiones (mensual)', 'Un mes de acompañamiento semanal con hoja de ruta.', '4 semanas',
-    badge('Pedro'), pedMen('mentoria_1on1','pack4'), 0, {'Pedro': pedMen('mentoria_1on1','pack4')});
+    badge('Pedro'), pedGetMentoriaCosto('mentoria_1on1','pack4'), 0, {'Pedro': pedGetMentoriaCosto('mentoria_1on1','pack4')});
   makeRow(body, 'Mentoría 1:1 — Pack 8 sesiones (bimestral)', 'Dos meses de acompañamiento semanal con hoja de ruta.', '8 semanas',
-    badge('Pedro'), pedMen('mentoria_1on1','pack8'), 0, {'Pedro': pedMen('mentoria_1on1','pack8')});
+    badge('Pedro'), pedGetMentoriaCosto('mentoria_1on1','pack8'), 0, {'Pedro': pedGetMentoriaCosto('mentoria_1on1','pack8')});
 
   // ── BODAS / 15 AÑOS (servicio personal de Pedro, sin equipo de Contentive) ─
   body = makeSection(container, 'FOTOGRAFÍA DE BODAS / 15 AÑOS', 1, 'srv-bodas');
@@ -2117,109 +2117,109 @@ function cotBuildCatalog() {
   // ── BRANDING ──
   cat.push({ nombre:'BRANDING E IDENTIDAD VISUAL', servicios:[
     { nombre:'Identidad Corporativa Simple', desc:'Briefing, 3 propuestas, logotipo, manual básico y entregables técnicos.', tiempos:'2–3 semanas hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('id_simple') + pedAM('puntual_branding_complejo')}] },
+      packs:[{label:'Servicio completo', ars:()=> dARS_('id_simple') + pedGetAmCosto('puntual_branding_complejo')}] },
     { nombre:'Identidad Corporativa Profesional', desc:'Logotipo con variantes, paleta HEX/CMYK/Pantone, sistema tipográfico y manual.', tiempos:'3–4 semanas hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('id_prof') + pedAM('puntual_branding_complejo')}] },
+      packs:[{label:'Servicio completo', ars:()=> dARS_('id_prof') + pedGetAmCosto('puntual_branding_complejo')}] },
     { nombre:'Branding Book', desc:'Sistema visual, universo de marca, aplicaciones, soportes y Etapa 10 comunicación verbal.', tiempos:'4–6 semanas hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('branding_book') + v_('branding_book_etapa10') + pedAM('puntual_branding_complejo')}] },
+      packs:[{label:'Servicio completo', ars:()=> dARS_('branding_book') + v_('branding_book_etapa10') + pedGetAmCosto('puntual_branding_complejo')}] },
     { nombre:'Kit de Identidad Digital', desc:'8 plantillas de feed + 16 historias + 6 portadas destacadas.', tiempos:'5–7 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('id_simple') + pedAM('puntual_branding_medio')}] },
+      packs:[{label:'Servicio completo', ars:()=> dARS_('id_simple') + pedGetAmCosto('puntual_branding_medio')}] },
     { nombre:'Papelería Corporativa', desc:'Tarjeta, membrete, sobre, carpeta, hoja A4 y firma de mail HTML.', tiempos:'3–5 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('papeleria') + pedAM('puntual_branding_simple')}] },
+      packs:[{label:'Servicio completo', ars:()=> dARS_('papeleria') + pedGetAmCosto('puntual_branding_simple')}] },
     { nombre:'Merchandising Corporativo', desc:'Diseño de aplicación sobre productos físicos con mockup 3D.', tiempos:'4–5 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('merch') + pedAM('puntual_branding_complejo')}] },
+      packs:[{label:'Servicio completo', ars:()=> dARS_('merch') + pedGetAmCosto('puntual_branding_complejo')}] },
   ]});
 
   // ── DISEÑO GRÁFICO — PACKS MENSUALES (packs seleccionables reales) ──
   cat.push({ nombre:'DISEÑO GRÁFICO Y MULTIMEDIA', servicios:[
     { nombre:'Pack de Piezas Gráficas Mensuales', desc:'Piezas de feed + historias interdiarias/diarias + portadas destacadas.', tiempos:'10 días hábiles',
       packs:[
-        {label:'Básico — x4 piezas/mes',   ars:()=> dARS_('pack_basico')   + pedAM('puntual_branding_medio')},
-        {label:'Medio — x8 piezas/mes',     ars:()=> dARS_('pack_medio')    + pedAM('puntual_branding_medio')},
-        {label:'Full — x12 piezas/mes',     ars:()=> dARS_('pack_full')     + pedAM('puntual_branding_complejo')},
-        {label:'Ultimate — x16 piezas/mes', ars:()=> dARS_('pack_ultimate') + pedAM('puntual_branding_complejo')},
-        {label:'Ultra — x20 piezas/mes',    ars:()=> dARS_('pack_ultra')    + pedAM('puntual_branding_complejo')},
+        {label:'Básico — x4 piezas/mes',   ars:()=> dARS_('pack_basico')   + pedGetAmCosto('puntual_branding_medio')},
+        {label:'Medio — x8 piezas/mes',     ars:()=> dARS_('pack_medio')    + pedGetAmCosto('puntual_branding_medio')},
+        {label:'Full — x12 piezas/mes',     ars:()=> dARS_('pack_full')     + pedGetAmCosto('puntual_branding_complejo')},
+        {label:'Ultimate — x16 piezas/mes', ars:()=> dARS_('pack_ultimate') + pedGetAmCosto('puntual_branding_complejo')},
+        {label:'Ultra — x20 piezas/mes',    ars:()=> dARS_('pack_ultra')    + pedGetAmCosto('puntual_branding_complejo')},
       ]},
     { nombre:'Pack de Historias Mensuales (add-on)', desc:'Historias standalone, 1 o 2 artes por día.', tiempos:'10 días hábiles',
       packs:[
-        {label:'Básico — x8 días',    ars:()=> dARS_('historias_basico')  + pedAM('puntual_branding_simple')},
-        {label:'Medio — x12 días',    ars:()=> dARS_('historias_medio')   + pedAM('puntual_branding_simple')},
-        {label:'Full — x16 días',     ars:()=> dARS_('historias_full')    + pedAM('puntual_branding_simple')},
-        {label:'Ultimate — x31 días', ars:()=> dARS_('historias_ultimate')+ pedAM('puntual_branding_simple')},
+        {label:'Básico — x8 días',    ars:()=> dARS_('historias_basico')  + pedGetAmCosto('puntual_branding_simple')},
+        {label:'Medio — x12 días',    ars:()=> dARS_('historias_medio')   + pedGetAmCosto('puntual_branding_simple')},
+        {label:'Full — x16 días',     ars:()=> dARS_('historias_full')    + pedGetAmCosto('puntual_branding_simple')},
+        {label:'Ultimate — x31 días', ars:()=> dARS_('historias_ultimate')+ pedGetAmCosto('puntual_branding_simple')},
       ]},
     { nombre:'Add-on: Adaptación a Historias Diarias', desc:'Suma cobertura diaria a un pack mensual ya activo (Daniela + Victoria + Paula + Pedro según corresponda).', tiempos:'',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('pack_ultimate_historias_addon') + v_('gestion_integral_historias') + pp_('adicional_historias_diarias') + pedAM('puntual_branding_simple')}] },
+      packs:[{label:'Servicio completo', ars:()=> dARS_('pack_ultimate_historias_addon') + v_('gestion_integral_historias') + pp_('adicional_historias_diarias') + pedGetAmCosto('puntual_branding_simple')}] },
     { nombre:'Campaña Estacional', desc:'Concepto base + piezas adaptadas para fecha comercial.', tiempos:'',
       packs:[
-        {label:'Básico — 4 piezas', ars:()=> dARS_('camp_basico') + pedAM('puntual_branding_simple')},
-        {label:'Full — 8 piezas',   ars:()=> dARS_('camp_full')   + pedAM('puntual_branding_medio')},
+        {label:'Básico — 4 piezas', ars:()=> dARS_('camp_basico') + pedGetAmCosto('puntual_branding_simple')},
+        {label:'Full — 8 piezas',   ars:()=> dARS_('camp_full')   + pedGetAmCosto('puntual_branding_medio')},
       ]},
     { nombre:'Diseño de Packaging / Etiquetas', desc:'1 línea de producto + 2 adaptaciones + mockup 3D.', tiempos:'10 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('packaging') + pedAM('puntual_branding_medio')}] },
+      packs:[{label:'Servicio completo', ars:()=> dARS_('packaging') + pedGetAmCosto('puntual_branding_medio')}] },
     { nombre:'Presentaciones Estáticas (PDF)', desc:'No editables, con identidad visual aplicada.', tiempos:'',
       packs:[
-        {label:'Básico — 5 a 10 slides',  ars:()=> dARS_('pres_est_basico') + pedAM('puntual_branding_simple')},
-        {label:'Medio — 10 a 20 slides',  ars:()=> dARS_('pres_est_medio')  + pedAM('puntual_branding_medio')},
-        {label:'Full — hasta 30 slides',  ars:()=> dARS_('pres_est_full')   + pedAM('puntual_branding_medio')},
+        {label:'Básico — 5 a 10 slides',  ars:()=> dARS_('pres_est_basico') + pedGetAmCosto('puntual_branding_simple')},
+        {label:'Medio — 10 a 20 slides',  ars:()=> dARS_('pres_est_medio')  + pedGetAmCosto('puntual_branding_medio')},
+        {label:'Full — hasta 30 slides',  ars:()=> dARS_('pres_est_full')   + pedGetAmCosto('puntual_branding_medio')},
       ]},
     { nombre:'Presentaciones Editables (PPT/Canva)', desc:'Editables por el cliente.', tiempos:'',
       packs:[
-        {label:'Básico — 5 a 10 slides', ars:()=> dARS_('pres_ed_basico') + pedAM('puntual_branding_simple')},
-        {label:'Medio — 10 a 20 slides', ars:()=> dARS_('pres_ed_medio')  + pedAM('puntual_branding_medio')},
-        {label:'Full — hasta 30 slides', ars:()=> dARS_('pres_ed_full')   + pedAM('puntual_branding_medio')},
+        {label:'Básico — 5 a 10 slides', ars:()=> dARS_('pres_ed_basico') + pedGetAmCosto('puntual_branding_simple')},
+        {label:'Medio — 10 a 20 slides', ars:()=> dARS_('pres_ed_medio')  + pedGetAmCosto('puntual_branding_medio')},
+        {label:'Full — hasta 30 slides', ars:()=> dARS_('pres_ed_full')   + pedGetAmCosto('puntual_branding_medio')},
       ]},
     { nombre:'Diseño de Landing Page / One Page', desc:'Diseño UI visual (sin programación).', tiempos:'15 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('landing') + pedAM('puntual_branding_medio')}] },
+      packs:[{label:'Servicio completo', ars:()=> dARS_('landing') + pedGetAmCosto('puntual_branding_medio')}] },
     { nombre:'Diseño Editorial', desc:'Catálogo, eBook o menú (4 a 12 páginas).', tiempos:'15 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('editorial') + pedAM('puntual_branding_medio')}] },
+      packs:[{label:'Servicio completo', ars:()=> dARS_('editorial') + pedGetAmCosto('puntual_branding_medio')}] },
     { nombre:'Newsletter — Plantillas de mail', desc:'Diseño de plantillas de email marketing (sin programación).', tiempos:'10 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('news_1') + pedAM('puntual_branding_simple')}] },
+      packs:[{label:'Servicio completo', ars:()=> dARS_('news_1') + pedGetAmCosto('puntual_branding_simple')}] },
   ]});
 
   // ── TIENDA NUBE ──
   cat.push({ nombre:'TIENDA NUBE Y DESARROLLO', servicios:[
     { nombre:'Armado de Tienda desde Cero', desc:'Setup técnico + diseño + carga inicial de hasta 15 productos.', tiempos:'',
-      packs:[{label:'Armado completo', ars:()=> pedPk('tiendanube_armado','armado')}] },
+      packs:[{label:'Armado completo', ars:()=> pedGetPack('tiendanube_armado','armado')}] },
     { nombre:'Diseño Visual de Tienda', desc:'Banners, portada e identidad sobre tienda ya armada.', tiempos:'',
-      packs:[{label:'Diseño visual', ars:()=> pedPk('tiendanube_diseno_visual','diseno')}] },
+      packs:[{label:'Diseño visual', ars:()=> pedGetPack('tiendanube_diseno_visual','diseno')}] },
     { nombre:'Tienda Nube — Gestión Mensual', desc:'Carga y mantenimiento mensual de tienda ya armada.', tiempos:'Mensual',
-      packs:[{label:'Gestión mensual', ars:()=> pedAM('tiendanube_gestion_mensual')}] },
+      packs:[{label:'Gestión mensual', ars:()=> pedGetAmCosto('tiendanube_gestion_mensual')}] },
   ]});
 
   // ── FOTOGRAFÍA ──
   cat.push({ nombre:'FOTOGRAFÍA', servicios:[
     { nombre:'Sesión Fotográfica de Producto', desc:'Por cantidad de entregables.', tiempos:'10–15 días hábiles',
       packs:[
-        {label:'Básico', ars:()=> pedPk('foto_producto','basico')},
-        {label:'Medio',  ars:()=> pedPk('foto_producto','medio')},
-        {label:'Full',   ars:()=> pedPk('foto_producto','full')},
+        {label:'Básico', ars:()=> pedGetPack('foto_producto','basico')},
+        {label:'Medio',  ars:()=> pedGetPack('foto_producto','medio')},
+        {label:'Full',   ars:()=> pedGetPack('foto_producto','full')},
       ]},
     { nombre:'Sesión Fotográfica de Marca / Equipo / Particulares', desc:'Retratos profesionales.', tiempos:'15 días hábiles',
       packs:[
-        {label:'Básico', ars:()=> pedPk('foto_marca_equipo','basico')},
-        {label:'Medio',  ars:()=> pedPk('foto_marca_equipo','medio')},
-        {label:'Full',   ars:()=> pedPk('foto_marca_equipo','full')},
+        {label:'Básico', ars:()=> pedGetPack('foto_marca_equipo','basico')},
+        {label:'Medio',  ars:()=> pedGetPack('foto_marca_equipo','medio')},
+        {label:'Full',   ars:()=> pedGetPack('foto_marca_equipo','full')},
       ]},
     { nombre:'Sesión Fotográfica para Marcas (por horas)', desc:'Todas las fotos de la jornada, editadas en HD.', tiempos:'',
       packs:[
-        {label:'1 hora',  ars:()=> pedPk('foto_marcas_horas','h1')},
-        {label:'2 horas', ars:()=> pedPk('foto_marcas_horas','h2')},
-        {label:'4 horas', ars:()=> pedPk('foto_marcas_horas','h4')},
-      ], locAdicional:()=> pedPk('foto_marcas_horas','locacion_adicional') },
+        {label:'1 hora',  ars:()=> pedGetPack('foto_marcas_horas','h1')},
+        {label:'2 horas', ars:()=> pedGetPack('foto_marcas_horas','h2')},
+        {label:'4 horas', ars:()=> pedGetPack('foto_marcas_horas','h4')},
+      ], locAdicional:()=> pedGetPack('foto_marcas_horas','locacion_adicional') },
     { nombre:'Sesión Fotográfica de Eventos (por entregables)', desc:'Cantidad de fotos según horas de cobertura.', tiempos:'',
       packs:[
-        {label:'Hasta 1 hora', ars:()=> pedPk('foto_eventos_entregables','h1')},
-        {label:'Hasta 2 horas',ars:()=> pedPk('foto_eventos_entregables','h2')},
-        {label:'Hasta 4 horas',ars:()=> pedPk('foto_eventos_entregables','h4')},
-        {label:'Hasta 6 horas',ars:()=> pedPk('foto_eventos_entregables','h6')},
-      ], locAdicional:()=> pedPk('foto_eventos_entregables','locacion_adicional') },
+        {label:'Hasta 1 hora', ars:()=> pedGetPack('foto_eventos_entregables','h1')},
+        {label:'Hasta 2 horas',ars:()=> pedGetPack('foto_eventos_entregables','h2')},
+        {label:'Hasta 4 horas',ars:()=> pedGetPack('foto_eventos_entregables','h4')},
+        {label:'Hasta 6 horas',ars:()=> pedGetPack('foto_eventos_entregables','h6')},
+      ], locAdicional:()=> pedGetPack('foto_eventos_entregables','locacion_adicional') },
     { nombre:'Sesión Fotográfica de Eventos (por horas)', desc:'Todas las fotos de la jornada, sin tope.', tiempos:'',
       packs:[
-        {label:'Hasta 1 hora', ars:()=> pedPk('foto_eventos_horas','h1')},
-        {label:'Hasta 2 horas',ars:()=> pedPk('foto_eventos_horas','h2')},
-        {label:'Hasta 4 horas',ars:()=> pedPk('foto_eventos_horas','h4')},
-        {label:'Hasta 6 horas',ars:()=> pedPk('foto_eventos_horas','h6')},
-      ], locAdicional:()=> pedPk('foto_eventos_horas','locacion_adicional') },
+        {label:'Hasta 1 hora', ars:()=> pedGetPack('foto_eventos_horas','h1')},
+        {label:'Hasta 2 horas',ars:()=> pedGetPack('foto_eventos_horas','h2')},
+        {label:'Hasta 4 horas',ars:()=> pedGetPack('foto_eventos_horas','h4')},
+        {label:'Hasta 6 horas',ars:()=> pedGetPack('foto_eventos_horas','h6')},
+      ], locAdicional:()=> pedGetPack('foto_eventos_horas','locacion_adicional') },
   ]});
 
   // ── PRODUCCIÓN AUDIOVISUAL — REELS (Orianna) ──
@@ -2233,41 +2233,41 @@ function cotBuildCatalog() {
   ];
   const reelsServicio = { nombre:'Producción de Reels / Shorts', desc:'Tres modalidades: solo edición, cámara+edición, o ideas+cámara+edición.', tiempos:'Mensual', packs:[] };
   reelsDefs.forEach(r=>{
-    reelsServicio.packs.push({ label:`${r.label} — Solo edición`, ars:()=> oriPk_('nuevo_solo_edicion', r.ori) + pedAM('puntual_redes_liviano') });
-    reelsServicio.packs.push({ label:`${r.label} — Cámara + Edición`, ars:()=> oriPk_('nuevo_camara_edicion', r.ori) + pedAM('puntual_redes_liviano') });
-    reelsServicio.packs.push({ label:`${r.label} — Ideas + Cámara + Edición`, ars:()=> v_(r.vic) + oriPk_('nuevo_camara_edicion', r.ori) + pedAM('puntual_redes_liviano') });
+    reelsServicio.packs.push({ label:`${r.label} — Solo edición`, ars:()=> oriPk_('nuevo_solo_edicion', r.ori) + pedGetAmCosto('puntual_redes_liviano') });
+    reelsServicio.packs.push({ label:`${r.label} — Cámara + Edición`, ars:()=> oriPk_('nuevo_camara_edicion', r.ori) + pedGetAmCosto('puntual_redes_liviano') });
+    reelsServicio.packs.push({ label:`${r.label} — Ideas + Cámara + Edición`, ars:()=> v_(r.vic) + oriPk_('nuevo_camara_edicion', r.ori) + pedGetAmCosto('puntual_redes_liviano') });
   });
   cat.push({ nombre:'PRODUCCIÓN AUDIOVISUAL', servicios:[
     reelsServicio,
     { nombre:'Video Institucional / Spot Comercial', desc:'Concepto, guion, rodaje y edición.', tiempos:'',
       packs:[
-        {label:'Media jornada',    ars:()=> pedPk('puntual_video_institucional','media_jornada')},
-        {label:'Jornada completa', ars:()=> pedPk('puntual_video_institucional','jornada_completa')},
+        {label:'Media jornada',    ars:()=> pedGetPack('puntual_video_institucional','media_jornada')},
+        {label:'Jornada completa', ars:()=> pedGetPack('puntual_video_institucional','jornada_completa')},
       ]},
     { nombre:'Cobertura Audiovisual de Eventos', desc:'Por tramo de horas.', tiempos:'',
       packs:[
-        {label:'Hasta 1 hora', ars:()=> pedPk('puntual_cobertura_eventos','h1')},
-        {label:'Hasta 2 horas',ars:()=> pedPk('puntual_cobertura_eventos','h2')},
-        {label:'Hasta 4 horas',ars:()=> pedPk('puntual_cobertura_eventos','h4')},
-        {label:'Hasta 6 horas',ars:()=> pedPk('puntual_cobertura_eventos','h6')},
+        {label:'Hasta 1 hora', ars:()=> pedGetPack('puntual_cobertura_eventos','h1')},
+        {label:'Hasta 2 horas',ars:()=> pedGetPack('puntual_cobertura_eventos','h2')},
+        {label:'Hasta 4 horas',ars:()=> pedGetPack('puntual_cobertura_eventos','h4')},
+        {label:'Hasta 6 horas',ars:()=> pedGetPack('puntual_cobertura_eventos','h6')},
       ]},
     { nombre:'Producción para Publicidad Digital', desc:'Por horas. Contenido optimizado para ads.', tiempos:'',
       packs:[
-        {label:'Hasta 1 hora', ars:()=> pedPk('puntual_publicidad_digital','h1')},
-        {label:'Hasta 2 horas',ars:()=> pedPk('puntual_publicidad_digital','h2')},
-        {label:'Hasta 4 horas',ars:()=> pedPk('puntual_publicidad_digital','h4')},
-        {label:'Hasta 6 horas',ars:()=> pedPk('puntual_publicidad_digital','h6')},
+        {label:'Hasta 1 hora', ars:()=> pedGetPack('puntual_publicidad_digital','h1')},
+        {label:'Hasta 2 horas',ars:()=> pedGetPack('puntual_publicidad_digital','h2')},
+        {label:'Hasta 4 horas',ars:()=> pedGetPack('puntual_publicidad_digital','h4')},
+        {label:'Hasta 6 horas',ars:()=> pedGetPack('puntual_publicidad_digital','h6')},
       ]},
     { nombre:'Entrevistas / Testimoniales', desc:'Precio por entrevista/testimonial.', tiempos:'',
       packs:[
-        {label:'Nivel 1 (1 hora)', ars:()=> pedPk('puntual_entrevistas','nivel1')},
-        {label:'Nivel 2 (2 horas)',ars:()=> pedPk('puntual_entrevistas','nivel2')},
+        {label:'Nivel 1 (1 hora)', ars:()=> pedGetPack('puntual_entrevistas','nivel1')},
+        {label:'Nivel 2 (2 horas)',ars:()=> pedGetPack('puntual_entrevistas','nivel2')},
       ]},
     { nombre:'Videos Tutoriales / Clases Grabadas', desc:'Por cantidad de videos/clases.', tiempos:'',
       packs:[
-        {label:'1 video/clase', ars:()=> pedPk('puntual_tutoriales','x1')},
-        {label:'3 videos/clases',ars:()=> pedPk('puntual_tutoriales','x3')},
-        {label:'5 videos/clases',ars:()=> pedPk('puntual_tutoriales','x5')},
+        {label:'1 video/clase', ars:()=> pedGetPack('puntual_tutoriales','x1')},
+        {label:'3 videos/clases',ars:()=> pedGetPack('puntual_tutoriales','x3')},
+        {label:'5 videos/clases',ars:()=> pedGetPack('puntual_tutoriales','x5')},
       ]},
   ]});
 
@@ -2281,7 +2281,7 @@ function cotBuildCatalog() {
   ];
   const gestionServicio = { nombre:'Gestión Integral de Redes Sociales', desc:'Publicaciones mensuales + Reels. Dos variantes según trabajo de Orianna.', tiempos:'Mensual', packs:[] };
   gestionDefs.forEach(g=>{
-    const pedG = ()=> pedAM('puntual_redes_completo');
+    const pedG = ()=> pedGetAmCosto('puntual_redes_completo');
     gestionServicio.packs.push({ label:`${g.label} — Orianna solo edición`,
       ars:()=> v_(g.vic) + dARS_(g.dan) + pp_(g.paula) + pedG() + oriPk_('nuevo_solo_edicion', g.ori) });
     gestionServicio.packs.push({ label:`${g.label} — Orianna cámara + edición`,
@@ -2289,52 +2289,52 @@ function cotBuildCatalog() {
   });
   cat.push({ nombre:'GESTIÓN Y ESTRATEGIA DE REDES SOCIALES', servicios:[
     { nombre:'Plan de Contenidos Estratégico', desc:'Diagnóstico, ejes temáticos y planificación del primer mes.', tiempos:'10–15 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> v_('plan_contenidos') + pedAM('puntual_redes_medio')}] },
+      packs:[{label:'Servicio completo', ars:()=> v_('plan_contenidos') + pedGetAmCosto('puntual_redes_medio')}] },
     { nombre:'Consultoría de Estrategia Digital (1 sesión)', desc:'Diagnóstico + sesión 1:1 de 90 min + plan de acción.', tiempos:'',
-      packs:[{label:'Servicio completo', ars:()=> v_('consultoria') + pedAM('puntual_redes_liviano')}] },
+      packs:[{label:'Servicio completo', ars:()=> v_('consultoria') + pedGetAmCosto('puntual_redes_liviano')}] },
     { nombre:'Auditoría de Marca Digital', desc:'Análisis de perfil, contenido, métricas y competencia.', tiempos:'7–10 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> v_('auditoria') + pedAM('puntual_redes_liviano')}] },
+      packs:[{label:'Servicio completo', ars:()=> v_('auditoria') + pedGetAmCosto('puntual_redes_liviano')}] },
     { nombre:'Calendario de Campañas Promocionales', desc:'Calendario anual + ideas de contenido por fecha.', tiempos:'3 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> v_('calendario_campanas') + pedAM('puntual_redes_medio')}] },
+      packs:[{label:'Servicio completo', ars:()=> v_('calendario_campanas') + pedGetAmCosto('puntual_redes_medio')}] },
     { nombre:'Community Pack (diseño + redacción)', desc:'12 piezas + copys + hashtags + guía de publicación.', tiempos:'7 días hábiles', margenOverride:0.30,
-      packs:[{label:'Servicio completo', ars:()=> v_('community_pack') + dARS_('pack_medio') + pedAM('puntual_redes_medio')}] },
+      packs:[{label:'Servicio completo', ars:()=> v_('community_pack') + dARS_('pack_medio') + pedGetAmCosto('puntual_redes_medio')}] },
     Object.assign(gestionServicio, { margenOverride:0.30 }),
   ]});
 
   // ── META ADS Y EMAIL MARKETING ──
   cat.push({ nombre:'META ADS Y EMAIL MARKETING', servicios:[
     { nombre:'Meta Ads — Setup Avanzado de Campaña', desc:'Estructura, segmentaciones, objetivos y píxel.', tiempos:'5–7 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> pp_('meta_ads_setup') + v_('meta_ads_respaldo') + pedAM('puntual_redes_completo')}] },
+      packs:[{label:'Servicio completo', ars:()=> pp_('meta_ads_setup') + v_('meta_ads_respaldo') + pedGetAmCosto('puntual_redes_completo')}] },
     { nombre:'Meta Ads — Gestión de Performance', desc:'Monitoreo, optimización, A/B testing e informe mensual.', tiempos:'Mensual',
-      packs:[{label:'Servicio completo', ars:()=> pp_('meta_ads_gestion') + v_('meta_ads_respaldo') + pedAM('puntual_redes_completo')}] },
+      packs:[{label:'Servicio completo', ars:()=> pp_('meta_ads_gestion') + v_('meta_ads_respaldo') + pedGetAmCosto('puntual_redes_completo')}] },
     { nombre:'Meta Ads — Gestión de Escalado', desc:'Escalado vertical y horizontal para cuentas con historial.', tiempos:'Mensual',
-      packs:[{label:'Servicio completo', ars:()=> pp_('meta_ads_escalado') + v_('meta_ads_respaldo') + pedAM('puntual_redes_medio')}] },
+      packs:[{label:'Servicio completo', ars:()=> pp_('meta_ads_escalado') + v_('meta_ads_respaldo') + pedGetAmCosto('puntual_redes_medio')}] },
     { nombre:'Meta Ads — Auditoría de Cuenta Publicitaria', desc:'Diagnóstico de estructura, creatividades y eficiencia.', tiempos:'',
-      packs:[{label:'Servicio completo', ars:()=> pp_('meta_ads_auditoria') + v_('meta_ads_respaldo') + pedAM('puntual_redes_liviano')}] },
+      packs:[{label:'Servicio completo', ars:()=> pp_('meta_ads_auditoria') + v_('meta_ads_respaldo') + pedGetAmCosto('puntual_redes_liviano')}] },
     { nombre:'Email Marketing — Setup Básico', desc:'Listas, formularios, SPF/DKIM y plantilla base.', tiempos:'5–7 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> pp_('email_setup') + v_('email_mkt_respaldo') + pedAM('puntual_redes_liviano')}] },
+      packs:[{label:'Servicio completo', ars:()=> pp_('email_setup') + v_('email_mkt_respaldo') + pedGetAmCosto('puntual_redes_liviano')}] },
     { nombre:'Email Marketing — Gestión Mensual', desc:'Planificación, redacción, diseño, envío y monitoreo.', tiempos:'Mensual',
-      packs:[{label:'Servicio completo', ars:()=> pp_('email_gestion') + v_('email_mkt_respaldo') + pedAM('puntual_redes_completo')}] },
+      packs:[{label:'Servicio completo', ars:()=> pp_('email_gestion') + v_('email_mkt_respaldo') + pedGetAmCosto('puntual_redes_completo')}] },
     { nombre:'Email Marketing — Secuencia Automatizada', desc:'Flujo automático activado por acción del usuario.', tiempos:'7–10 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> pp_('email_secuencia') + v_('email_mkt_respaldo') + pedAM('puntual_redes_liviano')}] },
+      packs:[{label:'Servicio completo', ars:()=> pp_('email_secuencia') + v_('email_mkt_respaldo') + pedGetAmCosto('puntual_redes_liviano')}] },
   ]});
 
   // ── FORMACIÓN ──
   cat.push({ nombre:'FORMACIÓN Y CAPACITACIÓN', servicios:[
     { nombre:'Curso Básico de Fotografía', desc:'3 sesiones (presencial + campo + online).', tiempos:'3 sesiones de 2hs',
       packs:[
-        {label:'Grupal',     ars:()=> pedCM('curso_fotografia_basico','grupal')},
-        {label:'Particular', ars:()=> pedCM('curso_fotografia_basico','particular')},
+        {label:'Grupal',     ars:()=> pedGetCostMarginCosto('curso_fotografia_basico','grupal')},
+        {label:'Particular', ars:()=> pedGetCostMarginCosto('curso_fotografia_basico','particular')},
       ]},
     { nombre:'Curso de Creación de Contenido Audiovisual', desc:'Estrategia, producción y edición.', tiempos:'3 sesiones de 2hs',
       packs:[
-        {label:'Grupal',     ars:()=> pedCM('curso_contenido_audiovisual','grupal')},
-        {label:'Particular', ars:()=> pedCM('curso_contenido_audiovisual','particular')},
+        {label:'Grupal',     ars:()=> pedGetCostMarginCosto('curso_contenido_audiovisual','grupal')},
+        {label:'Particular', ars:()=> pedGetCostMarginCosto('curso_contenido_audiovisual','particular')},
       ]},
     { nombre:'Capacitaciones Corporativas (a medida)', desc:'Programa a medida para equipos.', tiempos:'',
       packs:[
-        {label:'Medio día (4hs)',     ars:()=> pedCM('curso_capacitacion_corporativa','medio_dia')},
-        {label:'Jornada completa (8hs)', ars:()=> pedCM('curso_capacitacion_corporativa','jornada_completa')},
+        {label:'Medio día (4hs)',     ars:()=> pedGetCostMarginCosto('curso_capacitacion_corporativa','medio_dia')},
+        {label:'Jornada completa (8hs)', ars:()=> pedGetCostMarginCosto('curso_capacitacion_corporativa','jornada_completa')},
       ]},
   ]});
 
@@ -2342,9 +2342,9 @@ function cotBuildCatalog() {
   cat.push({ nombre:'MENTORÍA INDIVIDUAL 1:1', servicios:[
     { nombre:'Mentoría Individual con Pedro', desc:'Acompañamiento directo y personalizado.', tiempos:'',
       packs:[
-        {label:'Sesión única (60 min)', ars:()=> pedMen('mentoria_1on1','sesion_unica')},
-        {label:'Pack 4 sesiones (mensual)', ars:()=> pedMen('mentoria_1on1','pack4')},
-        {label:'Pack 8 sesiones (bimestral)', ars:()=> pedMen('mentoria_1on1','pack8')},
+        {label:'Sesión única (60 min)', ars:()=> pedGetMentoriaCosto('mentoria_1on1','sesion_unica')},
+        {label:'Pack 4 sesiones (mensual)', ars:()=> pedGetMentoriaCosto('mentoria_1on1','pack4')},
+        {label:'Pack 8 sesiones (bimestral)', ars:()=> pedGetMentoriaCosto('mentoria_1on1','pack8')},
       ]},
   ]});
 
