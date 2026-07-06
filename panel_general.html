@@ -2208,73 +2208,73 @@ function cotBuildCatalog() {
   const Ovp = (oriannaData?.packPrices || {});
   const Ppr = (paulaData?.prices   || {});
   const Ppp = (paulaData?.packPrices || {});
-  const dARS_ = (id) => (D[id] || 0) * (fxRate || 0);
-  const v_    = (id) => V[id] || 0;
-  const pp_   = (id) => Ppr[id] || Ppp[id] || 0;
-  const oriPk_= (id, pk) => (Ovp[id] || {})[pk] || 0;
+  const dARS_ = (id) => (D[id] !== undefined) ? D[id] * (fxRate || 0) : null;
+  const v_    = (id) => (V[id] !== undefined) ? V[id] : null;
+  const pp_   = (id) => (Ppr[id] !== undefined) ? Ppr[id] : (Ppp[id] !== undefined ? Ppp[id] : null);
+  const oriPk_= (id, pk) => { const v = (Ovp[id]||{})[pk]; return (v !== undefined) ? v : null; };
 
   const cat = [];
 
   // ── BRANDING ──
   cat.push({ nombre:'BRANDING E IDENTIDAD VISUAL', servicios:[
     { nombre:'Identidad Corporativa Simple', desc:'Briefing, 3 propuestas, logotipo, manual básico y entregables técnicos.', tiempos:'2–3 semanas hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('id_simple') + pedGetAmCosto('puntual_branding_complejo')}] },
+      packs:[{label:'Servicio completo', partes:()=>({'Daniela': dARS_('id_simple'), 'Pedro': pedGetAmCosto('puntual_branding_complejo')})}] },
     { nombre:'Identidad Corporativa Profesional', desc:'Logotipo con variantes, paleta HEX/CMYK/Pantone, sistema tipográfico y manual.', tiempos:'3–4 semanas hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('id_prof') + pedGetAmCosto('puntual_branding_complejo')}] },
+      packs:[{label:'Servicio completo', partes:()=>({'Daniela': dARS_('id_prof'), 'Pedro': pedGetAmCosto('puntual_branding_complejo')})}] },
     { nombre:'Branding Book', desc:'Sistema visual, universo de marca, aplicaciones, soportes y Etapa 10 comunicación verbal.', tiempos:'4–6 semanas hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('branding_book') + v_('branding_book_etapa10') + pedGetAmCosto('puntual_branding_complejo')}] },
+      packs:[{label:'Servicio completo', partes:()=>({'Daniela': dARS_('branding_book'), 'Victoria': v_('branding_book_etapa10'), 'Pedro': pedGetAmCosto('puntual_branding_complejo')})}] },
     { nombre:'Kit de Identidad Digital', desc:'8 plantillas de feed + 16 historias + 6 portadas destacadas.', tiempos:'5–7 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('id_simple') + pedGetAmCosto('puntual_branding_medio')}] },
+      packs:[{label:'Servicio completo', partes:()=>({'Daniela': dARS_('id_simple'), 'Pedro': pedGetAmCosto('puntual_branding_medio')})}] },
     { nombre:'Papelería Corporativa', desc:'Tarjeta, membrete, sobre, carpeta, hoja A4 y firma de mail HTML.', tiempos:'3–5 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('papeleria') + pedGetAmCosto('puntual_branding_simple')}] },
+      packs:[{label:'Servicio completo', partes:()=>({'Daniela': dARS_('papeleria'), 'Pedro': pedGetAmCosto('puntual_branding_simple')})}] },
     { nombre:'Merchandising Corporativo', desc:'Diseño de aplicación sobre productos físicos con mockup 3D.', tiempos:'4–5 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('merch') + pedGetAmCosto('puntual_branding_complejo')}] },
+      packs:[{label:'Servicio completo', partes:()=>({'Daniela': dARS_('merch'), 'Pedro': pedGetAmCosto('puntual_branding_complejo')})}] },
   ]});
 
   // ── DISEÑO GRÁFICO — PACKS MENSUALES (packs seleccionables reales) ──
   cat.push({ nombre:'DISEÑO GRÁFICO Y MULTIMEDIA', servicios:[
     { nombre:'Pack de Piezas Gráficas Mensuales', desc:'Piezas de feed + historias interdiarias/diarias + portadas destacadas.', tiempos:'10 días hábiles',
       packs:[
-        {label:'Básico — x4 piezas/mes',   detalle:'4 piezas estáticas de feed + 16 días de historias interdiarias + portadas destacadas (máx. 6).', ars:()=> dARS_('pack_basico')   + pedGetAmCosto('puntual_branding_medio')},
-        {label:'Medio — x8 piezas/mes',     detalle:'8 piezas de feed + 16 días de historias interdiarias + portadas destacadas (máx. 6).', ars:()=> dARS_('pack_medio')    + pedGetAmCosto('puntual_branding_medio')},
-        {label:'Full — x12 piezas/mes',     detalle:'12 piezas de feed (incluye carruseles) + 16 días de historias interdiarias + portadas destacadas (máx. 8).', ars:()=> dARS_('pack_full')     + pedGetAmCosto('puntual_branding_complejo')},
-        {label:'Ultimate — x16 piezas/mes', detalle:'16 piezas de feed (carruseles hasta 6 slides) + 31 días de historias diarias + portadas destacadas (máx. 10).', ars:()=> dARS_('pack_ultimate') + pedGetAmCosto('puntual_branding_complejo')},
-        {label:'Ultra — x20 piezas/mes',    detalle:'20 piezas de feed (carruseles incluidos) + 31 días de historias diarias + portadas destacadas (máx. 12).', ars:()=> dARS_('pack_ultra')    + pedGetAmCosto('puntual_branding_complejo')},
+        {label:'Básico — x4 piezas/mes',   detalle:'4 piezas estáticas de feed + 16 días de historias interdiarias + portadas destacadas (máx. 6).', partes:()=>({'Daniela': dARS_('pack_basico'), 'Pedro': pedGetAmCosto('puntual_branding_medio')})},
+        {label:'Medio — x8 piezas/mes',     detalle:'8 piezas de feed + 16 días de historias interdiarias + portadas destacadas (máx. 6).', partes:()=>({'Daniela': dARS_('pack_medio'), 'Pedro': pedGetAmCosto('puntual_branding_medio')})},
+        {label:'Full — x12 piezas/mes',     detalle:'12 piezas de feed (incluye carruseles) + 16 días de historias interdiarias + portadas destacadas (máx. 8).', partes:()=>({'Daniela': dARS_('pack_full'), 'Pedro': pedGetAmCosto('puntual_branding_complejo')})},
+        {label:'Ultimate — x16 piezas/mes', detalle:'16 piezas de feed (carruseles hasta 6 slides) + 31 días de historias diarias + portadas destacadas (máx. 10).', partes:()=>({'Daniela': dARS_('pack_ultimate'), 'Pedro': pedGetAmCosto('puntual_branding_complejo')})},
+        {label:'Ultra — x20 piezas/mes',    detalle:'20 piezas de feed (carruseles incluidos) + 31 días de historias diarias + portadas destacadas (máx. 12).', partes:()=>({'Daniela': dARS_('pack_ultra'), 'Pedro': pedGetAmCosto('puntual_branding_complejo')})},
       ]},
     { nombre:'Pack de Historias Mensuales (add-on)', desc:'Historias standalone, 1 o 2 artes por día.', tiempos:'10 días hábiles',
       packs:[
-        {label:'Básico — x8 días',    detalle:'8 días de historias standalone (frecuencia 2 semanales). 1 o 2 artes por día.', ars:()=> dARS_('historias_basico')  + pedGetAmCosto('puntual_branding_simple')},
-        {label:'Medio — x12 días',    detalle:'12 días de historias standalone (frecuencia 3 semanales). 1 o 2 artes por día.', ars:()=> dARS_('historias_medio')   + pedGetAmCosto('puntual_branding_simple')},
-        {label:'Full — x16 días',     detalle:'16 días de historias standalone (frecuencia 4 semanales). 1 o 2 artes por día.', ars:()=> dARS_('historias_full')    + pedGetAmCosto('puntual_branding_simple')},
+        {label:'Básico — x8 días',    detalle:'8 días de historias standalone (frecuencia 2 semanales). 1 o 2 artes por día.', partes:()=>({'Daniela': dARS_('historias_basico'), 'Pedro': pedGetAmCosto('puntual_branding_simple')})},
+        {label:'Medio — x12 días',    detalle:'12 días de historias standalone (frecuencia 3 semanales). 1 o 2 artes por día.', partes:()=>({'Daniela': dARS_('historias_medio'), 'Pedro': pedGetAmCosto('puntual_branding_simple')})},
+        {label:'Full — x16 días',     detalle:'16 días de historias standalone (frecuencia 4 semanales). 1 o 2 artes por día.', partes:()=>({'Daniela': dARS_('historias_full'), 'Pedro': pedGetAmCosto('puntual_branding_simple')})},
         {label:'Ultimate — x31 días', detalle:'31 días de historias diarias standalone.', ars:()=> dARS_('historias_ultimate')+ pedGetAmCosto('puntual_branding_simple')},
       ]},
     { nombre:'Add-on: Adaptación a Historias Diarias', desc:'Suma cobertura diaria a un pack mensual ya activo (Daniela + Victoria + Paula + Pedro según corresponda).', tiempos:'',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('pack_ultimate_historias_addon') + v_('gestion_integral_historias') + pp_('adicional_historias_diarias') + pedGetAmCosto('puntual_branding_simple')}] },
+      packs:[{label:'Servicio completo', partes:()=>({'Daniela': dARS_('pack_ultimate_historias_addon'), 'Victoria': v_('gestion_integral_historias'), 'Paula': pp_('adicional_historias_diarias'), 'Pedro': pedGetAmCosto('puntual_branding_simple')})}] },
     { nombre:'Campaña Estacional', desc:'Concepto base + piezas adaptadas para fecha comercial.', tiempos:'',
       packs:[
-        {label:'Básico — 4 piezas', ars:()=> dARS_('camp_basico') + pedGetAmCosto('puntual_branding_simple')},
-        {label:'Full — 8 piezas',   ars:()=> dARS_('camp_full')   + pedGetAmCosto('puntual_branding_medio')},
+        {label:'Básico — 4 piezas', partes:()=>({'Daniela': dARS_('camp_basico'), 'Pedro': pedGetAmCosto('puntual_branding_simple')})},
+        {label:'Full — 8 piezas',   partes:()=>({'Daniela': dARS_('camp_full'), 'Pedro': pedGetAmCosto('puntual_branding_medio')})},
       ]},
     { nombre:'Diseño de Packaging / Etiquetas', desc:'1 línea de producto + 2 adaptaciones + mockup 3D.', tiempos:'10 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('packaging') + pedGetAmCosto('puntual_branding_medio')}] },
+      packs:[{label:'Servicio completo', partes:()=>({'Daniela': dARS_('packaging'), 'Pedro': pedGetAmCosto('puntual_branding_medio')})}] },
     { nombre:'Presentaciones Estáticas (PDF)', desc:'No editables, con identidad visual aplicada.', tiempos:'',
       packs:[
-        {label:'Básico — 5 a 10 slides',  ars:()=> dARS_('pres_est_basico') + pedGetAmCosto('puntual_branding_simple')},
-        {label:'Medio — 10 a 20 slides',  ars:()=> dARS_('pres_est_medio')  + pedGetAmCosto('puntual_branding_medio')},
-        {label:'Full — hasta 30 slides',  ars:()=> dARS_('pres_est_full')   + pedGetAmCosto('puntual_branding_medio')},
+        {label:'Básico — 5 a 10 slides',  partes:()=>({'Daniela': dARS_('pres_est_basico'), 'Pedro': pedGetAmCosto('puntual_branding_simple')})},
+        {label:'Medio — 10 a 20 slides',  partes:()=>({'Daniela': dARS_('pres_est_medio'), 'Pedro': pedGetAmCosto('puntual_branding_medio')})},
+        {label:'Full — hasta 30 slides',  partes:()=>({'Daniela': dARS_('pres_est_full'), 'Pedro': pedGetAmCosto('puntual_branding_medio')})},
       ]},
     { nombre:'Presentaciones Editables (PPT/Canva)', desc:'Editables por el cliente.', tiempos:'',
       packs:[
-        {label:'Básico — 5 a 10 slides', ars:()=> dARS_('pres_ed_basico') + pedGetAmCosto('puntual_branding_simple')},
-        {label:'Medio — 10 a 20 slides', ars:()=> dARS_('pres_ed_medio')  + pedGetAmCosto('puntual_branding_medio')},
-        {label:'Full — hasta 30 slides', ars:()=> dARS_('pres_ed_full')   + pedGetAmCosto('puntual_branding_medio')},
+        {label:'Básico — 5 a 10 slides', partes:()=>({'Daniela': dARS_('pres_ed_basico'), 'Pedro': pedGetAmCosto('puntual_branding_simple')})},
+        {label:'Medio — 10 a 20 slides', partes:()=>({'Daniela': dARS_('pres_ed_medio'), 'Pedro': pedGetAmCosto('puntual_branding_medio')})},
+        {label:'Full — hasta 30 slides', partes:()=>({'Daniela': dARS_('pres_ed_full'), 'Pedro': pedGetAmCosto('puntual_branding_medio')})},
       ]},
     { nombre:'Diseño de Landing Page / One Page', desc:'Diseño UI visual (sin programación).', tiempos:'15 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('landing') + pedGetAmCosto('puntual_branding_medio')}] },
+      packs:[{label:'Servicio completo', partes:()=>({'Daniela': dARS_('landing'), 'Pedro': pedGetAmCosto('puntual_branding_medio')})}] },
     { nombre:'Diseño Editorial', desc:'Catálogo, eBook o menú (4 a 12 páginas).', tiempos:'15 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('editorial') + pedGetAmCosto('puntual_branding_medio')}] },
+      packs:[{label:'Servicio completo', partes:()=>({'Daniela': dARS_('editorial'), 'Pedro': pedGetAmCosto('puntual_branding_medio')})}] },
     { nombre:'Newsletter — Plantillas de mail', desc:'Diseño de plantillas de email marketing (sin programación).', tiempos:'10 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> dARS_('news_1') + pedGetAmCosto('puntual_branding_simple')}] },
+      packs:[{label:'Servicio completo', partes:()=>({'Daniela': dARS_('news_1'), 'Pedro': pedGetAmCosto('puntual_branding_simple')})}] },
   ]});
 
   // ── TIENDA NUBE ──
@@ -2401,38 +2401,38 @@ function cotBuildCatalog() {
   cat.push({ nombre:'GESTIÓN Y ESTRATEGIA DE REDES SOCIALES', servicios:[
     { nombre:'Plan de Contenidos Estratégico', desc:'Diagnóstico, ejes temáticos y planificación del primer mes.', tiempos:'10–15 días hábiles',
       porque:'Elegilo cuando el cliente necesita el plan/estrategia por escrito, pero va a publicar por su cuenta (no incluye gestión ni piezas).',
-      packs:[{label:'Servicio completo', ars:()=> v_('plan_contenidos') + pedGetAmCosto('puntual_redes_medio')}] },
+      packs:[{label:'Servicio completo', partes:()=>({'Victoria': v_('plan_contenidos'), 'Pedro': pedGetAmCosto('puntual_redes_medio')})}] },
     { nombre:'Consultoría de Estrategia Digital (1 sesión)', desc:'Diagnóstico + sesión 1:1 de 90 min + plan de acción.', tiempos:'',
       porque:'Elegilo cuando el cliente solo quiere una devolución puntual (una vez), no un plan escrito ni acompañamiento continuo.',
-      packs:[{label:'Servicio completo', ars:()=> v_('consultoria') + pedGetAmCosto('puntual_redes_liviano')}] },
+      packs:[{label:'Servicio completo', partes:()=>({'Victoria': v_('consultoria'), 'Pedro': pedGetAmCosto('puntual_redes_liviano')})}] },
     { nombre:'Auditoría de Marca Digital', desc:'Análisis de perfil, contenido, métricas y competencia.', tiempos:'7–10 días hábiles',
       porque:'Elegilo cuando el cliente ya tiene redes activas y quiere un diagnóstico de lo que viene haciendo, no un plan a futuro.',
-      packs:[{label:'Servicio completo', ars:()=> v_('auditoria') + pedGetAmCosto('puntual_redes_liviano')}] },
+      packs:[{label:'Servicio completo', partes:()=>({'Victoria': v_('auditoria'), 'Pedro': pedGetAmCosto('puntual_redes_liviano')})}] },
     { nombre:'Calendario de Campañas Promocionales', desc:'Calendario anual + ideas de contenido por fecha.', tiempos:'3 días hábiles',
       porque:'Elegilo como complemento de un plan ya armado — es solo el calendario de fechas comerciales, no la estrategia completa.',
-      packs:[{label:'Servicio completo', ars:()=> v_('calendario_campanas') + pedGetAmCosto('puntual_redes_medio')}] },
+      packs:[{label:'Servicio completo', partes:()=>({'Victoria': v_('calendario_campanas'), 'Pedro': pedGetAmCosto('puntual_redes_medio')})}] },
     { nombre:'Community Pack (diseño + redacción)', desc:'12 piezas + copys + hashtags + guía de publicación.', tiempos:'7 días hábiles', margenOverride:0.30,
       porque:'Elegilo cuando el cliente quiere publicar él mismo — entregamos piezas + copys listos, pero NO publicamos ni gestionamos la cuenta (eso es Gestión Integral).',
-      packs:[{label:'Servicio completo', ars:()=> v_('community_pack') + dARS_('pack_medio') + pedGetAmCosto('puntual_redes_medio')}] },
+      packs:[{label:'Servicio completo', partes:()=>({'Victoria': v_('community_pack'), 'Daniela': dARS_('pack_medio'), 'Pedro': pedGetAmCosto('puntual_redes_medio')})}] },
     Object.assign(gestionServicio, { margenOverride:0.30, porque:'Elegilo cuando el cliente quiere que el equipo de Contentive publique y gestione todo — es el servicio "todo incluido" de redes.' }),
   ]});
 
   // ── META ADS Y EMAIL MARKETING ──
   cat.push({ nombre:'META ADS Y EMAIL MARKETING', servicios:[
     { nombre:'Meta Ads — Setup Avanzado de Campaña', desc:'Estructura, segmentaciones, objetivos y píxel.', tiempos:'5–7 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> pp_('meta_ads_setup') + v_('meta_ads_respaldo') + pedGetAmCosto('puntual_redes_completo')}] },
+      packs:[{label:'Servicio completo', partes:()=>({ 'Paula': pp_('meta_ads_setup'), 'Victoria': v_('meta_ads_respaldo'), 'Pedro': pedGetAmCosto('puntual_redes_completo') })}] },
     { nombre:'Meta Ads — Gestión de Performance', desc:'Monitoreo, optimización, A/B testing e informe mensual.', tiempos:'Mensual',
-      packs:[{label:'Servicio completo', ars:()=> pp_('meta_ads_gestion') + v_('meta_ads_respaldo') + pedGetAmCosto('puntual_redes_completo')}] },
+      packs:[{label:'Servicio completo', partes:()=>({ 'Paula': pp_('meta_ads_gestion'), 'Victoria': v_('meta_ads_respaldo'), 'Pedro': pedGetAmCosto('puntual_redes_completo') })}] },
     { nombre:'Meta Ads — Gestión de Escalado', desc:'Escalado vertical y horizontal para cuentas con historial.', tiempos:'Mensual',
-      packs:[{label:'Servicio completo', ars:()=> pp_('meta_ads_escalado') + v_('meta_ads_respaldo') + pedGetAmCosto('puntual_redes_medio')}] },
+      packs:[{label:'Servicio completo', partes:()=>({ 'Paula': pp_('meta_ads_escalado'), 'Victoria': v_('meta_ads_respaldo'), 'Pedro': pedGetAmCosto('puntual_redes_medio') })}] },
     { nombre:'Meta Ads — Auditoría de Cuenta Publicitaria', desc:'Diagnóstico de estructura, creatividades y eficiencia.', tiempos:'',
-      packs:[{label:'Servicio completo', ars:()=> pp_('meta_ads_auditoria') + v_('meta_ads_respaldo') + pedGetAmCosto('puntual_redes_liviano')}] },
+      packs:[{label:'Servicio completo', partes:()=>({ 'Paula': pp_('meta_ads_auditoria'), 'Victoria': v_('meta_ads_respaldo'), 'Pedro': pedGetAmCosto('puntual_redes_liviano') })}] },
     { nombre:'Email Marketing — Setup Básico', desc:'Listas, formularios, SPF/DKIM y plantilla base.', tiempos:'5–7 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> pp_('email_setup') + v_('email_mkt_respaldo') + pedGetAmCosto('puntual_redes_liviano')}] },
+      packs:[{label:'Servicio completo', partes:()=>({ 'Paula': pp_('email_setup'), 'Victoria': v_('email_mkt_respaldo'), 'Pedro': pedGetAmCosto('puntual_redes_liviano') })}] },
     { nombre:'Email Marketing — Gestión Mensual', desc:'Planificación, redacción, diseño, envío y monitoreo.', tiempos:'Mensual',
-      packs:[{label:'Servicio completo', ars:()=> pp_('email_gestion') + v_('email_mkt_respaldo') + pedGetAmCosto('puntual_redes_completo')}] },
+      packs:[{label:'Servicio completo', partes:()=>({ 'Paula': pp_('email_gestion'), 'Victoria': v_('email_mkt_respaldo'), 'Pedro': pedGetAmCosto('puntual_redes_completo') })}] },
     { nombre:'Email Marketing — Secuencia Automatizada', desc:'Flujo automático activado por acción del usuario.', tiempos:'7–10 días hábiles',
-      packs:[{label:'Servicio completo', ars:()=> pp_('email_secuencia') + v_('email_mkt_respaldo') + pedGetAmCosto('puntual_redes_liviano')}] },
+      packs:[{label:'Servicio completo', partes:()=>({ 'Paula': pp_('email_secuencia'), 'Victoria': v_('email_mkt_respaldo'), 'Pedro': pedGetAmCosto('puntual_redes_liviano') })}] },
   ]});
 
   // ── FORMACIÓN ──
@@ -2637,18 +2637,32 @@ function cotResolveItem(item) {
   const s = cotFindServicio(item.servicio);
   if (!s) return null;
   const margen = cotMargenFor(s.cat, s);
-  let ars = null, packLabel = item.pack || '';
+  let ars = null, packLabel = item.pack || '', faltantes = [];
   if (item.pack && s.packs) {
     const p = s.packs.find(x=>x.label===item.pack);
-    if (p) ars = p.ars();
+    if (p) {
+      if (p.partes) {
+        const partes = p.partes();
+        ars = Object.values(partes).reduce((a,b)=>a+b, 0);
+        faltantes = Object.entries(partes).filter(([k,v])=>v===null).map(([k])=>k);
+      } else {
+        ars = p.ars();
+      }
+    }
   } else if (item.grupo && s.grupos) {
     const g = s.grupos.find(x=>x.label===item.grupo);
     const m = g && g.modos.find(x=>x.label===item.modo);
-    if (m) { ars = Object.values(m.parts()).reduce((a,b)=>a+b,0); packLabel = `${item.grupo} — ${item.modo}`; }
+    if (m) {
+      const partes = m.parts();
+      ars = Object.values(partes).reduce((a,b)=>a+b,0);
+      faltantes = Object.entries(partes).filter(([k,v])=>v===null).map(([k])=>k);
+      packLabel = `${item.grupo} — ${item.modo}`;
+    }
   }
   if (ars === null) return null;
   const venta = cotVenta(ars, margen);
-  return { servicio: s, margen, ars, packLabel, venta };
+  const incompleto = faltantes.length > 0 && ars > 0;
+  return { servicio: s, margen, ars, packLabel, venta, incompleto, faltantes };
 }
 
 function cotAddItem(item) {
@@ -2719,6 +2733,7 @@ function cotPrecioTxt(item) {
   const r = cotResolveItem(item);
   if (!r) return '<span class="cot-pending">sin datos del servicio</span>';
   if (!r.venta) return '<span class="cot-pending">sin costos cargados</span>';
+  if (r.incompleto) return `<span class="cot-venta" style="color:var(--orange);">${r.venta.simbolo}${cotFmt(r.venta.valor)}</span><div class="cot-pending" style="color:var(--orange);">⚠ falta: ${r.faltantes.join(', ')}</div>`;
   return `<span class="cot-venta">${r.venta.simbolo}${cotFmt(r.venta.valor)}</span>`;
 }
 
@@ -2865,9 +2880,22 @@ function cotRenderResults(items, targetBox) {
 
     // Packs planos (servicio simple o con variantes de tramo/nivel)
     const packsHtml = (s.packs||[]).map((p) => {
-      const ars = p.ars();
-      const venta = cotVenta(ars, margen);
-      const ventaTxt = venta ? `<span class="cot-venta">${venta.simbolo}${cotFmt(venta.valor)}</span>` : `<span class="cot-pending">sin costos cargados</span>`;
+      let ars, ventaTxt;
+      if (p.partes) {
+        const partes = p.partes();
+        ars = Object.values(partes).reduce((a,b)=>a+b, 0);
+        const faltantes = Object.entries(partes).filter(([k,v])=>v===null).map(([k])=>k);
+        const incompleto = faltantes.length > 0 && ars > 0;
+        const venta = cotVenta(ars, margen);
+        if (!venta) ventaTxt = `<span class="cot-pending">sin costos cargados</span>`;
+        else if (incompleto) ventaTxt = `<span class="cot-venta" style="color:var(--orange);">${venta.simbolo}${cotFmt(venta.valor)}</span><div class="cot-pending" style="color:var(--orange);">⚠ falta cargar: ${faltantes.join(', ')}</div>`;
+        else ventaTxt = `<span class="cot-venta">${venta.simbolo}${cotFmt(venta.valor)}</span>`;
+      } else {
+        ars = p.ars();
+        const venta = cotVenta(ars, margen);
+        ventaTxt = venta ? `<span class="cot-venta">${venta.simbolo}${cotFmt(venta.valor)}</span>` : `<span class="cot-pending">sin costos cargados</span>`;
+      }
+      const venta2 = cotVenta(ars, margen);
       return `<div class="cot-pack-row">
         <div>
           <div class="cot-pack-label" style="font-weight:600;">${p.label}</div>
@@ -2875,7 +2903,7 @@ function cotRenderResults(items, targetBox) {
         </div>
         <div class="cot-pack-actions">
           ${ventaTxt}
-          <button class="cot-btn ghost cot-add-btn" style="padding:6px 12px;font-size:11px;" ${venta?'':'disabled'} onclick='cotAddToQuote(this, ${JSON.stringify(JSON.stringify({servicio:s.nombre, pack:p.label, ars, margen}))})'>Agregar</button>
+          <button class="cot-btn ghost cot-add-btn" style="padding:6px 12px;font-size:11px;" ${venta2?'':'disabled'} onclick='cotAddToQuote(this, ${JSON.stringify(JSON.stringify({servicio:s.nombre, pack:p.label, ars, margen}))})'>Agregar</button>
         </div>
       </div>`;
     }).join('');
@@ -2885,7 +2913,7 @@ function cotRenderResults(items, targetBox) {
       const modosHtml = g.modos.map((m, mIdx) => {
         const parts = m.parts();
         const ars = Object.values(parts).reduce((a,b)=>a+b, 0);
-        const faltantes = Object.entries(parts).filter(([k,v])=>v===0).map(([k])=>k);
+        const faltantes = Object.entries(parts).filter(([k,v])=>v===null).map(([k])=>k);
         const incompleto = faltantes.length > 0 && ars > 0;
         const venta = cotVenta(ars, margen);
         let precioHtml;
