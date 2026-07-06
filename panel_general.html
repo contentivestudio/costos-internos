@@ -208,6 +208,14 @@
   .cot-btn.ghost { background:transparent; border:1px solid var(--border); color:#999; }
   .cot-btn.secondary { background:transparent; border:1px solid var(--lime); color:var(--lime); }
   .cot-remove { background:none; border:none; color:var(--red); cursor:pointer; font-size:15px; }
+  .cot-cart-fab {
+    position:fixed; bottom:24px; right:24px; z-index:50;
+    background:var(--orange); color:#0e0e0e; font-family:'Syne',sans-serif; font-weight:700;
+    padding:14px 20px; border-radius:30px; cursor:pointer; box-shadow:0 4px 20px rgba(0,0,0,.4);
+    display:none; align-items:center; gap:8px; font-size:14px;
+  }
+  .cot-cart-fab.show { display:flex; }
+  .cot-cart-fab:hover { filter:brightness(1.08); transform:translateY(-2px); }
 
   .tab-btn { background: none; border: none; border-bottom: 2px solid transparent; color: var(--muted); font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 10px 14px 12px; cursor: pointer; transition: color .2s, border-color .2s; position: relative; top: 1px; white-space: nowrap; }
   .tab-btn.active { color: var(--text); border-bottom-color: var(--orange); }
@@ -2555,24 +2563,8 @@ function cotRenderApp(el) {
       <div id="cotTopUsadosBox" style="margin-top:12px;"></div>
     </div>
     <div id="cotResults"></div>
-    <div class="cot-quote" id="cotQuotePanel">
-      <h3 style="font-family:'Syne',sans-serif;color:var(--orange);margin-bottom:12px;">Cotización en armado</h3>
-      <div id="cotQuoteItems"></div>
-      <div class="cot-quote-total"><span>Total venta estimado</span><span id="cotQuoteTotal">$0</span></div>
-      <div class="cot-fxnote">${cotContexto.moneda === 'USD' ? 'Base: costo consolidado USD +20% (mercado externo). Margen del catálogo aplicado sobre esa base.' : 'Base: costo consolidado en ARS (todas las colaboradoras + Pedro). Margen del catálogo aplicado sobre esa base.'}</div>
-      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
-        <button class="cot-btn" onclick="cotSendWhatsapp()">Enviar resumen por WhatsApp</button>
-        <button class="cot-btn secondary" onclick="cotToggleGuardarForm()">💾 Guardar en historial</button>
-      </div>
-      <div id="cotGuardarForm" style="display:none;margin-top:14px;background:#0e0e0e;border:1px solid var(--border);border-radius:8px;padding:14px;">
-        <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Datos del cliente para guardar esta cotización:</div>
-        <div style="display:flex;flex-wrap:wrap;gap:10px;">
-          <input id="cotGNombre" placeholder="Nombre y apellido" style="flex:1;min-width:160px;background:#161616;border:1px solid var(--border);color:var(--text);border-radius:6px;padding:8px 10px;font-size:13px;">
-          <input id="cotGMail" placeholder="Mail" style="flex:1;min-width:160px;background:#161616;border:1px solid var(--border);color:var(--text);border-radius:6px;padding:8px 10px;font-size:13px;">
-          <input id="cotGWsp" placeholder="WhatsApp" style="flex:1;min-width:160px;background:#161616;border:1px solid var(--border);color:var(--text);border-radius:6px;padding:8px 10px;font-size:13px;">
-        </div>
-        <button class="cot-btn" style="margin-top:10px;" onclick="cotGuardarHistorial()">Guardar cotización</button>
-      </div>
+    <div class="cot-cart-fab" id="cotCartFab" onclick="cotShowCart()">
+      🛒 <span id="cotCartCount">0</span> — <span id="cotCartTotal">$0</span>
     </div>
   `;
 
@@ -2897,23 +2889,54 @@ function cotClearQuote() { cotQuote = []; cotSaveState(); cotRenderQuote(); docu
 
 
 function cotRenderQuote() {
-  const panel = document.getElementById('cotQuotePanel');
-  if (!panel) return;
-  const box = document.getElementById('cotQuoteItems');
-  if (!cotQuote.length) { panel.classList.remove('active'); box.innerHTML=''; document.getElementById('cotQuoteTotal').textContent = cotContexto.moneda==='USD' ? 'US$0' : '$0'; return; }
-  panel.classList.add('active');
-  box.innerHTML = '';
-  let total = 0;
-  let simbolo = '$';
-  cotQuote.forEach(item=>{
-    total += item.venta; simbolo = item.simbolo;
-    const row = document.createElement('div');
-    row.className = 'cot-quote-item';
-    row.innerHTML = `<span>${item.servicio} — <span style="color:var(--muted)">${item.pack}</span></span><span class="cot-venta">${item.simbolo}${cotFmt(item.venta)}</span><button class="cot-remove" onclick="cotRemoveFromQuote(${item.id})">✕</button>`;
-    box.appendChild(row);
-  });
-  document.getElementById('cotQuoteTotal').textContent = `${simbolo}${cotFmt(total)}`;
+  const fab = document.getElementById('cotCartFab');
+  if (!fab) return; // estamos en otra vista (ej. historial o carrito)
+  const total = cotQuote.reduce((a,i)=>a+i.venta, 0);
+  const simbolo = cotQuote[0] ? cotQuote[0].simbolo : (cotContexto.moneda==='USD' ? 'US$' : '$');
+  document.getElementById('cotCartCount').textContent = cotQuote.length;
+  document.getElementById('cotCartTotal').textContent = `${simbolo}${cotFmt(total)}`;
+  fab.classList.toggle('show', cotQuote.length > 0);
 }
+
+// ── VISTA DEDICADA DE CARRITO (checkout) ────────────────────────────────────
+function cotShowCart() {
+  const el = document.getElementById('contentCotizador');
+  const total = cotQuote.reduce((a,i)=>a+i.venta, 0);
+  const simbolo = cotQuote[0] ? cotQuote[0].simbolo : (cotContexto.moneda==='USD' ? 'US$' : '$');
+  const itemsHtml = cotQuote.map(item => `
+    <div class="cot-quote-item">
+      <span>${item.servicio} — <span style="color:var(--muted)">${item.pack}</span></span>
+      <span class="cot-venta">${item.simbolo}${cotFmt(item.venta)}</span>
+      <button class="cot-remove" onclick="cotRemoveFromCartView(${item.id})">✕</button>
+    </div>`).join('');
+  el.innerHTML = `
+    <div class="cot-topbar">
+      <div class="cot-badge">Tu cotización — ${cotQuote.length} servicio${cotQuote.length!==1?'s':''}</div>
+      <button class="cot-btn ghost" onclick="renderCotizador()">← Seguir cotizando</button>
+    </div>
+    <div class="cot-quote active" style="display:block;">
+      <h3 style="font-family:'Syne',sans-serif;color:var(--orange);margin-bottom:12px;">Detalle completo</h3>
+      <div id="cotQuoteItems">${cotQuote.length ? itemsHtml : '<p style="color:var(--muted);padding:20px 0;">Todavía no agregaste nada. Volvé a "Seguir cotizando" para buscar servicios.</p>'}</div>
+      <div class="cot-quote-total"><span>Total venta estimado</span><span>${simbolo}${cotFmt(total)}</span></div>
+      <div class="cot-fxnote">${cotContexto.moneda === 'USD' ? 'Base: costo consolidado USD +20% (mercado externo). Margen del catálogo aplicado sobre esa base.' : 'Base: costo consolidado en ARS (todas las colaboradoras + Pedro). Margen del catálogo aplicado sobre esa base.'}</div>
+      <div style="margin-top:14px;display:flex;gap:10px;flex-wrap:wrap;">
+        <button class="cot-btn" ${cotQuote.length?'':'disabled'} onclick="cotSendWhatsapp()">Enviar resumen por WhatsApp</button>
+        <button class="cot-btn secondary" ${cotQuote.length?'':'disabled'} onclick="cotToggleGuardarForm()">💾 Guardar en historial</button>
+        <button class="cot-btn ghost" ${cotQuote.length?'':'disabled'} onclick="cotClearQuote(); cotShowCart();">Vaciar cotización</button>
+      </div>
+      <div id="cotGuardarForm" style="display:none;margin-top:14px;background:#0e0e0e;border:1px solid var(--border);border-radius:8px;padding:14px;">
+        <div style="font-size:12px;color:var(--muted);margin-bottom:10px;">Datos del cliente para guardar esta cotización:</div>
+        <div style="display:flex;flex-wrap:wrap;gap:10px;">
+          <input id="cotGNombre" placeholder="Nombre y apellido" style="flex:1;min-width:160px;background:#161616;border:1px solid var(--border);color:var(--text);border-radius:6px;padding:8px 10px;font-size:13px;">
+          <input id="cotGMail" placeholder="Mail" style="flex:1;min-width:160px;background:#161616;border:1px solid var(--border);color:var(--text);border-radius:6px;padding:8px 10px;font-size:13px;">
+          <input id="cotGWsp" placeholder="WhatsApp" style="flex:1;min-width:160px;background:#161616;border:1px solid var(--border);color:var(--text);border-radius:6px;padding:8px 10px;font-size:13px;">
+        </div>
+        <button class="cot-btn" style="margin-top:10px;" onclick="cotGuardarHistorial(); cotShowCart();">Guardar cotización</button>
+      </div>
+    </div>
+  `;
+}
+function cotRemoveFromCartView(id) { cotQuote = cotQuote.filter(q=>q.id!==id); cotSaveState(); cotShowCart(); }
 
 function cotSendWhatsapp() {
   if (!cotQuote.length) return;
