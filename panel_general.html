@@ -148,6 +148,9 @@
   /* ── TABS ── */
   .tabs-wrap { padding: 24px 32px 0; display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 0; overflow-x: auto; }
 
+  .colab-tab { display:none; }
+  .colab-tab.show { display:inline-block; }
+
   /* COTIZADOR */
   .cot-step { display:flex; flex-direction:column; align-items:center; text-align:center; gap:16px; padding:40px 10px; }
   .cot-eyebrow { color:var(--lime); font-size:11px; text-transform:uppercase; letter-spacing:1.5px; font-weight:700; }
@@ -385,6 +388,12 @@
 
   <div id="integrityBanner" style="display:none;background:rgba(245,166,35,.08);border:1px solid rgba(245,166,35,.3);border-radius:10px;padding:10px 14px;margin:10px 20px 0;font-size:12px;color:var(--orange,#F5A623)"></div>
 
+  <!-- TOGGLE RESUMEN -->
+  <div style="padding:16px 32px 0;">
+    <button class="tab-btn" style="border:1px solid var(--border);border-radius:20px;padding:6px 14px;font-size:11px;" onclick="toggleResumen(this)">Ver resumen de progreso ▾</button>
+  </div>
+
+  <div id="resumenWrap" style="display:none;">
   <!-- STATS -->
   <div class="stats-row">
     <div class="stat-card">
@@ -445,39 +454,43 @@
     <div class="progress-bar"><div class="progress-fill" style="background:#c084fc" id="fillPedro"></div></div>
     <div class="progress-pct" id="pctPedro">0%</div>
   </div>
+  </div>
 
   <!-- TABS -->
   <div class="tabs-wrap">
-    <button class="tab-btn active" onclick="switchTab('servicios', this)">
+    <button class="tab-btn active" onclick="switchTab('cotizador', this)">
+      Cotizador
+    </button>
+    <button class="tab-btn" onclick="switchTab('servicios', this)">
       Servicios
     </button>
-    <button class="tab-btn" onclick="switchTab('daniela', this)">
+    <button class="tab-btn" id="btnToggleColabs" style="border:1px solid var(--border);border-radius:20px;" onclick="toggleColabTabs(this)">
+      Colaboradoras ▾
+    </button>
+    <button class="tab-btn colab-tab" onclick="switchTab('daniela', this)">
       Daniela · Diseño <span class="tab-badge" id="badgeDaniela">—</span>
     </button>
-    <button class="tab-btn" onclick="switchTab('victoria', this)">
+    <button class="tab-btn colab-tab" onclick="switchTab('victoria', this)">
       Victoria · Estrategia <span class="tab-badge" id="badgeVictoria">—</span>
     </button>
-    <button class="tab-btn" onclick="switchTab('orianna', this)">
+    <button class="tab-btn colab-tab" onclick="switchTab('orianna', this)">
       Orianna · Audiovisual <span class="tab-badge" id="badgeOrianna">—</span>
     </button>
-    <button class="tab-btn" onclick="switchTab('paula', this)">
+    <button class="tab-btn colab-tab" onclick="switchTab('paula', this)">
       Paula · Community <span class="tab-badge" id="badgePaula">—</span>
     </button>
-    <button class="tab-btn" onclick="switchTab('pedro', this)">
+    <button class="tab-btn colab-tab" onclick="switchTab('pedro', this)">
       Pedro · Dirección <span class="tab-badge" id="badgePedro">—</span>
-    </button>
-    <button class="tab-btn" onclick="switchTab('cotizador', this)">
-      Cotizador
     </button>
   </div>
 
   <!-- TAB: SERVICIOS CONSOLIDADO -->
-  <div class="tab-content active" id="tab-servicios">
+  <div class="tab-content" id="tab-servicios">
     <div id="contentServicios"></div>
   </div>
 
   <!-- TAB: COTIZADOR -->
-  <div class="tab-content" id="tab-cotizador">
+  <div class="tab-content active" id="tab-cotizador">
     <div id="contentCotizador"></div>
   </div>
 
@@ -2570,6 +2583,20 @@ function cotSendWhatsapp() {
   cotQuote.forEach(item=>{ total += item.venta; simbolo = item.simbolo; msg += `• ${encodeURIComponent(item.servicio + ' — ' + item.pack)}: ${simbolo}${cotFmt(item.venta)}%0A`; });
   msg += `%0ATotal: ${simbolo}${cotFmt(total)}`;
   window.open(`https://wa.me/?text=${msg}`, '_blank');
+}
+
+// ── TOGGLE RESUMEN Y TABS DE COLABORADORAS ──────────────────────────────────
+function toggleResumen(btn) {
+  const wrap = document.getElementById('resumenWrap');
+  const open = wrap.style.display !== 'none';
+  wrap.style.display = open ? 'none' : 'block';
+  btn.textContent = open ? 'Ver resumen de progreso ▾' : 'Ocultar resumen de progreso ▴';
+}
+function toggleColabTabs(btn) {
+  const tabs = document.querySelectorAll('.colab-tab');
+  const showing = tabs[0] && tabs[0].classList.contains('show');
+  tabs.forEach(t => t.classList.toggle('show', !showing));
+  btn.textContent = showing ? 'Colaboradoras ▾' : 'Colaboradoras ▴';
 }
 
 // ── TABS ──────────────────────────────────────────────────────────────────
