@@ -1843,8 +1843,36 @@ function renderServicios() {
     body.appendChild(row);
   }
 
+  function makeReelsRowFijoPedro(body, packLabel, desc) {
+    const row = document.createElement('div');
+    row.className = 'service-row';
+    row.style.cssText = 'flex-direction:column;align-items:stretch;gap:4px';
+    row.innerHTML = `
+      <div style="display:flex;align-items:center;flex-wrap:wrap;gap:4px">
+        <span>${packLabel}</span>
+      </div>
+      ${desc ? `<div class="service-desc">${desc}</div>` : ''}
+      <div class="pack-row">
+        <div class="pack-label">Solo edición ${badge('Pedro')}</div>
+        ${priceChips(40000)}
+      </div>
+      <div class="pack-row">
+        <div class="pack-label">Cámara + Edición ${badge('Pedro')}</div>
+        ${priceChips(75000)}
+      </div>
+      <div class="pack-row">
+        <div class="pack-label">Ideas + Cámara + Edición ${badge('Pedro')}</div>
+        ${priceChips(100000)}
+      </div>
+    `;
+    row.dataset.srvText = (packLabel + ' ' + (desc||'')).toLowerCase();
+    row.dataset.srvResp = 'Pedro';
+    row.dataset.srvPending = '0';
+    body.appendChild(row);
+  }
+
   body = makeSection(container, 'PRODUCCIÓN AUDIOVISUAL — REELS / VIDEO (Orianna)', 6, 'srv-av');
-  makeReelsRow(body, 'Reels — Pack Inicial (x1)',   '1 reel/mes.',  'reels_ideas_x1',  'x1',  'x1');
+  makeReelsRowFijoPedro(body, 'Reels — Pack Inicial (x1)', '1 reel/mes. Lo cubre Pedro directamente — montos fijos.');
   makeReelsRow(body, 'Reels — Pack Básico (x4)',    '4 reels/mes.', 'reels_ideas_x4',  'x4',  'x4');
   makeReelsRow(body, 'Reels — Pack Avanzado (x8)',  '8 reels/mes.', 'reels_ideas_x8',  'x8',  'x8');
   makeReelsRow(body, 'Reels — Pack Premium (x12)',  '12 reels/mes.','reels_ideas_x12', 'x12', 'x12');
@@ -1944,7 +1972,7 @@ function renderServicios() {
   makeRow(body, 'Email Marketing — Setup Básico', 'Configuración de plataforma: listas, formularios, SPF/DKIM y plantilla base.', '5–7 días hábiles',
     badge('Paula')+badge('Victoria')+badge('Pedro'), pp('email_setup') + v('email_mkt_respaldo'), pedGetAmCosto('puntual_redes_liviano'), {'Paula': pp('email_setup'), 'Victoria': v('email_mkt_respaldo')});
   makeRow(body, 'Email Marketing — Gestión Mensual', 'Planificación, redacción, diseño, envío y monitoreo con informe mensual.', 'Mensual',
-    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('email_gestion') + v('email_mkt_respaldo'), pedGetAmCosto('puntual_redes_completo'), {'Paula': pp('email_gestion'), 'Victoria': v('email_mkt_respaldo')});
+    badge('Paula')+badge('Victoria')+badge('Pedro'), pp('email_gestion') + v('email_mkt_respaldo'), pedGetAmCosto('puntual_redes_liviano'), {'Paula': pp('email_gestion'), 'Victoria': v('email_mkt_respaldo')});
   makeRow(body, 'Email Marketing — Secuencia Automatizada', 'Flujo automático activado por acción del usuario.', '7–10 días hábiles',
     badge('Paula')+badge('Victoria')+badge('Pedro'), pp('email_secuencia') + v('email_mkt_respaldo'), pedGetAmCosto('puntual_redes_liviano'), {'Paula': pp('email_secuencia'), 'Victoria': v('email_mkt_respaldo')});
 
@@ -2378,6 +2406,19 @@ function cotBuildCatalog() {
   ];
   const reelsServicio = { nombre:'Producción de Reels / Shorts', desc:'Tres modalidades: solo edición, cámara+edición, o ideas+cámara+edición.', tiempos:'Mensual', packs:[], grupos:[] };
   reelsDefs.forEach(r=>{
+    // Pack Inicial (x1): lo cubre solo Pedro, con montos fijos definidos por él — sin Orianna ni Victoria.
+    if (r.label === 'Pack Inicial (x1)') {
+      reelsServicio.grupos.push({
+        label: r.label,
+        detalle: r.detalle,
+        modos: [
+          { label:'Solo edición', parts:()=>({ 'Pedro': 40000 }) },
+          { label:'Cámara + Edición', parts:()=>({ 'Pedro': 75000 }) },
+          { label:'Ideas + Cámara + Edición', parts:()=>({ 'Pedro': 100000 }) },
+        ]
+      });
+      return;
+    }
     reelsServicio.grupos.push({
       label: r.label,
       detalle: r.detalle,
@@ -2474,7 +2515,7 @@ function cotBuildCatalog() {
     { nombre:'Email Marketing — Setup Básico', desc:'Listas, formularios, SPF/DKIM y plantilla base.', tiempos:'5–7 días hábiles',
       packs:[{label:'Servicio completo', partes:()=>({ 'Paula': pp_('email_setup'), 'Victoria': v_('email_mkt_respaldo'), 'Pedro': pedGetAmCosto('puntual_redes_liviano') })}] },
     { nombre:'Email Marketing — Gestión Mensual', desc:'Planificación, redacción, diseño, envío y monitoreo.', tiempos:'Mensual',
-      packs:[{label:'Servicio completo', partes:()=>({ 'Paula': pp_('email_gestion'), 'Victoria': v_('email_mkt_respaldo'), 'Pedro': pedGetAmCosto('puntual_redes_completo') })}] },
+      packs:[{label:'Servicio completo', partes:()=>({ 'Paula': pp_('email_gestion'), 'Victoria': v_('email_mkt_respaldo'), 'Pedro': pedGetAmCosto('puntual_redes_liviano') })}] },
     { nombre:'Email Marketing — Secuencia Automatizada', desc:'Flujo automático activado por acción del usuario.', tiempos:'7–10 días hábiles',
       packs:[{label:'Servicio completo', partes:()=>({ 'Paula': pp_('email_secuencia'), 'Victoria': v_('email_mkt_respaldo'), 'Pedro': pedGetAmCosto('puntual_redes_liviano') })}] },
   ]});
