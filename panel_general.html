@@ -2180,7 +2180,7 @@ function cotFindInfo(nombre) {
   if (COT_INFO_OVERRIDES[nombre]) {
     const ov = COT_INFO_OVERRIDES[nombre];
     const base = cotFindInfoRaw(COT_NAME_MAP[nombre] || nombre) || {};
-    return { ...base, ...ov, serv: nombre };
+    return { ...base, ...ov, serv: nombre, _esOverride: true };
   }
   const buscar = COT_NAME_MAP[nombre] || nombre;
   return cotFindInfoRaw(buscar);
@@ -2999,14 +2999,15 @@ function cotRenderResults(items, targetBox) {
       </div>`;
     }
 
-    // Info completa colapsable — el "Detalle" genérico del Excel solo se muestra si el servicio
-    // NO tiene ya un detalle específico por pack/grupo (para no contradecir lo que se ve abajo).
+    // Info completa colapsable — el "Detalle" genérico del Excel se oculta si el servicio ya tiene
+    // detalle específico por pack (para no contradecir); pero un override curado a mano SIEMPRE se muestra.
     const tienePackDetalle = (s.packs||[]).some(p=>p.detalle) || (s.grupos||[]).some(g=>g.detalle);
+    const ocultarDetalleGenerico = tienePackDetalle && !(info && info._esOverride);
     const infoHtml = info ? `
       <div class="cot-info-box" id="${infoId}">
         ${info.ideal ? `<div class="cot-info-row"><b>Ideal para:</b> ${info.ideal}</div>` : ''}
-        ${(info.detalle && !tienePackDetalle) ? `<div class="cot-info-row"><b>Detalle:</b> ${cotToList(info.detalle)}</div>` : ''}
-        ${tienePackDetalle ? `<div class="cot-info-row" style="color:var(--muted);font-style:italic;">El detalle específico de cada paquete está debajo, junto al precio.</div>` : ''}
+        ${(info.detalle && !ocultarDetalleGenerico) ? `<div class="cot-info-row"><b>Detalle:</b> ${cotToList(info.detalle)}</div>` : ''}
+        ${ocultarDetalleGenerico ? `<div class="cot-info-row" style="color:var(--muted);font-style:italic;">El detalle específico de cada paquete está debajo, junto al precio.</div>` : ''}
         ${info.tiempos ? `<div class="cot-info-row"><b>Entrega:</b> ${info.tiempos}</div>` : ''}
         ${info.resp ? `<div class="cot-info-row"><b>Responsables:</b> ${info.resp}</div>` : ''}
         <div class="cot-info-row"><b>Margen del estudio:</b> ${(margen*100).toFixed(0)}%</div>
