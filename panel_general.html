@@ -148,6 +148,45 @@
   /* ── TABS ── */
   .tabs-wrap { padding: 24px 32px 0; display: flex; gap: 4px; border-bottom: 1px solid var(--border); margin-bottom: 0; overflow-x: auto; }
 
+  /* COTIZADOR */
+  .cot-step { display:flex; flex-direction:column; align-items:center; text-align:center; gap:16px; padding:40px 10px; }
+  .cot-eyebrow { color:var(--lime); font-size:11px; text-transform:uppercase; letter-spacing:1.5px; font-weight:700; }
+  .cot-step h2 { font-family:'Syne',sans-serif; font-size:22px; }
+  .cot-grid { display:grid; grid-template-columns:1fr 1fr; gap:16px; width:100%; max-width:720px; margin-top:6px; }
+  @media (max-width:560px){ .cot-grid{ grid-template-columns:1fr; } }
+  .cot-card { background:#161616; border:1px solid var(--border); border-radius:14px; padding:24px 20px; cursor:pointer; transition:.15s; text-align:left; }
+  .cot-card:hover { border-color:var(--orange); transform:translateY(-2px); }
+  .cot-card .cot-icon { font-size:24px; margin-bottom:8px; }
+  .cot-card h3 { font-family:'Syne',sans-serif; font-size:16px; color:var(--text); margin-bottom:4px; }
+  .cot-card p { font-size:12.5px; color:var(--muted); line-height:1.4; }
+  .cot-back { color:var(--muted); font-size:12px; cursor:pointer; }
+  .cot-back:hover { color:var(--orange); }
+  .cot-topbar { display:flex; justify-content:space-between; align-items:center; margin-bottom:16px; flex-wrap:wrap; gap:10px; }
+  .cot-badge { background:#1a1a1a; border:1px solid var(--border); border-radius:20px; padding:6px 14px; font-size:12px; color:var(--lime); }
+  .cot-searchbox { background:#161616; border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:16px; }
+  .cot-searchbox textarea { width:100%; background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:8px; padding:10px 12px; font-family:'DM Sans',sans-serif; font-size:14px; min-height:56px; resize:vertical; }
+  .cot-cats-label { font-size:11px; color:var(--muted); margin:12px 0 8px; text-transform:uppercase; letter-spacing:1px; }
+  .cot-chip { background:#242424; border:1px solid var(--border); color:#ccc; padding:6px 12px; border-radius:20px; font-size:12px; cursor:pointer; }
+  .cot-chip:hover, .cot-chip.active { border-color:var(--orange); color:var(--orange); }
+  .cot-card-result { background:#161616; border:1px solid var(--border); border-radius:12px; padding:18px; border-left:3px solid var(--orange); margin-bottom:14px; }
+  .cot-card-result .cot-cat { color:var(--lime); font-size:11px; text-transform:uppercase; letter-spacing:1px; font-weight:700; }
+  .cot-card-result h3 { font-family:'Syne',sans-serif; font-size:17px; margin:6px 0 4px; }
+  .cot-card-result .cot-desc { color:#bbb; font-size:13px; line-height:1.5; margin-bottom:8px; }
+  .cot-pack-row { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #232323; gap:10px; flex-wrap:wrap; }
+  .cot-pack-row:last-child { border-bottom:none; }
+  .cot-pack-row .cot-pack-label { font-size:13px; flex:1; min-width:140px; }
+  .cot-venta { color:var(--lime); font-weight:700; font-size:13px; }
+  .cot-pending { color:var(--muted); font-size:11px; }
+  .cot-quote { background:#161616; border:1px solid var(--border); border-radius:12px; padding:16px; margin-top:16px; display:none; }
+  .cot-quote.active { display:block; }
+  .cot-quote-item { display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid #232323; gap:8px; flex-wrap:wrap; font-size:13px; }
+  .cot-quote-total { display:flex; justify-content:space-between; padding-top:12px; font-weight:700; font-size:17px; color:var(--orange); font-family:'Syne',sans-serif; }
+  .cot-fxnote { font-size:11px; color:var(--muted); margin-top:8px; line-height:1.5; }
+  .cot-btn { background:var(--orange); color:#0e0e0e; border:none; padding:10px 18px; border-radius:8px; font-family:'Syne',sans-serif; font-weight:700; font-size:13px; cursor:pointer; }
+  .cot-btn.ghost { background:transparent; border:1px solid var(--border); color:#999; }
+  .cot-btn.secondary { background:transparent; border:1px solid var(--lime); color:var(--lime); }
+  .cot-remove { background:none; border:none; color:var(--red); cursor:pointer; font-size:15px; }
+
   .tab-btn { background: none; border: none; border-bottom: 2px solid transparent; color: var(--muted); font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 10px 14px 12px; cursor: pointer; transition: color .2s, border-color .2s; position: relative; top: 1px; white-space: nowrap; }
   .tab-btn.active { color: var(--text); border-bottom-color: var(--orange); }
   .tab-btn:hover:not(.active) { color: var(--text); }
@@ -427,11 +466,19 @@
     <button class="tab-btn" onclick="switchTab('pedro', this)">
       Pedro · Dirección <span class="tab-badge" id="badgePedro">—</span>
     </button>
+    <button class="tab-btn" onclick="switchTab('cotizador', this)">
+      Cotizador
+    </button>
   </div>
 
   <!-- TAB: SERVICIOS CONSOLIDADO -->
   <div class="tab-content active" id="tab-servicios">
     <div id="contentServicios"></div>
+  </div>
+
+  <!-- TAB: COTIZADOR -->
+  <div class="tab-content" id="tab-cotizador">
+    <div id="contentCotizador"></div>
   </div>
 
   <!-- TAB: DANIELA -->
@@ -892,6 +939,10 @@ async function showApp() {
   }
   await fetchFxRate();
   await loadAllFiles();
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('view') === 'cotizador') {
+    switchTab('cotizador', null);
+  }
 }
 
 async function reloadAll() {
@@ -2021,12 +2072,514 @@ function updateStats() {
   }
 }
 
+
+// ══════════════════════════════════════════════════════════════════════════
+// ── COTIZADOR ── Reusa las mismas funciones de costeo que "Servicios"
+// (dARS, v, pp, oriPk, pedAM, pedPk, pedCM, pedMen, pedGetWeddingTarifa, fxRate).
+// Margen por categoría = columna "% Cobro del Estudio" de Servicios_Generales.xlsx
+// ══════════════════════════════════════════════════════════════════════════
+const COT_MARGEN = {
+  'BRANDING E IDENTIDAD VISUAL': 0.40,
+  'DISEÑO GRÁFICO Y MULTIMEDIA': 0.38,
+  'TIENDA NUBE Y DESARROLLO': 0.30,
+  'FOTOGRAFÍA': 0.30,
+  'PRODUCCIÓN AUDIOVISUAL': 0.30,
+  'GESTIÓN Y ESTRATEGIA DE REDES SOCIALES': 0.42,
+  'GESTIÓN Y ESTRATEGIA DE REDES SOCIALES — COMMUNITY': 0.30,
+  'META ADS Y EMAIL MARKETING': 0.35,
+  'FORMACIÓN Y CAPACITACIÓN': 0.35,
+  'MENTORÍA INDIVIDUAL 1:1': 0.35,
+  'FOTOGRAFÍA DE BODAS / 15 AÑOS': 0.30,
+};
+
+let cotContexto = { paso: 'tipo', tipo:null, cliente:null, moneda:null };
+let cotQuote = [];
+const COT_CLIENTES = [
+  { id:'donna', nombre:'Panadería Venezolana Donna', sub:'Contacto: Lizabeth' },
+  { id:'seklou', nombre:'Seklou', sub:'Cuenta activa' },
+  { id:'tecnotips', nombre:'TecnoTips', sub:'Cuenta activa' },
+];
+
+// Construye el catálogo completo con costos EN VIVO (llama a las funciones ya cargadas)
+function cotBuildCatalog() {
+  const D  = (danielaData?.prices  || {});
+  const V  = (victoriaData?.prices || {});
+  const Ovp = (oriannaData?.packPrices || {});
+  const Ppr = (paulaData?.prices   || {});
+  const Ppp = (paulaData?.packPrices || {});
+  const dARS_ = (id) => (D[id] || 0) * (fxRate || 0);
+  const v_    = (id) => V[id] || 0;
+  const pp_   = (id) => Ppr[id] || Ppp[id] || 0;
+  const oriPk_= (id, pk) => (Ovp[id] || {})[pk] || 0;
+
+  const cat = [];
+
+  // ── BRANDING ──
+  cat.push({ nombre:'BRANDING E IDENTIDAD VISUAL', servicios:[
+    { nombre:'Identidad Corporativa Simple', desc:'Briefing, 3 propuestas, logotipo, manual básico y entregables técnicos.', tiempos:'2–3 semanas hábiles',
+      packs:[{label:'Servicio completo', ars:()=> dARS_('id_simple') + pedAM('puntual_branding_complejo')}] },
+    { nombre:'Identidad Corporativa Profesional', desc:'Logotipo con variantes, paleta HEX/CMYK/Pantone, sistema tipográfico y manual.', tiempos:'3–4 semanas hábiles',
+      packs:[{label:'Servicio completo', ars:()=> dARS_('id_prof') + pedAM('puntual_branding_complejo')}] },
+    { nombre:'Branding Book', desc:'Sistema visual, universo de marca, aplicaciones, soportes y Etapa 10 comunicación verbal.', tiempos:'4–6 semanas hábiles',
+      packs:[{label:'Servicio completo', ars:()=> dARS_('branding_book') + v_('branding_book_etapa10') + pedAM('puntual_branding_complejo')}] },
+    { nombre:'Kit de Identidad Digital', desc:'8 plantillas de feed + 16 historias + 6 portadas destacadas.', tiempos:'5–7 días hábiles',
+      packs:[{label:'Servicio completo', ars:()=> dARS_('id_simple') + pedAM('puntual_branding_medio')}] },
+    { nombre:'Papelería Corporativa', desc:'Tarjeta, membrete, sobre, carpeta, hoja A4 y firma de mail HTML.', tiempos:'3–5 días hábiles',
+      packs:[{label:'Servicio completo', ars:()=> dARS_('papeleria') + pedAM('puntual_branding_simple')}] },
+    { nombre:'Merchandising Corporativo', desc:'Diseño de aplicación sobre productos físicos con mockup 3D.', tiempos:'4–5 días hábiles',
+      packs:[{label:'Servicio completo', ars:()=> dARS_('merch') + pedAM('puntual_branding_complejo')}] },
+  ]});
+
+  // ── DISEÑO GRÁFICO — PACKS MENSUALES (packs seleccionables reales) ──
+  cat.push({ nombre:'DISEÑO GRÁFICO Y MULTIMEDIA', servicios:[
+    { nombre:'Pack de Piezas Gráficas Mensuales', desc:'Piezas de feed + historias interdiarias/diarias + portadas destacadas.', tiempos:'10 días hábiles',
+      packs:[
+        {label:'Básico — x4 piezas/mes',   ars:()=> dARS_('pack_basico')   + pedAM('puntual_branding_medio')},
+        {label:'Medio — x8 piezas/mes',     ars:()=> dARS_('pack_medio')    + pedAM('puntual_branding_medio')},
+        {label:'Full — x12 piezas/mes',     ars:()=> dARS_('pack_full')     + pedAM('puntual_branding_complejo')},
+        {label:'Ultimate — x16 piezas/mes', ars:()=> dARS_('pack_ultimate') + pedAM('puntual_branding_complejo')},
+        {label:'Ultra — x20 piezas/mes',    ars:()=> dARS_('pack_ultra')    + pedAM('puntual_branding_complejo')},
+      ]},
+    { nombre:'Pack de Historias Mensuales (add-on)', desc:'Historias standalone, 1 o 2 artes por día.', tiempos:'10 días hábiles',
+      packs:[
+        {label:'Básico — x8 días',    ars:()=> dARS_('historias_basico')  + pedAM('puntual_branding_simple')},
+        {label:'Medio — x12 días',    ars:()=> dARS_('historias_medio')   + pedAM('puntual_branding_simple')},
+        {label:'Full — x16 días',     ars:()=> dARS_('historias_full')    + pedAM('puntual_branding_simple')},
+        {label:'Ultimate — x31 días', ars:()=> dARS_('historias_ultimate')+ pedAM('puntual_branding_simple')},
+      ]},
+    { nombre:'Add-on: Adaptación a Historias Diarias', desc:'Suma cobertura diaria a un pack mensual ya activo (Daniela + Victoria + Paula + Pedro según corresponda).', tiempos:'',
+      packs:[{label:'Servicio completo', ars:()=> dARS_('pack_ultimate_historias_addon') + v_('gestion_integral_historias') + pp_('adicional_historias_diarias') + pedAM('puntual_branding_simple')}] },
+    { nombre:'Campaña Estacional', desc:'Concepto base + piezas adaptadas para fecha comercial.', tiempos:'',
+      packs:[
+        {label:'Básico — 4 piezas', ars:()=> dARS_('camp_basico') + pedAM('puntual_branding_simple')},
+        {label:'Full — 8 piezas',   ars:()=> dARS_('camp_full')   + pedAM('puntual_branding_medio')},
+      ]},
+    { nombre:'Diseño de Packaging / Etiquetas', desc:'1 línea de producto + 2 adaptaciones + mockup 3D.', tiempos:'10 días hábiles',
+      packs:[{label:'Servicio completo', ars:()=> dARS_('packaging') + pedAM('puntual_branding_medio')}] },
+    { nombre:'Presentaciones Estáticas (PDF)', desc:'No editables, con identidad visual aplicada.', tiempos:'',
+      packs:[
+        {label:'Básico — 5 a 10 slides',  ars:()=> dARS_('pres_est_basico') + pedAM('puntual_branding_simple')},
+        {label:'Medio — 10 a 20 slides',  ars:()=> dARS_('pres_est_medio')  + pedAM('puntual_branding_medio')},
+        {label:'Full — hasta 30 slides',  ars:()=> dARS_('pres_est_full')   + pedAM('puntual_branding_medio')},
+      ]},
+    { nombre:'Presentaciones Editables (PPT/Canva)', desc:'Editables por el cliente.', tiempos:'',
+      packs:[
+        {label:'Básico — 5 a 10 slides', ars:()=> dARS_('pres_ed_basico') + pedAM('puntual_branding_simple')},
+        {label:'Medio — 10 a 20 slides', ars:()=> dARS_('pres_ed_medio')  + pedAM('puntual_branding_medio')},
+        {label:'Full — hasta 30 slides', ars:()=> dARS_('pres_ed_full')   + pedAM('puntual_branding_medio')},
+      ]},
+    { nombre:'Diseño de Landing Page / One Page', desc:'Diseño UI visual (sin programación).', tiempos:'15 días hábiles',
+      packs:[{label:'Servicio completo', ars:()=> dARS_('landing') + pedAM('puntual_branding_medio')}] },
+    { nombre:'Diseño Editorial', desc:'Catálogo, eBook o menú (4 a 12 páginas).', tiempos:'15 días hábiles',
+      packs:[{label:'Servicio completo', ars:()=> dARS_('editorial') + pedAM('puntual_branding_medio')}] },
+    { nombre:'Newsletter — Plantillas de mail', desc:'Diseño de plantillas de email marketing (sin programación).', tiempos:'10 días hábiles',
+      packs:[{label:'Servicio completo', ars:()=> dARS_('news_1') + pedAM('puntual_branding_simple')}] },
+  ]});
+
+  // ── TIENDA NUBE ──
+  cat.push({ nombre:'TIENDA NUBE Y DESARROLLO', servicios:[
+    { nombre:'Armado de Tienda desde Cero', desc:'Setup técnico + diseño + carga inicial de hasta 15 productos.', tiempos:'',
+      packs:[{label:'Armado completo', ars:()=> pedPk('tiendanube_armado','armado')}] },
+    { nombre:'Diseño Visual de Tienda', desc:'Banners, portada e identidad sobre tienda ya armada.', tiempos:'',
+      packs:[{label:'Diseño visual', ars:()=> pedPk('tiendanube_diseno_visual','diseno')}] },
+    { nombre:'Tienda Nube — Gestión Mensual', desc:'Carga y mantenimiento mensual de tienda ya armada.', tiempos:'Mensual',
+      packs:[{label:'Gestión mensual', ars:()=> pedAM('tiendanube_gestion_mensual')}] },
+  ]});
+
+  // ── FOTOGRAFÍA ──
+  cat.push({ nombre:'FOTOGRAFÍA', servicios:[
+    { nombre:'Sesión Fotográfica de Producto', desc:'Por cantidad de entregables.', tiempos:'10–15 días hábiles',
+      packs:[
+        {label:'Básico', ars:()=> pedPk('foto_producto','basico')},
+        {label:'Medio',  ars:()=> pedPk('foto_producto','medio')},
+        {label:'Full',   ars:()=> pedPk('foto_producto','full')},
+      ]},
+    { nombre:'Sesión Fotográfica de Marca / Equipo / Particulares', desc:'Retratos profesionales.', tiempos:'15 días hábiles',
+      packs:[
+        {label:'Básico', ars:()=> pedPk('foto_marca_equipo','basico')},
+        {label:'Medio',  ars:()=> pedPk('foto_marca_equipo','medio')},
+        {label:'Full',   ars:()=> pedPk('foto_marca_equipo','full')},
+      ]},
+    { nombre:'Sesión Fotográfica para Marcas (por horas)', desc:'Todas las fotos de la jornada, editadas en HD.', tiempos:'',
+      packs:[
+        {label:'1 hora',  ars:()=> pedPk('foto_marcas_horas','h1')},
+        {label:'2 horas', ars:()=> pedPk('foto_marcas_horas','h2')},
+        {label:'4 horas', ars:()=> pedPk('foto_marcas_horas','h4')},
+      ], locAdicional:()=> pedPk('foto_marcas_horas','locacion_adicional') },
+    { nombre:'Sesión Fotográfica de Eventos (por entregables)', desc:'Cantidad de fotos según horas de cobertura.', tiempos:'',
+      packs:[
+        {label:'Hasta 1 hora', ars:()=> pedPk('foto_eventos_entregables','h1')},
+        {label:'Hasta 2 horas',ars:()=> pedPk('foto_eventos_entregables','h2')},
+        {label:'Hasta 4 horas',ars:()=> pedPk('foto_eventos_entregables','h4')},
+        {label:'Hasta 6 horas',ars:()=> pedPk('foto_eventos_entregables','h6')},
+      ], locAdicional:()=> pedPk('foto_eventos_entregables','locacion_adicional') },
+    { nombre:'Sesión Fotográfica de Eventos (por horas)', desc:'Todas las fotos de la jornada, sin tope.', tiempos:'',
+      packs:[
+        {label:'Hasta 1 hora', ars:()=> pedPk('foto_eventos_horas','h1')},
+        {label:'Hasta 2 horas',ars:()=> pedPk('foto_eventos_horas','h2')},
+        {label:'Hasta 4 horas',ars:()=> pedPk('foto_eventos_horas','h4')},
+        {label:'Hasta 6 horas',ars:()=> pedPk('foto_eventos_horas','h6')},
+      ], locAdicional:()=> pedPk('foto_eventos_horas','locacion_adicional') },
+  ]});
+
+  // ── PRODUCCIÓN AUDIOVISUAL — REELS (Orianna) ──
+  const reelsDefs = [
+    { label:'Pack Inicial (x1)',  vic:'reels_ideas_x1',  ori:'x1'  },
+    { label:'Pack Básico (x4)',   vic:'reels_ideas_x4',  ori:'x4'  },
+    { label:'Pack Avanzado (x8)', vic:'reels_ideas_x8',  ori:'x8'  },
+    { label:'Pack Premium (x12)', vic:'reels_ideas_x12', ori:'x12' },
+    { label:'Pack Ultra (x16)',   vic:'reels_ideas_x12', ori:'x16' },
+    { label:'Pack Máximo (x20)',  vic:'reels_ideas_x12', ori:'x20' },
+  ];
+  const reelsServicio = { nombre:'Producción de Reels / Shorts', desc:'Tres modalidades: solo edición, cámara+edición, o ideas+cámara+edición.', tiempos:'Mensual', packs:[] };
+  reelsDefs.forEach(r=>{
+    reelsServicio.packs.push({ label:`${r.label} — Solo edición`, ars:()=> oriPk_('nuevo_solo_edicion', r.ori) + pedAM('puntual_redes_liviano') });
+    reelsServicio.packs.push({ label:`${r.label} — Cámara + Edición`, ars:()=> oriPk_('nuevo_camara_edicion', r.ori) + pedAM('puntual_redes_liviano') });
+    reelsServicio.packs.push({ label:`${r.label} — Ideas + Cámara + Edición`, ars:()=> v_(r.vic) + oriPk_('nuevo_camara_edicion', r.ori) + pedAM('puntual_redes_liviano') });
+  });
+  cat.push({ nombre:'PRODUCCIÓN AUDIOVISUAL', servicios:[
+    reelsServicio,
+    { nombre:'Video Institucional / Spot Comercial', desc:'Concepto, guion, rodaje y edición.', tiempos:'',
+      packs:[
+        {label:'Media jornada',    ars:()=> pedPk('puntual_video_institucional','media_jornada')},
+        {label:'Jornada completa', ars:()=> pedPk('puntual_video_institucional','jornada_completa')},
+      ]},
+    { nombre:'Cobertura Audiovisual de Eventos', desc:'Por tramo de horas.', tiempos:'',
+      packs:[
+        {label:'Hasta 1 hora', ars:()=> pedPk('puntual_cobertura_eventos','h1')},
+        {label:'Hasta 2 horas',ars:()=> pedPk('puntual_cobertura_eventos','h2')},
+        {label:'Hasta 4 horas',ars:()=> pedPk('puntual_cobertura_eventos','h4')},
+        {label:'Hasta 6 horas',ars:()=> pedPk('puntual_cobertura_eventos','h6')},
+      ]},
+    { nombre:'Producción para Publicidad Digital', desc:'Por horas. Contenido optimizado para ads.', tiempos:'',
+      packs:[
+        {label:'Hasta 1 hora', ars:()=> pedPk('puntual_publicidad_digital','h1')},
+        {label:'Hasta 2 horas',ars:()=> pedPk('puntual_publicidad_digital','h2')},
+        {label:'Hasta 4 horas',ars:()=> pedPk('puntual_publicidad_digital','h4')},
+        {label:'Hasta 6 horas',ars:()=> pedPk('puntual_publicidad_digital','h6')},
+      ]},
+    { nombre:'Entrevistas / Testimoniales', desc:'Precio por entrevista/testimonial.', tiempos:'',
+      packs:[
+        {label:'Nivel 1 (1 hora)', ars:()=> pedPk('puntual_entrevistas','nivel1')},
+        {label:'Nivel 2 (2 horas)',ars:()=> pedPk('puntual_entrevistas','nivel2')},
+      ]},
+    { nombre:'Videos Tutoriales / Clases Grabadas', desc:'Por cantidad de videos/clases.', tiempos:'',
+      packs:[
+        {label:'1 video/clase', ars:()=> pedPk('puntual_tutoriales','x1')},
+        {label:'3 videos/clases',ars:()=> pedPk('puntual_tutoriales','x3')},
+        {label:'5 videos/clases',ars:()=> pedPk('puntual_tutoriales','x5')},
+      ]},
+  ]});
+
+  // ── GESTIÓN Y ESTRATEGIA DE REDES ──
+  const gestionDefs = [
+    { label:'Pack Inicial (x4)',   vic:'gestion_integral_x4',  dan:'pack_basico',   ori:'x4',  paula:'pack_inicial'  },
+    { label:'Pack Básico (x8)',    vic:'gestion_integral_x8',  dan:'pack_medio',    ori:'x8',  paula:'pack_basico'   },
+    { label:'Pack Avanzado (x12)', vic:'gestion_integral_x12', dan:'pack_full',     ori:'x12', paula:'pack_avanzado' },
+    { label:'Pack Premium (x16)',  vic:'gestion_integral_x16', dan:'pack_ultimate', ori:'x16', paula:'pack_premium'  },
+    { label:'Pack Ultra (x20)',    vic:'gestion_integral_x20', dan:'pack_ultra',    ori:'x20', paula:'pack_ultra'    },
+  ];
+  const gestionServicio = { nombre:'Gestión Integral de Redes Sociales', desc:'Publicaciones mensuales + Reels. Dos variantes según trabajo de Orianna.', tiempos:'Mensual', packs:[] };
+  gestionDefs.forEach(g=>{
+    const pedG = ()=> pedAM('puntual_redes_completo');
+    gestionServicio.packs.push({ label:`${g.label} — Orianna solo edición`,
+      ars:()=> v_(g.vic) + dARS_(g.dan) + pp_(g.paula) + pedG() + oriPk_('nuevo_solo_edicion', g.ori) });
+    gestionServicio.packs.push({ label:`${g.label} — Orianna cámara + edición`,
+      ars:()=> v_(g.vic) + dARS_(g.dan) + pp_(g.paula) + pedG() + oriPk_('nuevo_camara_edicion', g.ori) });
+  });
+  cat.push({ nombre:'GESTIÓN Y ESTRATEGIA DE REDES SOCIALES', servicios:[
+    { nombre:'Plan de Contenidos Estratégico', desc:'Diagnóstico, ejes temáticos y planificación del primer mes.', tiempos:'10–15 días hábiles',
+      packs:[{label:'Servicio completo', ars:()=> v_('plan_contenidos') + pedAM('puntual_redes_medio')}] },
+    { nombre:'Consultoría de Estrategia Digital (1 sesión)', desc:'Diagnóstico + sesión 1:1 de 90 min + plan de acción.', tiempos:'',
+      packs:[{label:'Servicio completo', ars:()=> v_('consultoria') + pedAM('puntual_redes_liviano')}] },
+    { nombre:'Auditoría de Marca Digital', desc:'Análisis de perfil, contenido, métricas y competencia.', tiempos:'7–10 días hábiles',
+      packs:[{label:'Servicio completo', ars:()=> v_('auditoria') + pedAM('puntual_redes_liviano')}] },
+    { nombre:'Calendario de Campañas Promocionales', desc:'Calendario anual + ideas de contenido por fecha.', tiempos:'3 días hábiles',
+      packs:[{label:'Servicio completo', ars:()=> v_('calendario_campanas') + pedAM('puntual_redes_medio')}] },
+    { nombre:'Community Pack (diseño + redacción)', desc:'12 piezas + copys + hashtags + guía de publicación.', tiempos:'7 días hábiles', margenOverride:0.30,
+      packs:[{label:'Servicio completo', ars:()=> v_('community_pack') + dARS_('pack_medio') + pedAM('puntual_redes_medio')}] },
+    Object.assign(gestionServicio, { margenOverride:0.30 }),
+  ]});
+
+  // ── META ADS Y EMAIL MARKETING ──
+  cat.push({ nombre:'META ADS Y EMAIL MARKETING', servicios:[
+    { nombre:'Meta Ads — Setup Avanzado de Campaña', desc:'Estructura, segmentaciones, objetivos y píxel.', tiempos:'5–7 días hábiles',
+      packs:[{label:'Servicio completo', ars:()=> pp_('meta_ads_setup') + v_('meta_ads_respaldo') + pedAM('puntual_redes_completo')}] },
+    { nombre:'Meta Ads — Gestión de Performance', desc:'Monitoreo, optimización, A/B testing e informe mensual.', tiempos:'Mensual',
+      packs:[{label:'Servicio completo', ars:()=> pp_('meta_ads_gestion') + v_('meta_ads_respaldo') + pedAM('puntual_redes_completo')}] },
+    { nombre:'Meta Ads — Gestión de Escalado', desc:'Escalado vertical y horizontal para cuentas con historial.', tiempos:'Mensual',
+      packs:[{label:'Servicio completo', ars:()=> pp_('meta_ads_escalado') + v_('meta_ads_respaldo') + pedAM('puntual_redes_medio')}] },
+    { nombre:'Meta Ads — Auditoría de Cuenta Publicitaria', desc:'Diagnóstico de estructura, creatividades y eficiencia.', tiempos:'',
+      packs:[{label:'Servicio completo', ars:()=> pp_('meta_ads_auditoria') + v_('meta_ads_respaldo') + pedAM('puntual_redes_liviano')}] },
+    { nombre:'Email Marketing — Setup Básico', desc:'Listas, formularios, SPF/DKIM y plantilla base.', tiempos:'5–7 días hábiles',
+      packs:[{label:'Servicio completo', ars:()=> pp_('email_setup') + v_('email_mkt_respaldo') + pedAM('puntual_redes_liviano')}] },
+    { nombre:'Email Marketing — Gestión Mensual', desc:'Planificación, redacción, diseño, envío y monitoreo.', tiempos:'Mensual',
+      packs:[{label:'Servicio completo', ars:()=> pp_('email_gestion') + v_('email_mkt_respaldo') + pedAM('puntual_redes_completo')}] },
+    { nombre:'Email Marketing — Secuencia Automatizada', desc:'Flujo automático activado por acción del usuario.', tiempos:'7–10 días hábiles',
+      packs:[{label:'Servicio completo', ars:()=> pp_('email_secuencia') + v_('email_mkt_respaldo') + pedAM('puntual_redes_liviano')}] },
+  ]});
+
+  // ── FORMACIÓN ──
+  cat.push({ nombre:'FORMACIÓN Y CAPACITACIÓN', servicios:[
+    { nombre:'Curso Básico de Fotografía', desc:'3 sesiones (presencial + campo + online).', tiempos:'3 sesiones de 2hs',
+      packs:[
+        {label:'Grupal',     ars:()=> pedCM('curso_fotografia_basico','grupal')},
+        {label:'Particular', ars:()=> pedCM('curso_fotografia_basico','particular')},
+      ]},
+    { nombre:'Curso de Creación de Contenido Audiovisual', desc:'Estrategia, producción y edición.', tiempos:'3 sesiones de 2hs',
+      packs:[
+        {label:'Grupal',     ars:()=> pedCM('curso_contenido_audiovisual','grupal')},
+        {label:'Particular', ars:()=> pedCM('curso_contenido_audiovisual','particular')},
+      ]},
+    { nombre:'Capacitaciones Corporativas (a medida)', desc:'Programa a medida para equipos.', tiempos:'',
+      packs:[
+        {label:'Medio día (4hs)',     ars:()=> pedCM('curso_capacitacion_corporativa','medio_dia')},
+        {label:'Jornada completa (8hs)', ars:()=> pedCM('curso_capacitacion_corporativa','jornada_completa')},
+      ]},
+  ]});
+
+  // ── MENTORÍA ──
+  cat.push({ nombre:'MENTORÍA INDIVIDUAL 1:1', servicios:[
+    { nombre:'Mentoría Individual con Pedro', desc:'Acompañamiento directo y personalizado.', tiempos:'',
+      packs:[
+        {label:'Sesión única (60 min)', ars:()=> pedMen('mentoria_1on1','sesion_unica')},
+        {label:'Pack 4 sesiones (mensual)', ars:()=> pedMen('mentoria_1on1','pack4')},
+        {label:'Pack 8 sesiones (bimestral)', ars:()=> pedMen('mentoria_1on1','pack8')},
+      ]},
+  ]});
+
+  // ── BODAS ──
+  cat.push({ nombre:'FOTOGRAFÍA DE BODAS / 15 AÑOS', servicios:[
+    { nombre:'Cobertura de Boda / 15 Años', desc:'Tarifa por hora, servicio personal de Pedro. 2da hora en adelante -25%.', tiempos:'',
+      packs:[{label:'1ra hora', ars:()=> pedGetWeddingTarifa('boda_civil')}] },
+  ]});
+
+  return cat;
+}
+
+function cotMargenFor(catNombre, servicio) {
+  if (servicio.margenOverride !== undefined) return servicio.margenOverride;
+  return COT_MARGEN[catNombre] !== undefined ? COT_MARGEN[catNombre] : 0.30;
+}
+
+// Venta según moneda de contexto. ars = costo interno total en pesos.
+function cotVenta(ars, margen) {
+  if (!ars || ars <= 0) return null;
+  if (cotContexto.moneda === 'USD') {
+    if (!fxRate) return null;
+    const usdIntl = (ars / fxRate) * 1.2;
+    return { valor: Math.ceil(usdIntl / (1 - margen)), simbolo:'US$' };
+  }
+  return { valor: Math.ceil(ars / (1 - margen)), simbolo:'$' };
+}
+
+function cotFmt(v) { return v.toLocaleString('es-AR'); }
+
+// ── RENDER PRINCIPAL ─────────────────────────────────────────────────────
+function renderCotizador() {
+  const el = document.getElementById('contentCotizador');
+  if (!el) return;
+  if (cotContexto.paso === 'tipo') { cotRenderPasoTipo(el); return; }
+  if (cotContexto.paso === 'moneda') { cotRenderPasoMoneda(el); return; }
+  if (cotContexto.paso === 'cliente') { cotRenderPasoCliente(el); return; }
+  cotRenderApp(el);
+}
+
+function cotRenderPasoTipo(el) {
+  el.innerHTML = `
+    <div class="cot-step">
+      <span class="cot-eyebrow">Paso 1 de 3</span>
+      <h2>¿Con qué tipo de cliente estás trabajando?</h2>
+      <div class="cot-grid">
+        <div class="cot-card" onclick="cotGoNuevo()"><div class="cot-icon">✨</div><h3>Cliente nuevo</h3><p>Todavía no tiene cuenta activa. Arrancás una cotización desde cero.</p></div>
+        <div class="cot-card" onclick="cotGoActual()"><div class="cot-icon">🤝</div><h3>Cliente actual</h3><p>Donna, Seklou o TecnoTips. Cotizás un add-on o servicio puntual.</p></div>
+      </div>
+    </div>`;
+}
+function cotRenderPasoMoneda(el) {
+  el.innerHTML = `
+    <div class="cot-step">
+      <span class="cot-back" onclick="cotContexto.paso='tipo'; renderCotizador();">← volver</span>
+      <span class="cot-eyebrow">Paso 2 de 3</span>
+      <h2>¿En qué moneda cotizamos?</h2>
+      <div class="cot-grid">
+        <div class="cot-card" onclick="cotSetMoneda('ARS')"><div class="cot-icon">🇦🇷</div><h3>Pesos (ARS)</h3><p>Cliente en Argentina. Costo consolidado en pesos.</p></div>
+        <div class="cot-card" onclick="cotSetMoneda('USD')"><div class="cot-icon">💵</div><h3>Dólares (USD)</h3><p>Cliente en el exterior. Costo USD +20% de mercado externo.</p></div>
+      </div>
+    </div>`;
+}
+function cotRenderPasoCliente(el) {
+  el.innerHTML = `
+    <div class="cot-step">
+      <span class="cot-back" onclick="cotContexto.paso='tipo'; renderCotizador();">← volver</span>
+      <span class="cot-eyebrow">Paso 2 de 3</span>
+      <h2>¿Qué cuenta activa?</h2>
+      <div class="cot-grid">
+        ${COT_CLIENTES.map(c=>`<div class="cot-card" onclick='cotSetCliente(${JSON.stringify(JSON.stringify(c))})'><div class="cot-icon">🏢</div><h3>${c.nombre}</h3><p>${c.sub}</p></div>`).join('')}
+      </div>
+    </div>`;
+}
+function cotGoNuevo(){ cotContexto.tipo='nuevo'; cotContexto.cliente=null; cotContexto.paso='moneda'; renderCotizador(); }
+function cotGoActual(){ cotContexto.tipo='actual'; cotContexto.moneda='ARS'; cotContexto.paso='cliente'; renderCotizador(); }
+function cotSetMoneda(m){ cotContexto.moneda=m; cotContexto.paso='app'; renderCotizador(); }
+function cotSetCliente(cJson){ cotContexto.cliente = JSON.parse(cJson); cotContexto.paso='app'; renderCotizador(); }
+function cotReset(){ cotContexto = {paso:'tipo', tipo:null, cliente:null, moneda:null}; cotQuote=[]; renderCotizador(); }
+
+function cotRenderApp(el) {
+  if (!fxRate) {
+    el.innerHTML = `<div class="cot-step"><p style="color:var(--muted)">Esperando cotización del dólar (dolarapi.com)… reintentá en unos segundos o usá "Actualizar" arriba.</p></div>`;
+    return;
+  }
+  const catalogo = cotBuildCatalog();
+  const badge = cotContexto.tipo === 'nuevo'
+    ? `Cliente nuevo · Moneda: ${cotContexto.moneda === 'USD' ? 'USD (+20%)' : 'ARS'}`
+    : `Cliente actual: ${cotContexto.cliente.nombre} · ARS`;
+
+  el.innerHTML = `
+    <div class="cot-topbar">
+      <div class="cot-badge">${badge}</div>
+      <div style="display:flex;gap:8px;">
+        <button class="cot-btn ghost" onclick="cotReset()">Cambiar contexto</button>
+        <button class="cot-btn secondary" onclick="cotClearQuote()">Vaciar cotización</button>
+      </div>
+    </div>
+    <div class="cot-searchbox">
+      <textarea id="cotSearchInput" placeholder="Ej: el cliente necesita gestión de redes y algunos reels por mes..." oninput="cotFreeTextSearch()"></textarea>
+      <div class="cot-cats-label">O explorá por sección (muestra solo esa sección)</div>
+      <div id="cotChips" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+    </div>
+    <div id="cotResults"></div>
+    <div class="cot-quote" id="cotQuotePanel">
+      <h3 style="font-family:'Syne',sans-serif;color:var(--orange);margin-bottom:12px;">Cotización en armado</h3>
+      <div id="cotQuoteItems"></div>
+      <div class="cot-quote-total"><span>Total venta estimado</span><span id="cotQuoteTotal">$0</span></div>
+      <div class="cot-fxnote">${cotContexto.moneda === 'USD' ? 'Base: costo consolidado USD +20% (mercado externo). Margen del catálogo aplicado sobre esa base.' : 'Base: costo consolidado en ARS (todas las colaboradoras + Pedro). Margen del catálogo aplicado sobre esa base.'}</div>
+      <div style="margin-top:14px;"><button class="cot-btn" onclick="cotSendWhatsapp()">Enviar resumen por WhatsApp</button></div>
+    </div>
+  `;
+
+  window._cotCatalogo = catalogo;
+  const chipsBox = document.getElementById('cotChips');
+  catalogo.forEach(c=>{
+    const chip = document.createElement('div');
+    chip.className = 'cot-chip';
+    chip.textContent = c.nombre.length > 34 ? c.nombre.slice(0,34)+'…' : c.nombre;
+    chip.title = c.nombre;
+    chip.onclick = () => {
+      document.querySelectorAll('.cot-chip').forEach(x=>x.classList.remove('active'));
+      chip.classList.add('active');
+      document.getElementById('cotSearchInput').value = '';
+      cotRenderResults(c.servicios.map(s=>({...s, cat:c.nombre})));
+    };
+    chipsBox.appendChild(chip);
+  });
+  cotRenderQuote();
+}
+
+const COT_STOPWORDS = new Set(['para','con','sin','del','las','los','una','uno','que','como','por','desde','sobre','entre','este','esta','todo','toda','mas','más','tus','sus','muy','ser','son','hay']);
+function cotNormalize(s){ return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,''); }
+
+function cotFreeTextSearch() {
+  document.querySelectorAll('.cot-chip').forEach(x=>x.classList.remove('active'));
+  const q = cotNormalize(document.getElementById('cotSearchInput').value);
+  if (!q.trim()) { document.getElementById('cotResults').innerHTML=''; return; }
+  const words = q.split(/\s+/).filter(w=>w.length>2 && !COT_STOPWORDS.has(w));
+  if (!words.length) { document.getElementById('cotResults').innerHTML=''; return; }
+
+  const all = [];
+  (window._cotCatalogo||[]).forEach(c=> c.servicios.forEach(s=> all.push({...s, cat:c.nombre})));
+
+  const scored = all.map(s=>{
+    const hayName = cotNormalize(s.nombre);
+    const hayDesc = cotNormalize(s.desc||'');
+    let score = 0;
+    words.forEach(w=>{ if(hayName.includes(w)) score+=3; if(hayDesc.includes(w)) score+=1; });
+    return {s, score};
+  }).filter(x=>x.score>=3).sort((a,b)=>b.score-a.score).slice(0,10);
+
+  cotRenderResults(scored.map(x=>x.s));
+}
+
+function cotRenderResults(items) {
+  const box = document.getElementById('cotResults');
+  box.innerHTML = '';
+  if (!items.length) { box.innerHTML = '<p style="color:var(--muted);text-align:center;padding:30px;">Sin coincidencias. Probá otras palabras o elegí una sección.</p>'; return; }
+
+  items.forEach((s, idx) => {
+    const margen = cotMargenFor(s.cat, s);
+    const packsHtml = s.packs.map((p, pIdx) => {
+      const ars = p.ars();
+      const venta = cotVenta(ars, margen);
+      const ventaTxt = venta ? `<span class="cot-venta">${venta.simbolo}${cotFmt(venta.valor)}</span>` : `<span class="cot-pending">sin costos cargados</span>`;
+      const addId = `cot_${idx}_${pIdx}_${Math.random().toString(36).slice(2,7)}`;
+      return `<div class="cot-pack-row">
+        <span class="cot-pack-label">${p.label}</span>
+        ${ventaTxt}
+        <button class="cot-btn ghost" style="padding:6px 12px;font-size:11px;" ${venta?'':'disabled'} onclick='cotAddToQuote(${JSON.stringify(JSON.stringify({servicio:s.nombre, pack:p.label, ars, margen, moneda:cotContexto.moneda}))})'>Agregar</button>
+      </div>`;
+    }).join('');
+    const locHtml = s.locAdicional ? `<div class="cot-pack-row" style="opacity:.7"><span class="cot-pack-label">Locación adicional</span>${(()=>{ const ars=s.locAdicional(); const venta=cotVenta(ars,margen); return venta?`<span class="cot-venta">${venta.simbolo}${cotFmt(venta.valor)}</span>`:'<span class="cot-pending">sin costo</span>'; })()}</div>` : '';
+
+    const card = document.createElement('div');
+    card.className = 'cot-card-result';
+    card.innerHTML = `
+      <div class="cot-cat">${s.cat}</div>
+      <h3>${s.nombre}</h3>
+      ${s.desc ? `<div class="cot-desc">${s.desc}</div>` : ''}
+      <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">${s.tiempos ? `⏱ ${s.tiempos} · ` : ''}Margen: ${(margen*100).toFixed(0)}%</div>
+      ${packsHtml}
+      ${locHtml}
+    `;
+    box.appendChild(card);
+  });
+}
+
+function cotAddToQuote(dataJson) {
+  const d = JSON.parse(dataJson);
+  const venta = cotVenta(d.ars, d.margen);
+  if (!venta) return;
+  cotQuote.push({ id: Date.now()+Math.random(), servicio: d.servicio, pack: d.pack, venta: venta.valor, simbolo: venta.simbolo });
+  cotRenderQuote();
+}
+function cotRemoveFromQuote(id) { cotQuote = cotQuote.filter(q=>q.id!==id); cotRenderQuote(); }
+function cotClearQuote() { cotQuote = []; cotRenderQuote(); document.getElementById('cotResults') && (document.getElementById('cotResults').innerHTML=''); document.getElementById('cotSearchInput') && (document.getElementById('cotSearchInput').value=''); document.querySelectorAll('.cot-chip').forEach(x=>x.classList.remove('active')); }
+
+function cotRenderQuote() {
+  const panel = document.getElementById('cotQuotePanel');
+  if (!panel) return;
+  const box = document.getElementById('cotQuoteItems');
+  if (!cotQuote.length) { panel.classList.remove('active'); box.innerHTML=''; document.getElementById('cotQuoteTotal').textContent = cotContexto.moneda==='USD' ? 'US$0' : '$0'; return; }
+  panel.classList.add('active');
+  box.innerHTML = '';
+  let total = 0;
+  let simbolo = '$';
+  cotQuote.forEach(item=>{
+    total += item.venta; simbolo = item.simbolo;
+    const row = document.createElement('div');
+    row.className = 'cot-quote-item';
+    row.innerHTML = `<span>${item.servicio} — <span style="color:var(--muted)">${item.pack}</span></span><span class="cot-venta">${item.simbolo}${cotFmt(item.venta)}</span><button class="cot-remove" onclick="cotRemoveFromQuote(${item.id})">✕</button>`;
+    box.appendChild(row);
+  });
+  document.getElementById('cotQuoteTotal').textContent = `${simbolo}${cotFmt(total)}`;
+}
+
+function cotSendWhatsapp() {
+  if (!cotQuote.length) return;
+  let msg = 'Cotización Contentive Studio:%0A%0A';
+  let total = 0, simbolo='$';
+  cotQuote.forEach(item=>{ total += item.venta; simbolo = item.simbolo; msg += `• ${encodeURIComponent(item.servicio + ' — ' + item.pack)}: ${simbolo}${cotFmt(item.venta)}%0A`; });
+  msg += `%0ATotal: ${simbolo}${cotFmt(total)}`;
+  window.open(`https://wa.me/?text=${msg}`, '_blank');
+}
+
 // ── TABS ──────────────────────────────────────────────────────────────────
 function switchTab(name, btn) {
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-  btn.classList.add('active');
+  if (btn) btn.classList.add('active');
+  else { const b = Array.from(document.querySelectorAll('.tab-btn')).find(x => x.textContent.trim().toLowerCase().startsWith(name==='cotizador'?'cotizador':name)); if (b) b.classList.add('active'); }
   document.getElementById('tab-' + name).classList.add('active');
+  if (name === 'cotizador') renderCotizador();
 }
 
 // ── TOGGLE SECTION ──────────────────────────────────────────────────────────
