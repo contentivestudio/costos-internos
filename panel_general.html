@@ -216,6 +216,14 @@
   }
   .cot-cart-fab.show { display:flex; }
   .cot-cart-fab:hover { filter:brightness(1.08); transform:translateY(-2px); }
+  .cot-flujo-box { background:#161616; border:1px solid rgba(184,224,74,.3); border-radius:12px; padding:18px; margin-bottom:16px; }
+  .cot-flujo-titulo { font-family:'Syne',sans-serif; font-weight:700; font-size:14px; color:var(--lime); margin-bottom:12px; }
+  .cot-flujo-pregunta { font-size:13px; color:#ddd; margin-bottom:10px; }
+  .cot-flujo-opciones { display:flex; gap:8px; flex-wrap:wrap; margin-bottom:14px; }
+  .cot-flujo-paso { display:flex; align-items:center; gap:12px; padding:10px 0; border-top:1px solid #232323; }
+  .cot-flujo-paso-num { background:var(--orange); color:#0e0e0e; width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:800; font-family:'Syne',sans-serif; flex-shrink:0; }
+  .cot-flujo-paso-nombre { flex:1; font-size:13px; }
+  .cot-flujo-nota { font-size:11px; color:var(--muted); margin-top:2px; }
 
   .tab-btn { background: none; border: none; border-bottom: 2px solid transparent; color: var(--muted); font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 10px 14px 12px; cursor: pointer; transition: color .2s, border-color .2s; position: relative; top: 1px; white-space: nowrap; }
   .tab-btn.active { color: var(--text); border-bottom-color: var(--orange); }
@@ -2372,13 +2380,13 @@ function cotBuildCatalog() {
 
   // ── GESTIÓN Y ESTRATEGIA DE REDES ──
   const gestionDefs = [
-    { label:'Pack Inicial (x4)',   vic:'gestion_integral_x4',  dan:'pack_basico',   ori:'x4',  paula:'pack_inicial',  detalle:'4 publicaciones/mes. Onboarding estratégico, planificación, briefs para Daniela y copys para Paula.' },
-    { label:'Pack Básico (x8)',    vic:'gestion_integral_x8',  dan:'pack_medio',    ori:'x8',  paula:'pack_basico',   detalle:'8 publicaciones/mes — 4 Instagram + 4 TikTok.' },
-    { label:'Pack Avanzado (x12)', vic:'gestion_integral_x12', dan:'pack_full',     ori:'x12', paula:'pack_avanzado', detalle:'12 publicaciones/mes — 8 Instagram + 4 TikTok.' },
-    { label:'Pack Premium (x16)',  vic:'gestion_integral_x16', dan:'pack_ultimate', ori:'x16', paula:'pack_premium',  detalle:'16 publicaciones/mes — 12 Instagram + 4 TikTok.' },
-    { label:'Pack Ultra (x20)',    vic:'gestion_integral_x20', dan:'pack_ultra',    ori:'x20', paula:'pack_ultra',    detalle:'20 publicaciones/mes — 16 Instagram + 4 TikTok.' },
+    { label:'Pack Inicial (x4)',   vic:'gestion_integral_x4',  dan:'pack_basico',   ori:'x4',  paula:'pack_inicial',  detalle:'4 publicaciones/mes + 16 días de historias interdiarias.' },
+    { label:'Pack Básico (x8)',    vic:'gestion_integral_x8',  dan:'pack_medio',    ori:'x8',  paula:'pack_basico',   detalle:'8 publicaciones/mes (4 Instagram + 4 TikTok) + 16 días de historias interdiarias.' },
+    { label:'Pack Avanzado (x12)', vic:'gestion_integral_x12', dan:'pack_full',     ori:'x12', paula:'pack_avanzado', detalle:'12 publicaciones/mes (8 Instagram + 4 TikTok) + 16 días de historias interdiarias.' },
+    { label:'Pack Premium (x16)',  vic:'gestion_integral_x16', dan:'pack_ultimate', ori:'x16', paula:'pack_premium',  detalle:'16 publicaciones/mes (12 Instagram + 4 TikTok) + 31 días de historias diarias.' },
+    { label:'Pack Ultra (x20)',    vic:'gestion_integral_x20', dan:'pack_ultra',    ori:'x20', paula:'pack_ultra',    detalle:'20 publicaciones/mes (16 Instagram + 4 TikTok) + 31 días de historias diarias.' },
   ];
-  const gestionServicio = { nombre:'Gestión Integral de Redes Sociales', desc:'Publicaciones mensuales + Reels. Dos variantes según trabajo de Orianna.', tiempos:'Mensual', packs:[], grupos:[] };
+  const gestionServicio = { nombre:'Gestión Integral de Redes Sociales', desc:'Publicaciones mensuales + Reels + historias, según el pack elegido.', tiempos:'Mensual', packs:[], grupos:[] };
   gestionDefs.forEach(g=>{
     const pedG = ()=> pedGetAmCosto('puntual_redes_completo');
     gestionServicio.grupos.push({
@@ -2557,11 +2565,11 @@ function cotRenderApp(el) {
       <div class="cot-cats-label">O explorá por sección (muestra solo esa sección)</div>
       <div id="cotChips" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
     </div>
-    <div class="cot-combos">
-      <div class="cot-cats-label" style="margin-top:0;">Combos sugeridos (armado rápido para casos típicos)</div>
+    <div class="cot-combos" id="cotCombosWrap" style="${COT_COMBOS.length?'':'display:none;'}">
+      <div class="cot-cats-label" style="margin-top:0;">Combos sugeridos (armado rápido para casos que no encajan en un flujo)</div>
       <div id="cotCombosBox" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
-      <div id="cotTopUsadosBox" style="margin-top:12px;"></div>
     </div>
+    <div id="cotTopUsadosBox" style="margin-bottom:16px;"></div>
     <div id="cotResults"></div>
     <div class="cot-cart-fab" id="cotCartFab" onclick="cotShowCart()">
       🛒 <span id="cotCartCount">0</span> — <span id="cotCartTotal">$0</span>
@@ -2579,7 +2587,7 @@ function cotRenderApp(el) {
       document.querySelectorAll('.cot-chip').forEach(x=>x.classList.remove('active'));
       chip.classList.add('active');
       document.getElementById('cotSearchInput').value = '';
-      cotRenderResults(c.servicios.map(s=>({...s, cat:c.nombre})));
+      cotRenderCategoria(c);
     };
     chipsBox.appendChild(chip);
   });
@@ -2612,17 +2620,9 @@ function cotRenderApp(el) {
 }
 
 // ── COMBOS PRE-ARMADOS ──────────────────────────────────────────────────────
-const COT_COMBOS = [
-  { nombre: '📦 Cliente nuevo — Redes chico', items: [
-      { servicio:'Plan de Contenidos Estratégico', pack:'Servicio completo' },
-      { servicio:'Gestión Integral de Redes Sociales', grupo:'Pack Básico (x8)', modo:'Cámara + Edición' },
-    ]},
-  { nombre: '📦 Redes + Reels + Pauta', items: [
-      { servicio:'Gestión Integral de Redes Sociales', grupo:'Pack Avanzado (x12)', modo:'Cámara + Edición' },
-      { servicio:'Meta Ads — Setup Avanzado de Campaña', pack:'Servicio completo' },
-      { servicio:'Meta Ads — Gestión de Performance', pack:'Servicio completo' },
-    ]},
-];
+// Los combos de Redes y Meta Ads que vivían acá ahora son flujos (COT_FLUJOS, más abajo).
+// Esta lista queda para casos puntuales que no encajen en ningún flujo — vacía por ahora.
+const COT_COMBOS = [];
 
 function cotFindServicio(nombre) {
   for (const c of (window._cotCatalogo||[])) {
@@ -2632,32 +2632,193 @@ function cotFindServicio(nombre) {
   return null;
 }
 
+// Resuelve precio de un ítem {servicio, pack} o {servicio, grupo, modo} contra el catálogo en vivo.
+function cotResolveItem(item) {
+  const s = cotFindServicio(item.servicio);
+  if (!s) return null;
+  const margen = cotMargenFor(s.cat, s);
+  let ars = null, packLabel = item.pack || '';
+  if (item.pack && s.packs) {
+    const p = s.packs.find(x=>x.label===item.pack);
+    if (p) ars = p.ars();
+  } else if (item.grupo && s.grupos) {
+    const g = s.grupos.find(x=>x.label===item.grupo);
+    const m = g && g.modos.find(x=>x.label===item.modo);
+    if (m) { ars = Object.values(m.parts()).reduce((a,b)=>a+b,0); packLabel = `${item.grupo} — ${item.modo}`; }
+  }
+  if (ars === null) return null;
+  const venta = cotVenta(ars, margen);
+  return { servicio: s, margen, ars, packLabel, venta };
+}
+
+function cotAddItem(item) {
+  const r = cotResolveItem(item);
+  if (!r || !r.venta) return false;
+  cotQuote.push({ id: Date.now()+Math.random(), servicio: r.servicio.nombre, pack: r.packLabel, venta: r.venta.valor, simbolo: r.venta.simbolo });
+  cotTrackUso(r.servicio.nombre);
+  return true;
+}
+
 function cotAddCombo(idx) {
   const combo = COT_COMBOS[idx];
   let agregados = 0;
-  combo.items.forEach(item => {
-    const s = cotFindServicio(item.servicio);
-    if (!s) return;
-    const margen = cotMargenFor(s.cat, s);
-    let ars = null, packLabel = item.pack || '';
-    if (item.pack && s.packs) {
-      const p = s.packs.find(x=>x.label===item.pack);
-      if (p) ars = p.ars();
-    } else if (item.grupo && s.grupos) {
-      const g = s.grupos.find(x=>x.label===item.grupo);
-      const m = g && g.modos.find(x=>x.label===item.modo);
-      if (m) { ars = Object.values(m.parts()).reduce((a,b)=>a+b,0); packLabel = `${item.grupo} — ${item.modo}`; }
-    }
-    if (ars === null) return;
-    const venta = cotVenta(ars, margen);
-    if (!venta) return;
-    cotQuote.push({ id: Date.now()+Math.random()+agregados, servicio: s.nombre, pack: packLabel, venta: venta.valor, simbolo: venta.simbolo });
-    cotTrackUso(s.nombre);
-    agregados++;
-  });
+  combo.items.forEach(item => { if (cotAddItem(item)) agregados++; });
   cotSaveState();
   cotRenderQuote();
   showToast(agregados > 0 ? `Combo agregado (${agregados} servicios)` : 'No se pudo agregar el combo — revisá costos cargados', agregados>0?'ok':'error');
+}
+
+// ── FLUJOS POR CATEGORÍA (pasos con dependencia real, no catálogo suelto) ──
+// No bloqueante: siempre se puede ver/agregar el catálogo plano debajo del flujo.
+const COT_FLUJOS = {
+  'META ADS Y EMAIL MARKETING': [
+    {
+      titulo: 'Meta Ads',
+      pregunta: '¿El cliente ya tiene pauta activa en Meta?',
+      opciones: [
+        { label:'No, es cuenta nueva', paso1: { servicio:'Meta Ads — Setup Avanzado de Campaña', pack:'Servicio completo' } },
+        { label:'Sí, ya tiene pauta',  paso1: { servicio:'Meta Ads — Gestión de Escalado', pack:'Servicio completo' } },
+      ],
+      paso2: { servicio:'Meta Ads — Gestión de Performance', pack:'Servicio completo', nota:'Recurrente — a partir del mes 2' },
+    },
+    {
+      titulo: 'Email Marketing',
+      pregunta: null,
+      pasos: [
+        { servicio:'Email Marketing — Setup Básico', pack:'Servicio completo', nota:'Obligatorio, una vez (salvo que el cliente ya lo tenga armado)' },
+        { servicio:'Email Marketing — Gestión Mensual', pack:'Servicio completo', nota:'Recurrente' },
+      ],
+      opcional: { servicio:'Email Marketing — Secuencia Automatizada', pack:'Servicio completo', nota:'Opcional, complementario' },
+    },
+  ],
+  'TIENDA NUBE Y DESARROLLO': [
+    {
+      titulo: 'Tienda Nube',
+      pregunta: '¿El cliente ya tiene la tienda armada?',
+      opciones: [
+        { label:'No, hay que armarla', paso1: { servicio:'Armado de Tienda desde Cero', pack:'Armado completo' } },
+        { label:'Sí, ya tiene tienda', paso1: { servicio:'Diseño Visual de Tienda', pack:'Diseño visual' } },
+      ],
+      paso2: { servicio:'Tienda Nube — Gestión Mensual', pack:'Gestión mensual', nota:'Recurrente' },
+    },
+  ],
+  'GESTIÓN Y ESTRATEGIA DE REDES SOCIALES': [
+    {
+      titulo: 'Redes — Estrategia + Ejecución',
+      pregunta: null,
+      pasos: [
+        { servicio:'Plan de Contenidos Estratégico', pack:'Servicio completo', nota:'Opcional — la estrategia por escrito' },
+      ],
+      opcional: null,
+      paso2: { servicio:'Gestión Integral de Redes Sociales', grupo:'Pack Básico (x8)', modo:'Cámara + Edición', nota:'El siguiente paso natural — podés cambiar el pack antes de agregar' },
+    },
+  ],
+};
+
+function cotPrecioTxt(item) {
+  const r = cotResolveItem(item);
+  if (!r) return '<span class="cot-pending">sin datos del servicio</span>';
+  if (!r.venta) return '<span class="cot-pending">sin costos cargados</span>';
+  return `<span class="cot-venta">${r.venta.simbolo}${cotFmt(r.venta.valor)}</span>`;
+}
+
+function cotRenderFlujoWidget(flujo, flujoIdx) {
+  const stateKey = `flujoSel_${flujoIdx}`;
+  if (!window._cotFlujoState) window._cotFlujoState = {};
+  const seleccion = window._cotFlujoState[stateKey];
+
+  let cuerpoHtml = '';
+  if (flujo.pregunta) {
+    cuerpoHtml += `<div class="cot-flujo-pregunta">${flujo.pregunta}</div>
+      <div class="cot-flujo-opciones">
+        ${flujo.opciones.map((op, opIdx) => `
+          <button class="cot-btn ${seleccion===opIdx?'':'ghost'}" style="font-size:12px;padding:8px 14px;" onclick="cotSetFlujoOpcion(${flujoIdx}, ${opIdx})">${op.label}</button>
+        `).join('')}
+      </div>`;
+    if (seleccion !== undefined) {
+      const paso1 = flujo.opciones[seleccion].paso1;
+      cuerpoHtml += `<div class="cot-flujo-paso">
+        <span class="cot-flujo-paso-num">1</span>
+        <span class="cot-flujo-paso-nombre">${paso1.servicio}${paso1.pack && paso1.pack!=='Servicio completo' ? ' — '+paso1.pack : ''}</span>
+        ${cotPrecioTxt(paso1)}
+      </div>`;
+    }
+  } else if (flujo.pasos) {
+    flujo.pasos.forEach((p, i) => {
+      cuerpoHtml += `<div class="cot-flujo-paso">
+        <span class="cot-flujo-paso-num">${i+1}</span>
+        <span class="cot-flujo-paso-nombre">${p.servicio}${p.nota ? `<div class="cot-flujo-nota">${p.nota}</div>` : ''}</span>
+        ${cotPrecioTxt(p)}
+      </div>`;
+    });
+  }
+
+  if (flujo.paso2 && (flujo.pregunta ? seleccion !== undefined : true)) {
+    const numPaso = flujo.pasos ? flujo.pasos.length + 1 : 2;
+    cuerpoHtml += `<div class="cot-flujo-paso">
+      <span class="cot-flujo-paso-num">${numPaso}</span>
+      <span class="cot-flujo-paso-nombre">${flujo.paso2.servicio}${flujo.paso2.grupo ? ' — '+flujo.paso2.grupo+' — '+flujo.paso2.modo : ''}${flujo.paso2.nota ? `<div class="cot-flujo-nota">${flujo.paso2.nota}</div>` : ''}</span>
+      ${cotPrecioTxt(flujo.paso2)}
+    </div>`;
+  }
+
+  if (flujo.opcional) {
+    cuerpoHtml += `<div class="cot-flujo-paso" style="opacity:.8;">
+      <span class="cot-flujo-paso-num">+</span>
+      <span class="cot-flujo-paso-nombre">${flujo.opcional.servicio}<div class="cot-flujo-nota">${flujo.opcional.nota}</div></span>
+      ${cotPrecioTxt(flujo.opcional)}
+    </div>`;
+  }
+
+  const puedeAgregar = !flujo.pregunta || seleccion !== undefined;
+
+  return `<div class="cot-flujo-box">
+    <div class="cot-flujo-titulo">📶 ${flujo.titulo} — flujo sugerido</div>
+    ${cuerpoHtml}
+    <button class="cot-btn" style="margin-top:10px;" ${puedeAgregar?'':'disabled'} onclick="cotAddFlujo(${flujoIdx})">Agregar flujo completo</button>
+  </div>`;
+}
+
+function cotSetFlujoOpcion(flujoIdx, opIdx) {
+  if (!window._cotFlujoState) window._cotFlujoState = {};
+  window._cotFlujoState[`flujoSel_${flujoIdx}`] = opIdx;
+  cotRerenderFlujos();
+}
+
+function cotAddFlujo(flujoIdx) {
+  const flujo = window._cotFlujosActivos[flujoIdx];
+  const seleccion = (window._cotFlujoState||{})[`flujoSel_${flujoIdx}`];
+  let agregados = 0;
+  if (flujo.pregunta) {
+    if (cotAddItem(flujo.opciones[seleccion].paso1)) agregados++;
+  }
+  if (flujo.pasos) {
+    flujo.pasos.forEach(p => { if (cotAddItem(p)) agregados++; });
+  }
+  if (flujo.paso2) { if (cotAddItem(flujo.paso2)) agregados++; }
+  cotSaveState();
+  cotRenderQuote();
+  showToast(agregados > 0 ? `Flujo agregado (${agregados} servicios)` : 'No se pudo agregar — revisá costos cargados', agregados>0?'ok':'error');
+}
+
+function cotRerenderFlujos() {
+  const box = document.getElementById('cotFlujosBox');
+  if (!box || !window._cotFlujosActivos) return;
+  box.innerHTML = window._cotFlujosActivos.map((f,i)=>cotRenderFlujoWidget(f,i)).join('');
+}
+
+// Render de una categoría: flujo(s) arriba si existen, catálogo plano siempre debajo (no bloqueante).
+function cotRenderCategoria(cat) {
+  window._cotFlujosActivos = COT_FLUJOS[cat.nombre] || [];
+  window._cotFlujoState = {};
+  const resultsBox = document.getElementById('cotResults');
+  const flujosHtml = window._cotFlujosActivos.length
+    ? `<div id="cotFlujosBox">${window._cotFlujosActivos.map((f,i)=>cotRenderFlujoWidget(f,i)).join('')}</div>
+       <div class="cot-cats-label" style="margin-top:18px;">O elegí un servicio suelto de la categoría:</div>`
+    : '';
+  resultsBox.innerHTML = flujosHtml + '<div id="cotResultsCards"></div>';
+  const cardsBox = document.getElementById('cotResultsCards');
+  cotRenderResults(cat.servicios.map(s=>({...s, cat:cat.nombre})), cardsBox);
 }
 
 const COT_STOPWORDS = new Set(['para','con','sin','del','las','los','una','uno','que','como','por','desde','sobre','entre','este','esta','todo','toda','mas','más','tus','sus','muy','ser','son','hay']);
@@ -2692,8 +2853,8 @@ function cotFreeTextSearch() {
   cotRenderResults(scored.map(x=>x.s));
 }
 
-function cotRenderResults(items) {
-  const box = document.getElementById('cotResults');
+function cotRenderResults(items, targetBox) {
+  const box = targetBox || document.getElementById('cotResults');
   box.innerHTML = '';
   if (!items.length) { box.innerHTML = '<p style="color:var(--muted);text-align:center;padding:30px;">Sin coincidencias. Probá otras palabras o elegí una sección.</p>'; return; }
 
@@ -2766,11 +2927,14 @@ function cotRenderResults(items) {
       </div>`;
     }
 
-    // Info completa colapsable
+    // Info completa colapsable — el "Detalle" genérico del Excel solo se muestra si el servicio
+    // NO tiene ya un detalle específico por pack/grupo (para no contradecir lo que se ve abajo).
+    const tienePackDetalle = (s.packs||[]).some(p=>p.detalle) || (s.grupos||[]).some(g=>g.detalle);
     const infoHtml = info ? `
       <div class="cot-info-box" id="${infoId}">
         ${info.ideal ? `<div class="cot-info-row"><b>Ideal para:</b> ${info.ideal}</div>` : ''}
-        ${info.detalle ? `<div class="cot-info-row"><b>Detalle:</b> ${cotToList(info.detalle)}</div>` : ''}
+        ${(info.detalle && !tienePackDetalle) ? `<div class="cot-info-row"><b>Detalle:</b> ${cotToList(info.detalle)}</div>` : ''}
+        ${tienePackDetalle ? `<div class="cot-info-row" style="color:var(--muted);font-style:italic;">El detalle específico de cada paquete está debajo, junto al precio.</div>` : ''}
         ${info.tiempos ? `<div class="cot-info-row"><b>Entrega:</b> ${info.tiempos}</div>` : ''}
         ${info.resp ? `<div class="cot-info-row"><b>Responsables:</b> ${info.resp}</div>` : ''}
         <div class="cot-info-row"><b>Margen del estudio:</b> ${(margen*100).toFixed(0)}%</div>
