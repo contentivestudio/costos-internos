@@ -168,6 +168,7 @@
   .cot-badge { background:#1a1a1a; border:1px solid var(--border); border-radius:20px; padding:6px 14px; font-size:12px; color:var(--lime); }
   .cot-searchbox { background:#161616; border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:16px; }
   .cot-searchbox textarea { width:100%; background:var(--bg); border:1px solid var(--border); color:var(--text); border-radius:8px; padding:10px 12px; font-family:'DM Sans',sans-serif; font-size:14px; min-height:56px; resize:vertical; }
+  .cot-combos { background:#161616; border:1px solid var(--border); border-radius:12px; padding:16px; margin-bottom:16px; }
   .cot-cats-label { font-size:11px; color:var(--muted); margin:12px 0 8px; text-transform:uppercase; letter-spacing:1px; }
   .cot-chip { background:#242424; border:1px solid var(--border); color:#ccc; padding:6px 12px; border-radius:20px; font-size:12px; cursor:pointer; }
   .cot-chip:hover, .cot-chip.active { border-color:var(--orange); color:var(--orange); }
@@ -178,19 +179,20 @@
   .cot-pack-row { display:flex; flex-direction:column; gap:6px; padding:10px 0; border-bottom:1px solid #232323; }
   .cot-pack-row:last-child { border-bottom:none; }
   .cot-pack-row .cot-pack-label { font-size:13px; line-height:1.4; }
-  .cot-pack-actions { display:flex; justify-content:flex-end; align-items:center; gap:10px; }
+  .cot-pack-actions { display:flex; flex-direction:column; align-items:flex-end; gap:6px; }
+  .cot-venta { color:var(--lime); font-weight:700; font-size:19px; font-family:'Syne',sans-serif; }
+  .cot-pending { color:var(--muted); font-size:11px; }
   .cot-grupo-row { padding:10px 0; border-bottom:1px solid #232323; }
   .cot-grupo-row:last-child { border-bottom:none; }
-  .cot-modos-wrap { display:flex; flex-wrap:wrap; gap:8px; }
-  .cot-modo-btn { color:#ccc; }
-  .cot-modo-btn:hover:not(:disabled) { color:var(--orange); border-color:var(--orange); }
+  .cot-modos-wrap { display:flex; flex-wrap:wrap; gap:14px; }
+  .cot-modo-item { background:#0e0e0e; border:1px solid var(--border); border-radius:10px; padding:12px 14px; min-width:170px; display:flex; flex-direction:column; }
+  .cot-modo-label { font-size:12px; color:#ccc; margin-bottom:6px; }
   .cot-info-box { display:none; background:#0e0e0e; border:1px dashed var(--border); border-radius:8px; padding:12px; margin-bottom:12px; font-size:12.5px; line-height:1.6; color:#bbb; }
   .cot-info-box.open { display:block; }
   .cot-info-row { margin-bottom:6px; }
   .cot-info-row b { color:var(--orange); }
   .cot-info-row:last-child { margin-bottom:0; }
   .cot-upsell { display:flex; justify-content:space-between; align-items:center; gap:10px; background:rgba(184,224,74,.06); border:1px solid rgba(184,224,74,.25); border-radius:8px; padding:10px 12px; margin-top:12px; font-size:12px; color:var(--lime); flex-wrap:wrap; }
-  .cot-venta { color:var(--lime); font-weight:700; font-size:13px; }
   .cot-pending { color:var(--muted); font-size:11px; }
   .cot-quote { background:#161616; border:1px solid var(--border); border-radius:12px; padding:16px; margin-top:16px; display:none; }
   .cot-quote.active { display:block; }
@@ -2134,6 +2136,21 @@ function cotFindInfo(nombre) {
 
 let cotContexto = { paso: 'tipo', tipo:null, cliente:null, moneda:null };
 let cotQuote = [];
+
+function cotSaveState() {
+  try { localStorage.setItem('cot_state', JSON.stringify({ contexto: cotContexto, quote: cotQuote })); } catch(e) {}
+}
+function cotLoadState() {
+  try {
+    const raw = localStorage.getItem('cot_state');
+    if (raw) {
+      const d = JSON.parse(raw);
+      if (d.contexto) cotContexto = d.contexto;
+      if (d.quote) cotQuote = d.quote;
+    }
+  } catch(e) {}
+}
+cotLoadState();
 const COT_CLIENTES = [
   { id:'donna', nombre:'Panadería Venezolana Donna', sub:'Contacto: Lizabeth' },
   { id:'seklou', nombre:'Seklou', sub:'Cuenta activa' },
@@ -2174,18 +2191,18 @@ function cotBuildCatalog() {
   cat.push({ nombre:'DISEÑO GRÁFICO Y MULTIMEDIA', servicios:[
     { nombre:'Pack de Piezas Gráficas Mensuales', desc:'Piezas de feed + historias interdiarias/diarias + portadas destacadas.', tiempos:'10 días hábiles',
       packs:[
-        {label:'Básico — x4 piezas/mes',   ars:()=> dARS_('pack_basico')   + pedGetAmCosto('puntual_branding_medio')},
-        {label:'Medio — x8 piezas/mes',     ars:()=> dARS_('pack_medio')    + pedGetAmCosto('puntual_branding_medio')},
-        {label:'Full — x12 piezas/mes',     ars:()=> dARS_('pack_full')     + pedGetAmCosto('puntual_branding_complejo')},
-        {label:'Ultimate — x16 piezas/mes', ars:()=> dARS_('pack_ultimate') + pedGetAmCosto('puntual_branding_complejo')},
-        {label:'Ultra — x20 piezas/mes',    ars:()=> dARS_('pack_ultra')    + pedGetAmCosto('puntual_branding_complejo')},
+        {label:'Básico — x4 piezas/mes',   detalle:'4 piezas estáticas de feed + 16 días de historias interdiarias + portadas destacadas (máx. 6).', ars:()=> dARS_('pack_basico')   + pedGetAmCosto('puntual_branding_medio')},
+        {label:'Medio — x8 piezas/mes',     detalle:'8 piezas de feed + 16 días de historias interdiarias + portadas destacadas (máx. 6).', ars:()=> dARS_('pack_medio')    + pedGetAmCosto('puntual_branding_medio')},
+        {label:'Full — x12 piezas/mes',     detalle:'12 piezas de feed (incluye carruseles) + 16 días de historias interdiarias + portadas destacadas (máx. 8).', ars:()=> dARS_('pack_full')     + pedGetAmCosto('puntual_branding_complejo')},
+        {label:'Ultimate — x16 piezas/mes', detalle:'16 piezas de feed (carruseles hasta 6 slides) + 31 días de historias diarias + portadas destacadas (máx. 10).', ars:()=> dARS_('pack_ultimate') + pedGetAmCosto('puntual_branding_complejo')},
+        {label:'Ultra — x20 piezas/mes',    detalle:'20 piezas de feed (carruseles incluidos) + 31 días de historias diarias + portadas destacadas (máx. 12).', ars:()=> dARS_('pack_ultra')    + pedGetAmCosto('puntual_branding_complejo')},
       ]},
     { nombre:'Pack de Historias Mensuales (add-on)', desc:'Historias standalone, 1 o 2 artes por día.', tiempos:'10 días hábiles',
       packs:[
-        {label:'Básico — x8 días',    ars:()=> dARS_('historias_basico')  + pedGetAmCosto('puntual_branding_simple')},
-        {label:'Medio — x12 días',    ars:()=> dARS_('historias_medio')   + pedGetAmCosto('puntual_branding_simple')},
-        {label:'Full — x16 días',     ars:()=> dARS_('historias_full')    + pedGetAmCosto('puntual_branding_simple')},
-        {label:'Ultimate — x31 días', ars:()=> dARS_('historias_ultimate')+ pedGetAmCosto('puntual_branding_simple')},
+        {label:'Básico — x8 días',    detalle:'8 días de historias standalone (frecuencia 2 semanales). 1 o 2 artes por día.', ars:()=> dARS_('historias_basico')  + pedGetAmCosto('puntual_branding_simple')},
+        {label:'Medio — x12 días',    detalle:'12 días de historias standalone (frecuencia 3 semanales). 1 o 2 artes por día.', ars:()=> dARS_('historias_medio')   + pedGetAmCosto('puntual_branding_simple')},
+        {label:'Full — x16 días',     detalle:'16 días de historias standalone (frecuencia 4 semanales). 1 o 2 artes por día.', ars:()=> dARS_('historias_full')    + pedGetAmCosto('puntual_branding_simple')},
+        {label:'Ultimate — x31 días', detalle:'31 días de historias diarias standalone.', ars:()=> dARS_('historias_ultimate')+ pedGetAmCosto('puntual_branding_simple')},
       ]},
     { nombre:'Add-on: Adaptación a Historias Diarias', desc:'Suma cobertura diaria a un pack mensual ya activo (Daniela + Victoria + Paula + Pedro según corresponda).', tiempos:'',
       packs:[{label:'Servicio completo', ars:()=> dARS_('pack_ultimate_historias_addon') + v_('gestion_integral_historias') + pp_('adicional_historias_diarias') + pedGetAmCosto('puntual_branding_simple')}] },
@@ -2230,15 +2247,15 @@ function cotBuildCatalog() {
   cat.push({ nombre:'FOTOGRAFÍA', servicios:[
     { nombre:'Sesión Fotográfica de Producto', desc:'Por cantidad de entregables.', tiempos:'10–15 días hábiles',
       packs:[
-        {label:'Básico', ars:()=> pedGetPack('foto_producto','basico')},
-        {label:'Medio',  ars:()=> pedGetPack('foto_producto','medio')},
-        {label:'Full',   ars:()=> pedGetPack('foto_producto','full')},
+        {label:'Básico', detalle:'10 fotos editadas, fondo blanco o escenografía, 2 estilos, 1hr de producción.', ars:()=> pedGetPack('foto_producto','basico')},
+        {label:'Medio',  detalle:'20 fotos editadas, 2hrs de producción, 2 estilos.', ars:()=> pedGetPack('foto_producto','medio')},
+        {label:'Full',   detalle:'30 fotos editadas, 2hrs de producción, 2 estilos.', ars:()=> pedGetPack('foto_producto','full')},
       ]},
     { nombre:'Sesión Fotográfica de Marca / Equipo / Particulares', desc:'Retratos profesionales.', tiempos:'15 días hábiles',
       packs:[
-        {label:'Básico', ars:()=> pedGetPack('foto_marca_equipo','basico')},
-        {label:'Medio',  ars:()=> pedGetPack('foto_marca_equipo','medio')},
-        {label:'Full',   ars:()=> pedGetPack('foto_marca_equipo','full')},
+        {label:'Básico', detalle:'8 fotos, 1 locación, 1 vestuario, 1hr de producción.', ars:()=> pedGetPack('foto_marca_equipo','basico')},
+        {label:'Medio',  detalle:'12 fotos, 1 locación, 2 vestuarios, 2hrs de producción.', ars:()=> pedGetPack('foto_marca_equipo','medio')},
+        {label:'Full',   detalle:'20 fotos, 1 locación, 2 vestuarios, 2hrs de producción.', ars:()=> pedGetPack('foto_marca_equipo','full')},
       ]},
     { nombre:'Sesión Fotográfica para Marcas (por horas)', desc:'Todas las fotos de la jornada, editadas en HD.', tiempos:'',
       packs:[
@@ -2276,9 +2293,9 @@ function cotBuildCatalog() {
     reelsServicio.grupos.push({
       label: r.label,
       modos: [
-        { label:'Solo edición', ars:()=> oriPk_('nuevo_solo_edicion', r.ori) + pedGetAmCosto('puntual_redes_liviano') },
-        { label:'Cámara + Edición', ars:()=> oriPk_('nuevo_camara_edicion', r.ori) + pedGetAmCosto('puntual_redes_liviano') },
-        { label:'Ideas + Cámara + Edición', ars:()=> v_(r.vic) + oriPk_('nuevo_camara_edicion', r.ori) + pedGetAmCosto('puntual_redes_liviano') },
+        { label:'Solo edición', parts:()=>({ 'Orianna': oriPk_('nuevo_solo_edicion', r.ori), 'Pedro': pedGetAmCosto('puntual_redes_liviano') }) },
+        { label:'Cámara + Edición', parts:()=>({ 'Orianna': oriPk_('nuevo_camara_edicion', r.ori), 'Pedro': pedGetAmCosto('puntual_redes_liviano') }) },
+        { label:'Ideas + Cámara + Edición', parts:()=>({ 'Victoria': v_(r.vic), 'Orianna': oriPk_('nuevo_camara_edicion', r.ori), 'Pedro': pedGetAmCosto('puntual_redes_liviano') }) },
       ]
     });
   });
@@ -2330,8 +2347,8 @@ function cotBuildCatalog() {
     gestionServicio.grupos.push({
       label: g.label,
       modos: [
-        { label:'Orianna solo edición', ars:()=> v_(g.vic) + dARS_(g.dan) + pp_(g.paula) + pedG() + oriPk_('nuevo_solo_edicion', g.ori) },
-        { label:'Orianna cámara + edición', ars:()=> v_(g.vic) + dARS_(g.dan) + pp_(g.paula) + pedG() + oriPk_('nuevo_camara_edicion', g.ori) },
+        { label:'Solo edición', parts:()=>({ 'Victoria': v_(g.vic), 'Daniela': dARS_(g.dan), 'Paula': pp_(g.paula), 'Pedro': pedG(), 'Orianna': oriPk_('nuevo_solo_edicion', g.ori) }) },
+        { label:'Cámara + Edición', parts:()=>({ 'Victoria': v_(g.vic), 'Daniela': dARS_(g.dan), 'Paula': pp_(g.paula), 'Pedro': pedG(), 'Orianna': oriPk_('nuevo_camara_edicion', g.ori) }) },
       ]
     });
   });
@@ -2467,11 +2484,11 @@ function cotRenderPasoCliente(el) {
       </div>
     </div>`;
 }
-function cotGoNuevo(){ cotContexto.tipo='nuevo'; cotContexto.cliente=null; cotContexto.paso='moneda'; renderCotizador(); }
-function cotGoActual(){ cotContexto.tipo='actual'; cotContexto.moneda='ARS'; cotContexto.paso='cliente'; renderCotizador(); }
-function cotSetMoneda(m){ cotContexto.moneda=m; cotContexto.paso='app'; renderCotizador(); }
-function cotSetCliente(cJson){ cotContexto.cliente = JSON.parse(cJson); cotContexto.paso='app'; renderCotizador(); }
-function cotReset(){ cotContexto = {paso:'tipo', tipo:null, cliente:null, moneda:null}; cotQuote=[]; renderCotizador(); }
+function cotGoNuevo(){ cotContexto.tipo='nuevo'; cotContexto.cliente=null; cotContexto.paso='moneda'; cotSaveState(); renderCotizador(); }
+function cotGoActual(){ cotContexto.tipo='actual'; cotContexto.moneda='ARS'; cotContexto.paso='cliente'; cotSaveState(); renderCotizador(); }
+function cotSetMoneda(m){ cotContexto.moneda=m; cotContexto.paso='app'; cotSaveState(); renderCotizador(); }
+function cotSetCliente(cJson){ cotContexto.cliente = JSON.parse(cJson); cotContexto.paso='app'; cotSaveState(); renderCotizador(); }
+function cotReset(){ cotContexto = {paso:'tipo', tipo:null, cliente:null, moneda:null}; cotQuote=[]; cotSaveState(); renderCotizador(); }
 
 function cotRenderApp(el) {
   if (!fxRate) {
@@ -2495,6 +2512,10 @@ function cotRenderApp(el) {
       <textarea id="cotSearchInput" placeholder="Ej: el cliente necesita gestión de redes y algunos reels por mes..." oninput="cotFreeTextSearch()"></textarea>
       <div class="cot-cats-label">O explorá por sección (muestra solo esa sección)</div>
       <div id="cotChips" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
+    </div>
+    <div class="cot-combos">
+      <div class="cot-cats-label" style="margin-top:0;">Combos sugeridos (armado rápido para casos típicos)</div>
+      <div id="cotCombosBox" style="display:flex;flex-wrap:wrap;gap:10px;"></div>
     </div>
     <div id="cotResults"></div>
     <div class="cot-quote" id="cotQuotePanel">
@@ -2521,7 +2542,65 @@ function cotRenderApp(el) {
     };
     chipsBox.appendChild(chip);
   });
+  const combosBox = document.getElementById('cotCombosBox');
+  COT_COMBOS.forEach((combo, cIdx) => {
+    const btn = document.createElement('button');
+    btn.className = 'cot-btn secondary';
+    btn.style.cssText = 'padding:10px 16px;font-size:12px;';
+    btn.textContent = combo.nombre;
+    btn.title = combo.items.map(i=>i.servicio).join(' + ');
+    btn.onclick = () => cotAddCombo(cIdx);
+    combosBox.appendChild(btn);
+  });
   cotRenderQuote();
+}
+
+// ── COMBOS PRE-ARMADOS ──────────────────────────────────────────────────────
+const COT_COMBOS = [
+  { nombre: '📦 Cliente nuevo — Redes chico', items: [
+      { servicio:'Plan de Contenidos Estratégico', pack:'Servicio completo' },
+      { servicio:'Gestión Integral de Redes Sociales', grupo:'Pack Básico (x8)', modo:'Cámara + Edición' },
+    ]},
+  { nombre: '📦 Redes + Reels + Pauta', items: [
+      { servicio:'Gestión Integral de Redes Sociales', grupo:'Pack Avanzado (x12)', modo:'Cámara + Edición' },
+      { servicio:'Meta Ads — Setup Avanzado de Campaña', pack:'Servicio completo' },
+      { servicio:'Meta Ads — Gestión de Performance', pack:'Servicio completo' },
+    ]},
+];
+
+function cotFindServicio(nombre) {
+  for (const c of (window._cotCatalogo||[])) {
+    const s = c.servicios.find(x=>x.nombre===nombre);
+    if (s) return { ...s, cat:c.nombre };
+  }
+  return null;
+}
+
+function cotAddCombo(idx) {
+  const combo = COT_COMBOS[idx];
+  let agregados = 0;
+  combo.items.forEach(item => {
+    const s = cotFindServicio(item.servicio);
+    if (!s) return;
+    const margen = cotMargenFor(s.cat, s);
+    let ars = null, packLabel = item.pack || '';
+    if (item.pack && s.packs) {
+      const p = s.packs.find(x=>x.label===item.pack);
+      if (p) ars = p.ars();
+    } else if (item.grupo && s.grupos) {
+      const g = s.grupos.find(x=>x.label===item.grupo);
+      const m = g && g.modos.find(x=>x.label===item.modo);
+      if (m) { ars = Object.values(m.parts()).reduce((a,b)=>a+b,0); packLabel = `${item.grupo} — ${item.modo}`; }
+    }
+    if (ars === null) return;
+    const venta = cotVenta(ars, margen);
+    if (!venta) return;
+    cotQuote.push({ id: Date.now()+Math.random()+agregados, servicio: s.nombre, pack: packLabel, venta: venta.valor, simbolo: venta.simbolo });
+    agregados++;
+  });
+  cotSaveState();
+  cotRenderQuote();
+  showToast(agregados > 0 ? `Combo agregado (${agregados} servicios)` : 'No se pudo agregar el combo — revisá costos cargados', agregados>0?'ok':'error');
 }
 
 const COT_STOPWORDS = new Set(['para','con','sin','del','las','los','una','uno','que','como','por','desde','sobre','entre','este','esta','todo','toda','mas','más','tus','sus','muy','ser','son','hay']);
@@ -2540,8 +2619,16 @@ function cotFreeTextSearch() {
   const scored = all.map(s=>{
     const hayName = cotNormalize(s.nombre);
     const hayDesc = cotNormalize(s.desc||'');
+    const hayPacks = cotNormalize((s.packs||[]).map(p=>`${p.label} ${p.detalle||''}`).join(' ') + ' ' + (s.grupos||[]).map(g=>g.label).join(' '));
+    const info = cotFindInfo(s.nombre);
+    const hayInfo = info ? cotNormalize(`${info.ideal||''} ${info.tags||''}`) : '';
     let score = 0;
-    words.forEach(w=>{ if(hayName.includes(w)) score+=3; if(hayDesc.includes(w)) score+=1; });
+    words.forEach(w=>{
+      if(hayName.includes(w)) score+=3;
+      if(hayDesc.includes(w)) score+=1;
+      if(hayPacks.includes(w)) score+=1;
+      if(hayInfo.includes(w)) score+=2;
+    });
     return {s, score};
   }).filter(x=>x.score>=3).sort((a,b)=>b.score-a.score).slice(0,10);
 
@@ -2564,7 +2651,10 @@ function cotRenderResults(items) {
       const venta = cotVenta(ars, margen);
       const ventaTxt = venta ? `<span class="cot-venta">${venta.simbolo}${cotFmt(venta.valor)}</span>` : `<span class="cot-pending">sin costos cargados</span>`;
       return `<div class="cot-pack-row">
-        <span class="cot-pack-label">${p.label}</span>
+        <div>
+          <div class="cot-pack-label" style="font-weight:600;">${p.label}</div>
+          ${p.detalle ? `<div style="font-size:11.5px;color:var(--muted);margin-top:2px;">${p.detalle}</div>` : ''}
+        </div>
         <div class="cot-pack-actions">
           ${ventaTxt}
           <button class="cot-btn ghost cot-add-btn" style="padding:6px 12px;font-size:11px;" ${venta?'':'disabled'} onclick='cotAddToQuote(this, ${JSON.stringify(JSON.stringify({servicio:s.nombre, pack:p.label, ars, margen}))})'>Agregar</button>
@@ -2575,14 +2665,28 @@ function cotRenderResults(items) {
     // Grupos (pack de tamaño + botones de modalidad — Reels / Gestión Integral)
     const gruposHtml = (s.grupos||[]).map((g) => {
       const modosHtml = g.modos.map(m => {
-        const ars = m.ars();
+        const parts = m.parts();
+        const ars = Object.values(parts).reduce((a,b)=>a+b, 0);
+        const faltantes = Object.entries(parts).filter(([k,v])=>v===0).map(([k])=>k);
+        const incompleto = faltantes.length > 0 && ars > 0;
         const venta = cotVenta(ars, margen);
-        const ventaTxt = venta ? `${venta.simbolo}${cotFmt(venta.valor)}` : 'sin costo';
-        return `<button class="cot-btn ghost cot-modo-btn cot-add-btn" style="padding:6px 10px;font-size:11px;" ${venta?'':'disabled'}
-          onclick='cotAddToQuote(this, ${JSON.stringify(JSON.stringify({servicio:s.nombre, pack:`${g.label} — ${m.label}`, ars, margen}))})'>${m.label} · ${ventaTxt}</button>`;
+        let precioHtml;
+        if (!venta) {
+          precioHtml = `<span class="cot-pending">sin costos cargados</span>`;
+        } else if (incompleto) {
+          precioHtml = `<span class="cot-venta" style="color:var(--orange);font-size:15px;">${venta.simbolo}${cotFmt(venta.valor)}</span><div class="cot-pending" style="color:var(--orange);">⚠ incompleto — falta cargar: ${faltantes.join(', ')}</div>`;
+        } else {
+          precioHtml = `<span class="cot-venta">${venta.simbolo}${cotFmt(venta.valor)}</span>`;
+        }
+        return `<div class="cot-modo-item">
+          <div class="cot-modo-label">${m.label}</div>
+          ${precioHtml}
+          <button class="cot-btn ghost cot-add-btn" style="padding:6px 12px;font-size:11px;margin-top:6px;" ${venta?'':'disabled'}
+            onclick='cotAddToQuote(this, ${JSON.stringify(JSON.stringify({servicio:s.nombre, pack:`${g.label} — ${m.label}`, ars, margen}))})'>Agregar</button>
+        </div>`;
       }).join('');
       return `<div class="cot-grupo-row">
-        <div class="cot-pack-label" style="margin-bottom:6px;font-weight:600;">${g.label}</div>
+        <div class="cot-pack-label" style="margin-bottom:8px;font-weight:600;">${g.label}</div>
         <div class="cot-modos-wrap">${modosHtml}</div>
       </div>`;
     }).join('');
@@ -2658,6 +2762,7 @@ function cotAddToQuote(btn, dataJson) {
   const venta = cotVenta(d.ars, d.margen);
   if (!venta) return;
   cotQuote.push({ id: Date.now()+Math.random(), servicio: d.servicio, pack: d.pack, venta: venta.valor, simbolo: venta.simbolo });
+  cotSaveState();
   cotRenderQuote();
   if (btn) {
     const original = btn.textContent;
@@ -2668,8 +2773,8 @@ function cotAddToQuote(btn, dataJson) {
     setTimeout(()=>{ btn.textContent = original; btn.disabled = false; btn.style.color=''; btn.style.borderColor=''; }, 1400);
   }
 }
-function cotRemoveFromQuote(id) { cotQuote = cotQuote.filter(q=>q.id!==id); cotRenderQuote(); }
-function cotClearQuote() { cotQuote = []; cotRenderQuote(); document.getElementById('cotResults') && (document.getElementById('cotResults').innerHTML=''); document.getElementById('cotSearchInput') && (document.getElementById('cotSearchInput').value=''); document.querySelectorAll('.cot-chip').forEach(x=>x.classList.remove('active')); }
+function cotRemoveFromQuote(id) { cotQuote = cotQuote.filter(q=>q.id!==id); cotSaveState(); cotRenderQuote(); }
+function cotClearQuote() { cotQuote = []; cotSaveState(); cotRenderQuote(); document.getElementById('cotResults') && (document.getElementById('cotResults').innerHTML=''); document.getElementById('cotSearchInput') && (document.getElementById('cotSearchInput').value=''); document.querySelectorAll('.cot-chip').forEach(x=>x.classList.remove('active')); }
 
 
 function cotRenderQuote() {
