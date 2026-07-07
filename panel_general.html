@@ -2986,9 +2986,15 @@ async function cotAskIA() {
       })
     });
     const data = await resp.json();
+    console.log('Respuesta cruda del proxy IA:', data);
+    if (data?.error) throw new Error(`Gemini devolvió error: ${data.error.message || data.error.code || JSON.stringify(data.error)}`);
     const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    if (!rawText) {
+      const bloqueo = data?.promptFeedback?.blockReason;
+      throw new Error(bloqueo ? `Gemini bloqueó la respuesta (${bloqueo})` : 'La API no devolvió candidates — revisá el log de ejecución en Apps Script');
+    }
     const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-    if (!jsonMatch) throw new Error('Respuesta sin JSON reconocible');
+    if (!jsonMatch) throw new Error(`Gemini respondió sin JSON: "${rawText.slice(0,150)}"`);
     const parsed = JSON.parse(jsonMatch[0]);
     const nombresIA = (parsed.nombres || []);
     const matched = all.filter(s => nombresIA.some(n => cotNormalize(n) === cotNormalize(s.nombre)));
