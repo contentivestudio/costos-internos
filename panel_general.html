@@ -1854,15 +1854,15 @@ function renderServicios() {
       ${desc ? `<div class="service-desc">${desc}</div>` : ''}
       <div class="pack-row">
         <div class="pack-label">Solo edición ${badge('Pedro')}</div>
-        ${priceChips(40000)}
+        ${priceChips(28000)}
       </div>
       <div class="pack-row">
         <div class="pack-label">Cámara + Edición ${badge('Pedro')}</div>
-        ${priceChips(75000)}
+        ${priceChips(52500)}
       </div>
       <div class="pack-row">
         <div class="pack-label">Ideas + Cámara + Edición ${badge('Pedro')}</div>
-        ${priceChips(100000)}
+        ${priceChips(70000)}
       </div>
     `;
     row.dataset.srvText = (packLabel + ' ' + (desc||'')).toLowerCase();
@@ -2412,9 +2412,9 @@ function cotBuildCatalog() {
         label: r.label,
         detalle: r.detalle,
         modos: [
-          { label:'Solo edición', parts:()=>({ 'Pedro': 40000 }) },
-          { label:'Cámara + Edición', parts:()=>({ 'Pedro': 75000 }) },
-          { label:'Ideas + Cámara + Edición', parts:()=>({ 'Pedro': 100000 }) },
+          { label:'Solo edición', parts:()=>({ 'Pedro': 28000 }) },
+          { label:'Cámara + Edición', parts:()=>({ 'Pedro': 52500 }) },
+          { label:'Ideas + Cámara + Edición', parts:()=>({ 'Pedro': 70000 }) },
         ]
       });
       return;
@@ -2499,7 +2499,7 @@ function cotBuildCatalog() {
     { nombre:'Community Pack (diseño + redacción)', desc:'12 piezas + copys + hashtags + guía de publicación.', tiempos:'7 días hábiles', margenOverride:0.30,
       porque:'Elegilo cuando el cliente quiere publicar él mismo — entregamos piezas + copys listos, pero NO publicamos ni gestionamos la cuenta (eso es Gestión Integral).',
       packs:[{label:'Servicio completo', partes:()=>({'Victoria': v_('community_pack'), 'Daniela': dARS_('pack_medio'), 'Pedro': pedGetAmCosto('puntual_redes_medio')})}] },
-    Object.assign(gestionServicio, { margenOverride:0.30, porque:'Elegilo cuando el cliente quiere que el equipo de Contentive publique y gestione todo — es el servicio "todo incluido" de redes.' }),
+    Object.assign(gestionServicio, { margenOverride:0.25, porque:'Elegilo cuando el cliente quiere que el equipo de Contentive publique y gestione todo — es el servicio "todo incluido" de redes.' }),
   ]});
 
   // ── META ADS Y EMAIL MARKETING ──
