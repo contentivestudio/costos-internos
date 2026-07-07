@@ -2151,6 +2151,7 @@ function updateStats() {
 
 // ══════════════════════════════════════════════════════════════════════════
 // ── COTIZADOR ── Reusa las mismas funciones de costeo que "Servicios"
+const COT_IA_PROXY_URL = 'https://script.google.com/macros/s/AKfycbxETNcgzO76GnRw581t89LAJ6tnyiOHIUVxCUKRuiPW5nHxinfsMNxB6chHX9FjRrcA/exec';
 // (dARS, v, pp, oriPk, pedAM, pedPk, pedCM, pedMen, pedGetWeddingTarifa, fxRate).
 // Margen por categoría = columna "% Cobro del Estudio" de Servicios_Generales.xlsx
 // ══════════════════════════════════════════════════════════════════════════
@@ -2647,6 +2648,10 @@ function cotRenderApp(el) {
     </div>
     <div class="cot-searchbox">
       <textarea id="cotSearchInput" placeholder="Ej: el cliente necesita gestión de redes y algunos reels por mes..." oninput="cotFreeTextSearch()"></textarea>
+      <div style="display:flex;justify-content:flex-end;margin-top:6px;">
+        <button class="cot-btn secondary" id="cotIaBtn" onclick="cotAskIA()">🤖 Preguntarle a la IA</button>
+      </div>
+      <div id="cotIaBox"></div>
       <div class="cot-cats-label">O explorá por sección (muestra solo esa sección)</div>
       <div id="cotChips" style="display:flex;flex-wrap:wrap;gap:8px;"></div>
     </div>
@@ -2951,6 +2956,51 @@ function cotFreeTextSearch() {
   }).filter(x=>x.score>=3).sort((a,b)=>b.score-a.score).slice(0,10);
 
   cotRenderResults(scored.map(x=>x.s));
+}
+
+async function cotAskIA() {
+  const input = document.getElementById('cotSearchInput');
+  const pregunta = (input.value || '').trim();
+  const iaBox = document.getElementById('cotIaBox');
+  const btn = document.getElementById('cotIaBtn');
+  if (!pregunta) { iaBox.innerHTML = '<p style="color:var(--muted);font-size:12px;margin-top:6px;">Escribí primero qué necesita el cliente.</p>'; return; }
+
+  const all = [];
+  (window._cotCatalogo||[]).forEach(c => c.servicios.forEach(s => all.push({...s, cat: c.nombre})));
+
+  // Contexto acotado: solo lo que la IA necesita para identificar intención (nunca precios ni márgenes)
+  const contexto = all.map(s => {
+    const info = cotFindInfo(s.nombre);
+    return { nombre: s.nombre, categoria: s.cat, descripcion: s.desc || '', ideal: info?.ideal || '', tags: info?.tags || '' };
+  });
+
+  btn.disabled = true; btn.textContent = '🤖 Pensando...';
+  iaBox.innerHTML = '';
+
+  try {
+    const resp = await fetch(COT_IA_PROXY_URL, {
+      method: 'POST',
+      body: JSON.stringify({
+        contexto,
+        pregunta: `Pedido del director: "${pregunta}". Devolvé SOLO un JSON válido, sin texto adicional, con esta forma exacta: {"nombres": ["nombre exacto del servicio 1", "nombre exacto del servicio 2"], "nota": "una frase corta si algo no está cubierto en el catálogo, o string vacío si todo encaja"}. Usá únicamente los nombres tal cual aparecen en el CONTEXTO, nunca inventes nombres nuevos.`
+      })
+    });
+    const data = await resp.json();
+    const rawText = data?.candidates?.[0]?.content?.parts?.[0]?.text || '';
+    const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+    if (!jsonMatch) throw new Error('Respuesta sin JSON reconocible');
+    const parsed = JSON.parse(jsonMatch[0]);
+    const nombresIA = (parsed.nombres || []);
+    const matched = all.filter(s => nombresIA.some(n => cotNormalize(n) === cotNormalize(s.nombre)));
+
+    iaBox.innerHTML = `<div style="font-size:12px;color:var(--lime);margin:8px 0;">🤖 IA encontró ${matched.length} servicio(s) del catálogo real.${parsed.nota ? ` — ${parsed.nota}` : ''}</div>`;
+    document.querySelectorAll('.cot-chip').forEach(x=>x.classList.remove('active'));
+    cotRenderResults(matched);
+  } catch(err) {
+    iaBox.innerHTML = `<div style="font-size:12px;color:var(--orange);margin:8px 0;">⚠ La IA no respondió correctamente. Usá la búsqueda por palabras clave de abajo mientras tanto. (${err.message})</div>`;
+  } finally {
+    btn.disabled = false; btn.textContent = '🤖 Preguntarle a la IA';
+  }
 }
 
 function cotRenderResults(items, targetBox) {
