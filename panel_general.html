@@ -589,6 +589,10 @@ const SCOPES = 'https://www.googleapis.com/auth/drive.readonly https://www.googl
 const ORIANNA_SCRIPT = 'https://script.google.com/macros/s/AKfycbx9rjJdophviygL_fhG6Rns3Uez7HsnmBleSyanNhpHNyAmOJSuy7vDoXBmxrlDm6i2/exec';
 const PAULA_SCRIPT = 'https://script.google.com/macros/s/AKfycbyb5ZE9wlK4CqM4nLWLwSKYp-RWVqqAy7y1mODWw-JYb5RPoOG8pov9LZjh-o9SfS0j/exec';
 const PEDRO_SCRIPT = 'https://script.google.com/macros/s/AKfycbxXrP_rQtJo-8nE8r5JMlrSlVH7WBw9NOYAhh4--PhjatbArJMiMDCeHXX8gGFGpaADYw/exec';
+// Historial de cotizaciones — script nuevo, separado de los 3 de arriba (ver historial_cotizaciones.gs).
+// PEGAR ACÁ la URL /exec una vez que lo crees y publiques, o "Guardar en historial" no va a andar.
+const HISTORIAL_SCRIPT = 'https://script.google.com/macros/s/AKfycbxyuryel-quepw5nAO6Jx0MWA3R-qmzLE9JJe43o-TvSOvq23DQDJdyNMD9jNd2WlMfeA/exec';
+
 
 // ── PEDRO: CATÁLOGO MAESTRO — mirror de SECTIONS en pedro.html ──────────────
 // Única fuente de verdad para tab Pedro y para Servicios Consolidado.
@@ -3083,6 +3087,17 @@ function cotRenderResults(items, targetBox) {
   box.innerHTML = '';
   if (!items.length) { box.innerHTML = '<p style="color:var(--muted);text-align:center;padding:30px;">Sin coincidencias. Probá otras palabras o elegí una sección.</p>'; return; }
 
+  // Servicios que el cliente activo ya tiene contratados van al final (visibles, por si hace falta
+  // recotizar un upgrade), en vez de mezclados con los que todavía no tiene.
+  if (cotContexto.cliente) {
+    const yaLista = COT_CONTRATADOS[cotContexto.cliente.id] || [];
+    items = [...items].sort((a, b) => {
+      const aYa = yaLista.includes(a.nombre) ? 1 : 0;
+      const bYa = yaLista.includes(b.nombre) ? 1 : 0;
+      return aYa - bYa;
+    });
+  }
+
   items.forEach((s, idx) => {
     const margen = cotMargenFor(s.cat, s);
     const info = cotFindInfo(s.nombre);
@@ -3413,12 +3428,45 @@ function cotSendWhatsapp() {
   window.open(`https://wa.me/?text=${msg}`, '_blank');
 }
 
-// ── HISTORIAL DE COTIZACIONES (guardado local del dispositivo — no sincroniza entre PCs) ──
+// ── HISTORIAL DE COTIZACIONES (sincronizado en Drive — cruza entre dispositivos) ──
+let cotHistorialCache = [];
+
+async function cotHistorialFetch() {
+  try {
+    const url = `${HISTORIAL_SCRIPT}?auth=${encodeURIComponent(accessToken || '')}`;
+    let res = await fetch(url);
+    let j = await res.json();
+    if (j && j.error === 'auth') {
+      await ensureFreshToken();
+      res = await fetch(`${HISTORIAL_SCRIPT}?auth=${encodeURIComponent(accessToken || '')}`);
+      j = await res.json();
+    }
+    if (j.ok && j.data && Array.isArray(j.data.historial)) cotHistorialCache = j.data.historial;
+    return true;
+  } catch(e) { return false; }
+}
+async function cotHistorialGuardarRemoto() {
+  try {
+    const url = `${HISTORIAL_SCRIPT}?auth=${encodeURIComponent(accessToken || '')}`;
+    let res = await fetch(url, { method: 'POST', body: JSON.stringify({ historial: cotHistorialCache }) });
+    let j = await res.json();
+    if (j && j.error === 'auth') {
+      await ensureFreshToken();
+      res = await fetch(`${HISTORIAL_SCRIPT}?auth=${encodeURIComponent(accessToken || '')}`, { method:'POST', body: JSON.stringify({ historial: cotHistorialCache }) });
+      j = await res.json();
+    }
+    if (!j.ok) throw new Error(j.error||'error desconocido');
+    return true;
+  } catch(e) {
+    showToast('No se pudo sincronizar con Drive — revisá tu conexión y volvé a intentar', 'error');
+    return false;
+  }
+}
 function cotToggleGuardarForm() {
   const form = document.getElementById('cotGuardarForm');
   form.style.display = form.style.display === 'none' ? 'block' : 'none';
 }
-function cotGuardarHistorial() {
+async function cotGuardarHistorial() {
   const nombre = document.getElementById('cotGNombre').value.trim();
   const mail = document.getElementById('cotGMail').value.trim();
   const wsp = document.getElementById('cotGWsp').value.trim();
@@ -3434,20 +3482,29 @@ function cotGuardarHistorial() {
     total, simbolo,
     estado: 'Sin respuesta',
   };
-  let historial = [];
-  try { historial = JSON.parse(localStorage.getItem('cot_historial') || '[]'); } catch(e) {}
-  historial.unshift(registro);
-  try { localStorage.setItem('cot_historial', JSON.stringify(historial)); } catch(e) {}
+  cotHistorialCache.unshift(registro);
   document.getElementById('cotGuardarForm').style.display = 'none';
   document.getElementById('cotGNombre').value = '';
   document.getElementById('cotGMail').value = '';
   document.getElementById('cotGWsp').value = '';
-  showToast('Cotización guardada en el historial', 'ok');
+  showToast('Guardando en el historial…', 'ok');
+  const ok = await cotHistorialGuardarRemoto();
+  if (ok) showToast('Cotización guardada y sincronizada', 'ok');
 }
-function cotGetHistorial() {
-  try { return JSON.parse(localStorage.getItem('cot_historial') || '[]'); } catch(e) { return []; }
+function cotGetHistorial() { return cotHistorialCache; }
+async function cotShowHistorial() {
+  const el = document.getElementById('contentCotizador');
+  el.innerHTML = `
+    <div class="cot-topbar">
+      <div class="cot-badge">Historial de cotizaciones</div>
+      <button class="cot-btn ghost" onclick="renderCotizador()">← Volver al cotizador</button>
+    </div>
+    <p style="color:var(--muted);text-align:center;padding:30px;">Cargando desde Drive…</p>
+  `;
+  await cotHistorialFetch();
+  cotRenderHistorialView();
 }
-function cotShowHistorial() {
+function cotRenderHistorialView() {
   const el = document.getElementById('contentCotizador');
   const historial = cotGetHistorial();
   const rows = historial.map(r => `
@@ -3475,21 +3532,20 @@ function cotShowHistorial() {
     </div>`).join('');
   el.innerHTML = `
     <div class="cot-topbar">
-      <div class="cot-badge">Historial de cotizaciones (guardado en este dispositivo)</div>
+      <div class="cot-badge">Historial de cotizaciones (sincronizado en Drive)</div>
       <button class="cot-btn ghost" onclick="renderCotizador()">← Volver al cotizador</button>
     </div>
     ${historial.length ? rows : '<p style="color:var(--muted);text-align:center;padding:30px;">Todavía no guardaste ninguna cotización.</p>'}
   `;
 }
-function cotSetEstadoHistorial(id, estado) {
-  let historial = cotGetHistorial();
-  historial = historial.map(r => String(r.id)===String(id) ? {...r, estado} : r);
-  localStorage.setItem('cot_historial', JSON.stringify(historial));
+async function cotSetEstadoHistorial(id, estado) {
+  cotHistorialCache = cotHistorialCache.map(r => String(r.id)===String(id) ? {...r, estado} : r);
+  await cotHistorialGuardarRemoto();
 }
-function cotEliminarHistorial(id) {
-  let historial = cotGetHistorial().filter(r => String(r.id)!==String(id));
-  localStorage.setItem('cot_historial', JSON.stringify(historial));
-  cotShowHistorial();
+async function cotEliminarHistorial(id) {
+  cotHistorialCache = cotHistorialCache.filter(r => String(r.id)!==String(id));
+  cotRenderHistorialView();
+  await cotHistorialGuardarRemoto();
 }
 function cotPDFHistorial(id) {
   const r = cotGetHistorial().find(x => String(x.id)===String(id));
