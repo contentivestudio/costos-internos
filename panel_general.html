@@ -2624,15 +2624,24 @@ function cotMargenFor(catNombre, servicio) {
   return COT_MARGEN[catNombre] !== undefined ? COT_MARGEN[catNombre] : 0.30;
 }
 
+// Redondeo hacia arriba a números "redondos" para cotizar — nunca centavos ni cifras sueltas.
+// ARS → múltiplo de $5.000 · USD → múltiplo de U$S 5.
+function cotRedondo(valor, simbolo) {
+  const paso = simbolo === 'US$' ? 5 : 5000;
+  return Math.ceil(valor / paso) * paso;
+}
+
 // Venta según moneda de contexto. ars = costo interno total en pesos.
 function cotVenta(ars, margen) {
   if (!ars || ars <= 0) return null;
   if (cotContexto.moneda === 'USD') {
     if (!fxRate) return null;
     const usdIntl = (ars / fxRate) * 1.2;
-    return { valor: Math.ceil(usdIntl / (1 - margen)), simbolo:'US$' };
+    const crudo = Math.ceil(usdIntl / (1 - margen));
+    return { valor: cotRedondo(crudo, 'US$'), simbolo:'US$' };
   }
-  return { valor: Math.ceil(ars / (1 - margen)), simbolo:'$' };
+  const crudo = Math.ceil(ars / (1 - margen));
+  return { valor: cotRedondo(crudo, '$'), simbolo:'$' };
 }
 
 function cotFmt(v) { return v.toLocaleString('es-AR'); }
@@ -3229,9 +3238,9 @@ function cotVentaSinMargen(ars) {
   if (!ars || ars <= 0) return null;
   if (cotContexto.moneda === 'USD') {
     if (!fxRate) return null;
-    return { valor: Math.ceil((ars / fxRate) * 1.2), simbolo:'US$' };
+    return { valor: cotRedondo(Math.ceil((ars / fxRate) * 1.2), 'US$'), simbolo:'US$' };
   }
-  return { valor: Math.ceil(ars), simbolo:'$' };
+  return { valor: cotRedondo(Math.ceil(ars), '$'), simbolo:'$' };
 }
 function cotCalcHoras(calcId, tarifa, margen) {
   const input = document.getElementById(calcId + '_input');
