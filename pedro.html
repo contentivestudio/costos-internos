@@ -312,8 +312,9 @@ const SECTIONS = [
     id: 'puntual_audiovisual_sec',
     name: 'Producción Audiovisual — Foto y Video (Pedro ejecuta)',
     type: 'simple_price',
-    note: 'Acá ejecutás vos personalmente (cámara y edición). La Producción de Reels/Shorts es de Orianna y no vive en esta app.',
+    note: 'Acá ejecutás vos personalmente (cámara y edición). Los packs de Reels x4 en adelante son de Orianna; el Pack Inicial (x1) lo ejecutás vos y su costo vive acá.',
     services: [
+      { id:'reels_x1', name:'Producción de Reels — Pack Inicial (x1)', type:'catalog', desc:'1 reel suelto ejecutado por vos. Cargá el COSTO de producción de cada modalidad — el cotizador aplica el margen Audiovisual y calcula la venta.', packs:[{key:'solo_edicion',label:'Solo Edición',hint:'edición pura sobre material del cliente'},{key:'camara_edicion',label:'Cámara + Edición',hint:'rodaje + edición'},{key:'ideas_camara_edicion',label:'Ideas + Cámara + Edición',hint:'concepto + rodaje + edición'}], tasks:`Lo que hacés vos:\n\nEjecutás el reel completo según la modalidad: desde solo editar material del cliente hasta idear el concepto, rodar y editar la pieza final lista para publicar.` },
       { id:'puntual_video_institucional', name:'Video Institucional / Spot Comercial', type:'catalog', allowAdicional:true, desc:'Concepto, guion, preproducción, rodaje y edición — ejecutado por vos. Precio por video.', packs:[{key:'media_jornada',label:'Media Jornada',hint:'2hrs rodaje'},{key:'jornada_completa',label:'Jornada Completa',hint:'4hrs rodaje'}], tasks:`Lo que hacés vos:\n\nDesarrollo de concepto y guion, selección de locaciones, rodaje (cámara, iluminación, dirección de escena) y edición y posproducción completa hasta entrega final en Full HD.` },
       { id:'puntual_cobertura_eventos', name:'Cobertura Audiovisual de Eventos', type:'catalog', allowAdicional:true, desc:'Cobrás por tramo de horas, igual estructura que Fotografía de Eventos por horas.', packs:[{key:'h1',label:'Hasta 1hr',hint:''},{key:'h2',label:'Hasta 2hrs',hint:''},{key:'h4',label:'Hasta 4hrs',hint:''},{key:'h6',label:'Hasta 6hrs',hint:''}], tasks:`Lo que hacés vos:\n\nCubrís el evento en vivo, hacés el montaje narrativo completo, corrección de color, musicalización y entrega final.` },
       { id:'puntual_publicidad_digital', name:'Producción de Contenido para Publicidad Digital', type:'catalog', allowAdicional:true, desc:'Se cotiza por horas. El entregable es un highlight del contenido producido.', packs:[{key:'h1',label:'Hasta 1hr',hint:''},{key:'h2',label:'Hasta 2hrs',hint:''},{key:'h4',label:'Hasta 4hrs',hint:''},{key:'h6',label:'Hasta 6hrs',hint:''}], tasks:`Lo que hacés vos:\n\nDefinís concepto y estrategia, hacés el guion visual, el rodaje con dirección de tomas, la edición y entregás el highlight final optimizado para cada plataforma.` },
@@ -327,7 +328,7 @@ const SECTIONS = [
     name: 'Fotografía de Bodas',
     type: 'hourly_wedding',
     services: [
-      { id:'boda_civil', name:'Cobertura de Boda / 15 Años — Evento Único', badge:'Tarifa por hora', desc:'EXCLUSIVO para bodas y fiestas de 15 años. Para cualquier otro tipo de evento (corporativo, lanzamiento, cumpleaños genérico), usar "Sesión Fotográfica de Eventos" en el catálogo de Fotografía. Cargá tu tarifa por hora — el sistema calcula el total.', tasks:`Lo que hacés vos:\n\nCubrís el evento como fotógrafo único — sin equipo de Contentive Studio. Es un servicio personal de Pedro como prestador independiente.` }
+      { id:'boda_civil', name:'Cobertura de Boda / 15 Años — Evento Único', badge:'Tarifa por hora', desc:'EXCLUSIVO para bodas y fiestas de 15 años. Para cualquier otro tipo de evento (corporativo, lanzamiento, cumpleaños genérico), usar "Sesión Fotográfica de Eventos" en el catálogo de Fotografía. Cargá tu COSTO de producción por hora — el precio de venta se calcula en el cotizador del panel.', tasks:`Lo que hacés vos:\n\nCubrís el evento como fotógrafo único — sin equipo de Contentive Studio. Es un servicio personal de Pedro como prestador independiente.` }
     ]
   },
   // 8. MENTORÍA
@@ -345,7 +346,7 @@ const SECTIONS = [
     id: 'cursos',
     name: 'Contentive Academy — Cursos que Dictás',
     type: 'cost_margin',
-    note: 'Cargá el costo de producción real (no el precio final). El margen 35% se aplica automático y calcula el precio de venta.',
+    note: 'Cargá el costo de producción real. El precio de venta se calcula únicamente en el cotizador del panel (margen Formación).',
     services: [
       { id:'curso_fotografia_basico', name:'Curso Básico de Fotografía', desc:'3 sesiones (2 presenciales + 1 online). Fundamentos técnicos, práctica de campo con modelo, edición y proyecto final.', packs:[{key:'grupal',label:'Modalidad Grupal'},{key:'particular',label:'Modalidad Particular'}], tasks:`Lo que hacés vos:\n\nDictás las 3 sesiones del curso: fundamentos técnicos y composición, práctica de campo con modelo profesional, y la sesión de edición y devolución del proyecto final.` },
       { id:'curso_contenido_audiovisual', name:'Curso de Creación de Contenido Audiovisual', desc:'3 sesiones. Estrategia, producción con celular y edición.', packs:[{key:'grupal',label:'Modalidad Grupal'},{key:'particular',label:'Modalidad Particular'}], tasks:`Lo que hacés vos:\n\nDictás las 3 sesiones: estrategia y planificación, producción y grabación con celular (dirección de cámara y feedback en vivo), y edición y publicación con devolución personalizada.` },
@@ -429,7 +430,7 @@ function refreshAllChips() {
     const id = el.id.replace('chips-','');
     // wedding config
     const wCfg = weddingConfig[id];
-    if(wCfg) { el.innerHTML = priceChips(wCfg.tarifaHora||0); return; }
+    if(wCfg) { el.innerHTML = priceChips(weddingCostoFromVenta(wCfg.tarifaHora||0)); return; }
     // simple price
     const val = prices[id]||0;
     if(val) el.innerHTML = priceChips(val);
@@ -560,7 +561,7 @@ const MENTORIA_DEFAULT_HOURS = {
 function getMentoriaHoras(id,pk) { return {...MENTORIA_DEFAULT_HOURS[pk], ...((mentoriaHours[id]||{})[pk]||{})}; }
 function getMentoriaTotalHoras(id,pk) { const h=getMentoriaHoras(id,pk); return h.prep+h.sesion+h.devolucion; }
 function getMentoriaCostoInterno(id,pk) { return getMentoriaTotalHoras(id,pk)*tarifaMentoria; }
-function getMentoriaVenta(id,pk) { return Math.ceil(getMentoriaCostoInterno(id,pk)/0.65); } // margen 35%, redondeo arriba
+// La venta de Mentoría vive ÚNICAMENTE en el cotizador del panel (margen Mentoría). Acá solo costo de producción.
 
 // ─── COST_MARGIN — Cursos/Capacitaciones: Pedro carga costo real, margen fijo 35% automático ──
 const COST_MARGIN_DEFAULTS = {
@@ -568,19 +569,15 @@ const COST_MARGIN_DEFAULTS = {
   curso_contenido_audiovisual:{ grupal:225000, particular:225000 },
   curso_capacitacion_corporativa: { medio_dia:270000, jornada_completa:390000 }
 };
-const COST_MARGIN_RATE = 0.35; // margen fijo 35%
+// La venta de cursos vive ÚNICAMENTE en el cotizador del panel. Acá solo costo de producción.
 function getCostMarginCosto(id,pk) { return (costMargin[id]&&costMargin[id][pk]!==undefined) ? costMargin[id][pk] : (COST_MARGIN_DEFAULTS[id]?.[pk]||0); }
-function getCostMarginVenta(id,pk) { return Math.ceil(getCostMarginCosto(id,pk)/(1-COST_MARGIN_RATE)); }
 function onCostMarginInput(id,pk,input) {
   if(!costMargin[id]) costMargin[id]={};
   const val=parseFloat(input.value)||0;
   costMargin[id][pk]=val;
   input.classList.toggle('has-value',val>0);
-  const venta=getCostMarginVenta(id,pk);
-  const ventaEl=document.querySelector(`[data-cm-venta="${id}-${pk}"]`);
-  if(ventaEl) ventaEl.textContent=fmt(venta);
   const usdEl=document.querySelector(`[data-cm-usd="${id}-${pk}"]`);
-  if(usdEl) usdEl.textContent=`${fmtUSD(venta)||''} · ${fmtUSDIntl(venta)||''}`;
+  if(usdEl) usdEl.textContent=`${fmtUSD(val)||''} · ${fmtUSDIntl(val)||''}`;
   updateGlobalProgress(); scheduleSave();
 }
 function getAmTotalHoras(id) { const h=getAmHours(id); let t=h.briefing+h.supervision+h.reuniones+h.presentacion; if(h.tieneAudiovisual)t+=h.rodaje; return t; }
@@ -832,7 +829,6 @@ function renderMentoriaCard(card,svc) {
     const h=getMentoriaHoras(svc.id,pack.key);
     const totalH=getMentoriaTotalHoras(svc.id,pack.key);
     const costo=getMentoriaCostoInterno(svc.id,pack.key);
-    const venta=getMentoriaVenta(svc.id,pack.key);
     packsHtml+=`
       <div class="hours-item" style="padding:12px 14px;min-width:220px">
         <div class="hours-item-label">${pack.label}${pack.hint?`<div style="color:var(--muted2);font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;margin-top:2px">${pack.hint}</div>`:''}</div>
@@ -841,9 +837,10 @@ function renderMentoriaCard(card,svc) {
           <div><label style="font-size:10px;color:var(--muted)">Sesión (hs)</label><input type="number" step="0.5" class="hours-input" style="width:60px" value="${h.sesion}" oninput="onMentoriaHourChange('${svc.id}','${pack.key}','sesion',this)"></div>
           <div><label style="font-size:10px;color:var(--muted)">Devol. (hs)</label><input type="number" step="0.5" class="hours-input" style="width:60px" value="${h.devolucion}" oninput="onMentoriaHourChange('${svc.id}','${pack.key}','devolucion',this)"></div>
         </div>
-        <div data-mt-summary="${svc.id}-${pack.key}" style="margin-top:8px;font-size:11px;color:var(--muted)">Total: <strong style="color:var(--text)">${totalH}hs</strong> · Costo: <strong style="color:var(--text)">${fmt(costo)}</strong></div>
-        <div class="price-big" data-mt-venta="${svc.id}-${pack.key}" style="color:var(--lime);font-size:18px;margin-top:4px">${fmt(venta)}</div>
-        <div data-mt-usd="${svc.id}-${pack.key}" style="font-size:10px;color:var(--muted)">${fmtUSD(venta)||''} · ${fmtUSDIntl(venta)||''}</div>
+        <div data-mt-summary="${svc.id}-${pack.key}" style="margin-top:8px;font-size:11px;color:var(--muted)">Total: <strong style="color:var(--text)">${totalH}hs</strong></div>
+        <div style="font-size:10px;color:var(--muted);margin-top:6px">Costo de producción</div>
+        <div class="price-big" data-mt-venta="${svc.id}-${pack.key}" style="color:var(--lime);font-size:18px;margin-top:2px">${fmt(costo)}</div>
+        <div data-mt-usd="${svc.id}-${pack.key}" style="font-size:10px;color:var(--muted)">${fmtUSD(costo)||''} · ${fmtUSDIntl(costo)||''}</div>
       </div>
     `;
   });
@@ -869,13 +866,12 @@ function renderMentoriaCard(card,svc) {
 function updateMentoriaPack(id,pk) {
   const totalH=getMentoriaTotalHoras(id,pk);
   const costo=getMentoriaCostoInterno(id,pk);
-  const venta=getMentoriaVenta(id,pk);
   const summaryEl=document.querySelector(`[data-mt-summary="${id}-${pk}"]`);
-  if(summaryEl) summaryEl.innerHTML=`Total: <strong style="color:var(--text)">${totalH}hs</strong> · Costo: <strong style="color:var(--text)">${fmt(costo)}</strong>`;
+  if(summaryEl) summaryEl.innerHTML=`Total: <strong style="color:var(--text)">${totalH}hs</strong>`;
   const ventaEl=document.querySelector(`[data-mt-venta="${id}-${pk}"]`);
-  if(ventaEl) ventaEl.textContent=fmt(venta);
+  if(ventaEl) ventaEl.textContent=fmt(costo);
   const usdEl=document.querySelector(`[data-mt-usd="${id}-${pk}"]`);
-  if(usdEl) usdEl.textContent=`${fmtUSD(venta)||''} · ${fmtUSDIntl(venta)||''}`;
+  if(usdEl) usdEl.textContent=`${fmtUSD(costo)||''} · ${fmtUSDIntl(costo)||''}`;
 }
 function onMentoriaHourChange(id,pk,field,input) {
   if(!mentoriaHours[id]) mentoriaHours[id]={};
@@ -894,7 +890,6 @@ function renderCostMarginCard(card,svc) {
   let packsHtml='';
   svc.packs.forEach(pack=>{
     const costo=getCostMarginCosto(svc.id,pack.key);
-    const venta=getCostMarginVenta(svc.id,pack.key);
     packsHtml+=`
       <div class="hours-item" style="padding:12px 14px;min-width:200px">
         <div class="hours-item-label">${pack.label}</div>
@@ -906,9 +901,7 @@ function renderCostMarginCard(card,svc) {
               oninput="onCostMarginInput('${svc.id}','${pack.key}',this)">
           </div>
         </div>
-        <div style="margin-top:8px;font-size:11px;color:var(--muted)">Margen fijo 35%</div>
-        <div class="price-big" data-cm-venta="${svc.id}-${pack.key}" style="color:var(--lime);font-size:18px;margin-top:2px">${fmt(venta)}</div>
-        <div data-cm-usd="${svc.id}-${pack.key}" style="font-size:10px;color:var(--muted)">${fmtUSD(venta)||''} · ${fmtUSDIntl(venta)||''}</div>
+        <div data-cm-usd="${svc.id}-${pack.key}" style="font-size:10px;color:var(--muted);margin-top:8px">${fmtUSD(costo)||''} · ${fmtUSDIntl(costo)||''}</div>
       </div>
     `;
   });
@@ -964,11 +957,14 @@ function renderCatalogCard(card,svc) {
 }
 
 // ── WEDDING card ──────────────────────────────────────────────────────────────
+// El JSON sigue guardando la TARIFA DE VENTA (weddingConfig.tarifaHora) para no romper el cotizador.
+// Esta vista muestra y edita SOLO el costo de producción (70% de esa tarifa).
+function weddingCostoFromVenta(v) { return v ? Math.round(v*0.70) : 0; }
 function renderWeddingCard(card,svc) {
   const cfg=getWeddingCfg(svc.id);
-  const tarifa=cfg.tarifaHora||0;
-  const tarifaResto=Math.round(tarifa*0.75);
-  const hasVal=tarifa>0;
+  const costo=weddingCostoFromVenta(cfg.tarifaHora||0);
+  const costoResto=Math.round(costo*0.75);
+  const hasVal=costo>0;
 
   card.innerHTML=`
     <div class="service-top">
@@ -978,23 +974,23 @@ function renderWeddingCard(card,svc) {
       </div>
       <div class="price-block">
         <div class="price-status ${hasVal?'filled':''}">${hasVal?'Cargado':'Pendiente'}</div>
-        <div class="price-big" style="color:var(--lime)"><span id="wedding-big-${svc.id}">${hasVal?fmt(tarifa):'—'}</span><span style="font-size:12px;color:var(--muted);font-weight:400"> /1ra hora</span></div>
-        <div id="chips-${svc.id}" style="display:flex;flex-direction:column;gap:3px;align-items:flex-end;margin-top:4px">${priceChips(tarifa)}</div>
-        <div class="price-label" id="wedding-resto-label-${svc.id}" style="margin-top:6px">${hasVal?`2da hora+: ${fmt(tarifaResto)} · ${fmtUSD(tarifaResto)||'—'}`:''}</div>
-        <div class="price-label">Tarifa por hora (editable)</div>
+        <div class="price-big" style="color:var(--lime)"><span id="wedding-big-${svc.id}">${hasVal?fmt(costo):'—'}</span><span style="font-size:12px;color:var(--muted);font-weight:400"> /1ra hora</span></div>
+        <div id="chips-${svc.id}" style="display:flex;flex-direction:column;gap:3px;align-items:flex-end;margin-top:4px">${priceChips(costo)}</div>
+        <div class="price-label" id="wedding-resto-label-${svc.id}" style="margin-top:6px">${hasVal?`2da hora+: ${fmt(costoResto)} · ${fmtUSD(costoResto)||'—'}`:''}</div>
+        <div class="price-label">Costo de producción por hora (editable)</div>
       </div>
     </div>
     <div class="decreasing-row">
       <div class="decreasing-field">
-        <label>Precio 1ra hora (ARS)</label>
+        <label>Costo de producción 1ra hora (ARS)</label>
         <div style="position:relative">
           <span style="position:absolute;left:8px;top:50%;transform:translateY(-50%);font-family:'Syne',sans-serif;font-size:11px;color:var(--muted)">$</span>
-          <input type="number" class="hours-input" style="width:160px;padding-left:20px;text-align:right" value="${tarifa||''}" placeholder="0"
+          <input type="number" class="hours-input" style="width:160px;padding-left:20px;text-align:right" value="${costo||''}" placeholder="0"
             oninput="onWeddingTarifaChange('${svc.id}',this)">
         </div>
       </div>
       <div class="decreasing-field" style="color:var(--muted);font-size:11px;padding-top:18px" id="wedding-resto-${svc.id}">
-        ${hasVal?`2da hora en adelante: <strong style="color:var(--text)">${fmt(tarifaResto)}</strong> (−25%)`:' Cargá la tarifa para ver el cálculo.'}
+        ${hasVal?`2da hora en adelante: <strong style="color:var(--text)">${fmt(costoResto)}</strong> (−25%)`:' Cargá el costo para ver el cálculo.'}
       </div>
     </div>
     <button class="detail-toggle" onclick="toggleDetail('detail-${svc.id}',this)"><span>▼</span> Ver detalle de este servicio</button>
@@ -1124,21 +1120,22 @@ function onPackPriceInput(id,pk,input) {
 }
 function onWeddingTarifaChange(id,input) {
   if(!weddingConfig[id]) weddingConfig[id]={tarifaHora:0};
-  const val=parseFloat(input.value)||0;
-  weddingConfig[id].tarifaHora=val;
-  const tarifaResto=Math.round(val*0.75);
+  const costo=parseFloat(input.value)||0;
+  // Se guarda la TARIFA DE VENTA (costo / 0.70, redondeo arriba) — es lo que lee el cotizador.
+  weddingConfig[id].tarifaHora = costo ? Math.ceil(costo/0.70) : 0;
+  const costoResto=Math.round(costo*0.75);
   // Actualizar bloque verde superior
   const bigEl=document.getElementById('wedding-big-'+id);
-  if(bigEl) bigEl.textContent=val?fmt(val):'—';
+  if(bigEl) bigEl.textContent=costo?fmt(costo):'—';
   // Actualizar chips USD
   const chipsEl=document.getElementById('chips-'+id);
-  if(chipsEl) chipsEl.innerHTML=priceChips(val);
+  if(chipsEl) chipsEl.innerHTML=priceChips(costo);
   // Actualizar 2da hora
   const restoEl=document.getElementById('wedding-resto-'+id);
-  if(restoEl) restoEl.innerHTML=val?`2da hora en adelante: <strong style="color:var(--text)">${fmt(tarifaResto)}</strong> (−25%)`:'Cargá la tarifa para ver el cálculo.';
+  if(restoEl) restoEl.innerHTML=costo?`2da hora en adelante: <strong style="color:var(--text)">${fmt(costoResto)}</strong> (−25%)`:'Cargá el costo para ver el cálculo.';
   // Actualizar label 2da hora en price block
   const restoLabel=document.getElementById('wedding-resto-label-'+id);
-  if(restoLabel) restoLabel.textContent=val?`2da hora+: ${fmt(tarifaResto)} · ${fmtUSD(tarifaResto)||'—'}`:'';
+  if(restoLabel) restoLabel.textContent=costo?`2da hora+: ${fmt(costoResto)} · ${fmtUSD(costoResto)||'—'}`:'';
   updateGlobalProgress(); scheduleSave();
 }
 function onCoursePriceInput(id,key,input) {
