@@ -982,6 +982,8 @@ async function showApp() {
   const params = new URLSearchParams(window.location.search);
   if (params.get('view') === 'cotizador') {
     switchTab('cotizador', null);
+  } else {
+    renderCotizador();
   }
 }
 
