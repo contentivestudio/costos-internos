@@ -3362,6 +3362,17 @@ function cotShowCart() {
           <input id="cotGMail" placeholder="Mail" style="flex:1;min-width:160px;background:#161616;border:1px solid var(--border);color:var(--text);border-radius:6px;padding:8px 10px;font-size:13px;">
           <input id="cotGWsp" placeholder="WhatsApp" style="flex:1;min-width:160px;background:#161616;border:1px solid var(--border);color:var(--text);border-radius:6px;padding:8px 10px;font-size:13px;">
         </div>
+        <div style="margin-top:10px;">
+          <select id="cotGOrigen" style="width:100%;background:#161616;border:1px solid var(--border);color:var(--text);border-radius:6px;padding:8px 10px;font-size:13px;">
+            <option value="">Origen del lead (obligatorio)</option>
+            <option value="Sitio web">Sitio web</option>
+            <option value="Instagram">Instagram</option>
+            <option value="LinkedIn">LinkedIn</option>
+            <option value="Referido">Referido</option>
+            <option value="Formación">Formación</option>
+            <option value="Contacto directo">Contacto directo</option>
+          </select>
+        </div>
         <button class="cot-btn" style="margin-top:10px;" onclick="cotGuardarHistorial(); cotShowCart();">Guardar cotización</button>
       </div>
     </div>
@@ -3470,13 +3481,15 @@ async function cotGuardarHistorial() {
   const nombre = document.getElementById('cotGNombre').value.trim();
   const mail = document.getElementById('cotGMail').value.trim();
   const wsp = document.getElementById('cotGWsp').value.trim();
+  const origen = document.getElementById('cotGOrigen').value;
   if (!nombre) { showToast('Falta el nombre del cliente', 'error'); return; }
+  if (!origen) { showToast('Falta el origen del lead — es obligatorio para medir captación', 'error'); return; }
   const total = cotQuote.reduce((a,i)=>a+i.venta, 0);
   const simbolo = cotQuote[0] ? cotQuote[0].simbolo : '$';
   const registro = {
     id: Date.now()+Math.random(),
     fecha: new Date().toISOString(),
-    nombre, mail, wsp,
+    nombre, mail, wsp, origen,
     contexto: { ...cotContexto },
     items: cotQuote.map(i=>({...i})),
     total, simbolo,
@@ -3487,6 +3500,7 @@ async function cotGuardarHistorial() {
   document.getElementById('cotGNombre').value = '';
   document.getElementById('cotGMail').value = '';
   document.getElementById('cotGWsp').value = '';
+  document.getElementById('cotGOrigen').value = '';
   showToast('Guardando en el historial…', 'ok');
   const ok = await cotHistorialGuardarRemoto();
   if (ok) showToast('Cotización guardada y sincronizada', 'ok');
@@ -3504,15 +3518,23 @@ async function cotShowHistorial() {
   await cotHistorialFetch();
   cotRenderHistorialView();
 }
+let cotHistorialFiltroOrigen = '';
+function cotFiltrarHistorialOrigen(val) {
+  cotHistorialFiltroOrigen = val;
+  cotRenderHistorialView();
+}
 function cotRenderHistorialView() {
   const el = document.getElementById('contentCotizador');
-  const historial = cotGetHistorial();
+  const historialTotal = cotGetHistorial();
+  const origenes = [...new Set(historialTotal.map(r=>r.origen).filter(Boolean))];
+  const historial = cotHistorialFiltroOrigen ? historialTotal.filter(r=>r.origen===cotHistorialFiltroOrigen) : historialTotal;
   const rows = historial.map(r => `
     <div class="cot-card-result">
       <div style="display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;align-items:flex-start;">
         <div>
           <h3 style="margin-bottom:2px;">${r.nombre}</h3>
           <div style="font-size:12px;color:var(--muted);">${r.mail||'sin mail'} · ${r.wsp||'sin whatsapp'} · ${new Date(r.fecha).toLocaleDateString('es-AR')}</div>
+          <div style="margin-top:4px;"><span style="font-size:11px;background:#1f1f1f;border:1px solid var(--border);color:var(--lime,#B8E04A);border-radius:4px;padding:2px 8px;">${r.origen||'Sin origen (previo a jul-2026)'}</span></div>
         </div>
         <div style="text-align:right;">
           <div class="cot-venta">${r.simbolo}${cotFmt(r.total)}</div>
@@ -3535,6 +3557,13 @@ function cotRenderHistorialView() {
       <div class="cot-badge">Historial de cotizaciones (sincronizado en Drive)</div>
       <button class="cot-btn ghost" onclick="renderCotizador()">← Volver al cotizador</button>
     </div>
+    ${origenes.length ? `
+    <div style="margin-bottom:14px;">
+      <select onchange="cotFiltrarHistorialOrigen(this.value)" style="background:#161616;border:1px solid var(--border);color:var(--text);border-radius:6px;padding:6px 10px;font-size:12px;">
+        <option value="">Todos los orígenes (${historialTotal.length})</option>
+        ${origenes.map(o=>`<option value="${o}" ${cotHistorialFiltroOrigen===o?'selected':''}>${o} (${historialTotal.filter(r=>r.origen===o).length})</option>`).join('')}
+      </select>
+    </div>` : ''}
     ${historial.length ? rows : '<p style="color:var(--muted);text-align:center;padding:30px;">Todavía no guardaste ninguna cotización.</p>'}
   `;
 }
